@@ -3,14 +3,10 @@
 <url> <loc>https://facebookresearch.github.io/help.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/en/help.html" /> </url>
 <url> <loc>https://facebookresearch.github.io/index.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/en/index.html" /> </url>
 <url> <loc>https://facebookresearch.github.io/users.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/en/users.html" /> </url>
-<url> <loc>https://facebookresearch.github.io/blog/2017/10/24/new-version-1.0.0.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
-<url> <loc>https://facebookresearch.github.io/blog/2017/09/26/adding-rss.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
-<url> <loc>https://facebookresearch.github.io/blog/2017/09/25/testing-rss.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
-<url> <loc>https://facebookresearch.github.io/blog/2017/04/10/blog-post-two.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
-<url> <loc>https://facebookresearch.github.io/blog/2016/03/11/blog-post.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
-<url> <loc>https://facebookresearch.github.io/docs/doc1.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/docs/doc1.html" /> </url>
-<url> <loc>https://facebookresearch.github.io/docs/doc2.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/docs/doc2.html" /> </url>
+<url> <loc>https://facebookresearch.github.io/blog/2018/06/22/announcement.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
+<url> <loc>https://facebookresearch.github.io/docs/dataset.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/docs/dataset.html" /> </url>
 <url> <loc>https://facebookresearch.github.io/docs/doc3.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/docs/doc3.html" /> </url>
-<url> <loc>https://facebookresearch.github.io/docs/doc4.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/docs/doc4.html" /> </url>
-<url> <loc>https://facebookresearch.github.io/docs/doc5.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/docs/doc5.html" /> </url>
+<url> <loc>https://facebookresearch.github.io/docs/participate.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/docs/participate.html" /> </url>
+<url> <loc>https://facebookresearch.github.io/docs/people.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/docs/people.html" /> </url>
+<url> <loc>https://facebookresearch.github.io/docs/workshop.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://facebookresearch.github.io/docs/workshop.html" /> </url>
 </urlset>
