@@ -1,8 +1,0 @@
-       <h2>SUMO mailing list</h2>
-       Register to get news about the SUMO challenge...
-        
-       <h2>Leaderboard</h2>
-       Link to the leaderboard.
-
-       <h2>Get Started</h2>
-       Link to participation page.  
