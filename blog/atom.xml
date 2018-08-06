@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://facebookresearch.github.io/sumo-challenge/blog</id>
+    <id>https://sumochallenge.org/blog</id>
     <title>SUMO: The Scene Understanding and Modeling Challenge Blog</title>
     <updated>2018-06-22T06:00:00Z</updated>
     <generator>Feed for Node.js</generator>
-    <link rel="alternate" href="https://facebookresearch.github.io/sumo-challenge/blog"/>
+    <link rel="alternate" href="https://sumochallenge.org/blog"/>
     <subtitle>The best place to stay up-to-date with the latest SUMO: The Scene Understanding and Modeling Challenge news and events.</subtitle>
-    <logo>https://facebookresearch.github.io/sumo-challenge/img/sumo-logo-plain.png</logo>
+    <logo>https://sumochallenge.org/img/sumo-logo-plain.png</logo>
     <rights>Copyright © 2018 Facebook, Inc.</rights>
     <entry>
         <title type="html"><![CDATA[SUMO Challenge is announced]]></title>
-        <id>https://facebookresearch.github.io/sumo-challenge/blog/2018/06/22/announcement.html</id>
-        <link href="https://facebookresearch.github.io/sumo-challenge/blog/2018/06/22/announcement.html">
+        <id>https://sumochallenge.org/blog/2018/06/22/announcement.html</id>
+        <link href="https://sumochallenge.org/blog/2018/06/22/announcement.html">
         </link>
         <updated>2018-06-22T06:00:00Z</updated>
         <summary type="html"><![CDATA[<p>We are announcing the SUMO Challenge at the 2018 Bridges to 3D

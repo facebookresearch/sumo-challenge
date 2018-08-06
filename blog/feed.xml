@@ -2,21 +2,21 @@
 <rss version="2.0">
     <channel>
         <title>SUMO: The Scene Understanding and Modeling Challenge Blog</title>
-        <link>https://facebookresearch.github.io/sumo-challenge/blog</link>
+        <link>https://sumochallenge.org/blog</link>
         <description>The best place to stay up-to-date with the latest SUMO: The Scene Understanding and Modeling Challenge news and events.</description>
         <lastBuildDate>Fri, 22 Jun 2018 06:00:00 GMT</lastBuildDate>
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
         <generator>Feed for Node.js</generator>
         <image>
             <title>SUMO: The Scene Understanding and Modeling Challenge Blog</title>
-            <url>https://facebookresearch.github.io/sumo-challenge/img/sumo-logo-plain.png</url>
-            <link>https://facebookresearch.github.io/sumo-challenge/blog</link>
+            <url>https://sumochallenge.org/img/sumo-logo-plain.png</url>
+            <link>https://sumochallenge.org/blog</link>
         </image>
         <copyright>Copyright © 2018 Facebook, Inc.</copyright>
         <item>
             <title><![CDATA[SUMO Challenge is announced]]></title>
-            <link>https://facebookresearch.github.io/sumo-challenge/blog/2018/06/22/announcement.html</link>
-            <guid>https://facebookresearch.github.io/sumo-challenge/blog/2018/06/22/announcement.html</guid>
+            <link>https://sumochallenge.org/blog/2018/06/22/announcement.html</link>
+            <guid>https://sumochallenge.org/blog/2018/06/22/announcement.html</guid>
             <pubDate>Fri, 22 Jun 2018 06:00:00 GMT</pubDate>
             <description><![CDATA[<p>We are announcing the SUMO Challenge at the 2018 Bridges to 3D
 Workshop, organized by David Fouhey and several of his colleagues.</p>
