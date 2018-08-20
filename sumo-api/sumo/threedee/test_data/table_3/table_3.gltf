@@ -1,0 +1,279 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 152,
+      "type": "VEC3",
+      "max": [
+        1.4343833923339844,
+        0.95985221862792969,
+        0.044595956802368164
+      ],
+      "min": [
+        -1.4343831539154053,
+        -0.95985245704650879,
+        -1.6953892707824707
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 152,
+      "type": "VEC3",
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ]
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 152,
+      "type": "VEC4",
+      "max": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0,
+        1.0
+      ]
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 152,
+      "type": "VEC2",
+      "max": [
+        0.99975454807281494,
+        0.921882688999176
+      ],
+      "min": [
+        0.0023769845720380545,
+        0.00024546496570110321
+      ]
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5121,
+      "count": 228,
+      "type": "SCALAR",
+      "max": [
+        151.0
+      ],
+      "min": [
+        0.0
+      ]
+    }
+  ],
+  "asset": {
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "uri": "table_3.bin",
+      "byteLength": 7524
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 1824
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 1824,
+      "byteLength": 1824
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 3648,
+      "byteLength": 2432
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 6080,
+      "byteLength": 1216
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 7296,
+      "byteLength": 228
+    }
+  ],
+  "images": [
+    {
+      "uri": "1.png",
+      "name": "1"
+    }
+  ],
+  "materials": [
+    {
+      "pbrMetallicRoughness": {
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.5
+      },
+      "normalTexture": {
+        "index": 0
+      },
+      "doubleSided": true,
+      "name": "GLTF/GLTFStandard"
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0
+        }
+      ],
+      "name": "Primitive"
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "name": "StageFrame"
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "ModelFrame"
+    },
+    {
+      "children": [
+        3
+      ],
+      "rotation": [
+        -0.7071068,
+        0.0,
+        0.0,
+        0.7071068
+      ],
+      "scale": [
+        0.007,
+        0.007000004,
+        0.007000004
+      ],
+      "translation": [
+        2.1,
+        -0.173,
+        -1.18
+      ],
+      "name": "RootNode (gltf orientation matrix)"
+    },
+    {
+      "children": [
+        4
+      ],
+      "name": "RootNode (model correction matrix)"
+    },
+    {
+      "children": [
+        5
+      ],
+      "rotation": [
+        0.7071068,
+        0.0,
+        0.0,
+        0.7071068
+      ],
+      "name": "Table.fbx"
+    },
+    {
+      "children": [
+        6
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        7
+      ],
+      "rotation": [
+        -0.7071068,
+        0.0,
+        0.0,
+        0.7071067
+      ],
+      "scale": [
+        100.0,
+        100.0,
+        100.0
+      ],
+      "translation": [
+        -148.931259,
+        183.52359,
+        65.60867
+      ],
+      "name": "Cube"
+    },
+    {
+      "children": [
+        8
+      ],
+      "name": "Geode"
+    },
+    {
+      "children": [
+        9
+      ],
+      "name": "Cube_Table_0"
+    },
+    {
+      "mesh": 0,
+      "rotation": [
+        0.0,
+        0.0,
+        0.7071068,
+        0.7071068
+      ],
+      "translation": [
+        -0.509,
+        0.448,
+        0.0
+      ],
+      "name": "Primitive"
+    }
+  ],
+  "samplers": [
+    {}
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ],
+      "name": "table_3"
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0,
+      "name": "1"
+    }
+  ]
+}

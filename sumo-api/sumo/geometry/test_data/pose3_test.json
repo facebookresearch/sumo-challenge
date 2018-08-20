@@ -1,0 +1,15 @@
+{
+  "T_cr": {
+    "QuaternionXYZW": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "Translation": [
+      1,
+      2,
+      3
+    ]
+  }
+}
