@@ -33,13 +33,25 @@ represented by textured meshes in glb format.
 
 ## Categories
 
-The categories for the SUMO challenge elements are the same as those
-in the SUN-CG fine-grained class list.  
+The categories for the SUMO challenge elements are a subset of those
+in the SUN-CG fine-grained class list ([categories
+list](https://sumochallenge.org/en/categories.txt)).  Three types of
+categories have been removed:
+1) animate objects (e.g., human, pet)
+2) categories with than 100 instances in the training data
+3) "unknown" category.  Instances in the unknown category are primarily
+box-shaped objects, which may be used to represent instances from a
+variety of categories.  In the underlying annotations, these objects
+are unlabeled, and in this challenge, those objects are not evaluated.
+
 
 
 ## Software Download
 
-The SUMO Challenge software includes Python code to read the SUMO input format, write the output format, and compute the evaluation metrics for a given scene.  The software is still under development.  It will be made available as open source on Github when the challenge is officially launched in July.
+The SUMO Challenge software includes Python code to read the SUMO
+input format, write the output format, and compute the evaluation
+metrics for a given scene.  The SUMO software can be downloaded from
+[GitHub](https://github.com/facebookresearch/sumo-challenge).
 
 
 ## Dataset Download
