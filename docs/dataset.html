@@ -20,10 +20,23 @@ track, the elements are represented by voxel grids in hdf5 format,
 each in a separate file.  For the mesh track, the elements are
 represented by textured meshes in glb format.</p>
 <h2><a class="anchor" aria-hidden="true" id="categories"></a><a href="#categories" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Categories</h2>
-<p>The categories for the SUMO challenge elements are the same as those
-in the SUN-CG fine-grained class list.</p>
+<p>The categories for the SUMO challenge elements are a subset of those
+in the SUN-CG fine-grained class list (<a href="https://sumochallenge.org/en/categories.txt">categories
+list</a>).  Three types of
+categories have been removed:</p>
+<ol>
+<li>animate objects (e.g., human, pet)</li>
+<li>categories with than 100 instances in the training data</li>
+<li>&quot;unknown&quot; category.  Instances in the unknown category are primarily
+box-shaped objects, which may be used to represent instances from a
+variety of categories.  In the underlying annotations, these objects
+are unlabeled, and in this challenge, those objects are not evaluated.</li>
+</ol>
 <h2><a class="anchor" aria-hidden="true" id="software-download"></a><a href="#software-download" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Software Download</h2>
-<p>The SUMO Challenge software includes Python code to read the SUMO input format, write the output format, and compute the evaluation metrics for a given scene.  The software is still under development.  It will be made available as open source on Github when the challenge is officially launched in July.</p>
+<p>The SUMO Challenge software includes Python code to read the SUMO
+input format, write the output format, and compute the evaluation
+metrics for a given scene.  The SUMO software can be downloaded from
+<a href="https://github.com/facebookresearch/sumo-challenge">GitHub</a>.</p>
 <h2><a class="anchor" aria-hidden="true" id="dataset-download"></a><a href="#dataset-download" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dataset Download</h2>
 <p>The SUMO dataset is still under development.  It will be made
 available for download when the challenge is officially launched in July.</p>
