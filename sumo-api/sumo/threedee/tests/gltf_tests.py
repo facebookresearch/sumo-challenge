@@ -42,24 +42,24 @@ class TestTinyGLTF(unittest.TestCase):
 
     def test_load(self):
         """Check that we can load the sample ASCII object."""
-        os.chdir(TEST_PATH)
-        obj = self.tiny.load_ascii_from_file("Cube.gltf")
+        filename = os.path.join(TEST_PATH, "Cube.gltf")
+        obj = self.tiny.load_ascii_from_file(filename)
         self.check_object(obj)
+
 
     def test_roundtrip(self):
         """Check that we can save and then load again."""
-        os.chdir(TEST_PATH)
-        obj = self.tiny.load_ascii_from_file("Cube.gltf")
-        os.chdir(self.temp_directory)
-        filename = "Test.gltf"
-        self.tiny.write_gltf_scene_to_file(obj, filename)
+        in_filename = os.path.join(TEST_PATH, "Cube.gltf")
+        obj = self.tiny.load_ascii_from_file(in_filename)
+        out_filename = os.path.join(self.temp_directory, "Test.gltf")
+        self.tiny.write_gltf_scene_to_file(obj, out_filename)
         # write_gltf_scene_to_file only saves model, not textures, so copy
         texture_path = os.path.join(TEST_PATH, "Cube_BaseColor.png")
         shutil.copy(texture_path, self.temp_directory)
         texture_path = os.path.join(TEST_PATH, "Cube_MetallicRoughness.png")
         shutil.copy(texture_path, self.temp_directory)
         # now read and check
-        new_obj = self.tiny.load_ascii_from_file(filename)
+        new_obj = self.tiny.load_ascii_from_file(out_filename)
         self.check_object(new_obj)
 
     def test_roundtrip2(self):

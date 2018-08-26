@@ -10,7 +10,7 @@ LICENSE file in the root directory of this source tree.
 #include <stdexcept>
 
 // These constants are used for our metadata reading/writing
-#define ENIGMA_TIFF_VERSION 1.0
+#define SUMO_TIFF_VERSION 1.0
 #define META_TAG_VERSION "version"
 #define META_TAG_NEARPLANE "near"
 
@@ -112,7 +112,7 @@ void readMetadata(TIFF* tiff, TiffMetadata* meta) {
 
 void writeMetadata(TIFF*tiff, const TiffMetadata& meta) {
   // Convert metadata to JSON
-  auto versionNode = picojson::value(static_cast<int64_t>(ENIGMA_TIFF_VERSION));
+  auto versionNode = picojson::value(static_cast<int64_t>(SUMO_TIFF_VERSION));
   auto nearPlaneNode =
       picojson::value(static_cast<double>(meta.depthNearPlane));
   const picojson::value::object jsonObj = {{META_TAG_VERSION, versionNode},

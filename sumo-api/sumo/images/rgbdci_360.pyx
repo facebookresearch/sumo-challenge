@@ -13,6 +13,13 @@ import numpy as np
 from sumo.images.rgbd_tiff import MultiImagePageType
 import sumo.images.rgbd_tiff as rgbd_tiff
 import sumo.geometry.inverse_depth as id
+from sumo.threedee.point_cloud cimport PointCloud
+from sumo.threedee.point_cloud import PointCloud
+from sumo.opencv.wrap cimport Mat1f, mat1f_from_array
+from sumo.opencv.wrap cimport Mat3b, mat3b_from_array
+
+ctypedef np.uint8_t Uint8
+ctypedef np.float32_t Float32
 
 class Rgbdci360(object):
     def __init__(self, rgb, range, category, instance):
@@ -109,3 +116,39 @@ class Rgbdci360(object):
         plt.imshow(self.instance)
         ax.set_title('Instance')
         return fig
+
+
+    def create_point_cloud(self, bool all_points=False):
+        '''Creates point cloud in camera frame.'''
+        if not self.same_size():
+            raise ValueError("create_point_cloud needs rgb and depth sizes to agree.")
+
+        return create_point_cloud_(self.rgb, self.depth, all_points)
+
+
+#---------------
+# End of public interface
+
+cdef create_point_cloud_(np.ndarray[Uint8, ndim=3] rgb,
+                         np.ndarray[Float32, ndim=2] depth,
+                         bool all_points):
+    ''' Wrapper for C++ version.
+        Keyword arguments:
+            rgb -- h*w*3 numpy array with 3-channel uint8 RGB image
+            depth -- h*w numpy array with 1-channel float32 depth image
+            all_points -- return a cloud with all points, invalid points are
+                          0,0,0
+    '''
+    cdef Mat3b* rgb_cv = mat3b_from_array(rgb)
+    cdef Mat1f* depth_cv = mat1f_from_array(depth)
+
+    # Create PointCloud instance and take posession of C++ instance
+    wrapper = <PointCloud>PointCloud.__new__(PointCloud)
+    wrapper._c_ptr = createPointCloud(rgb_cv[0], depth_cv[0], all_points)
+
+    # De-allocate OpenCV objects, underlying memory remains with numpy
+    del depth_cv
+    del rgb_cv
+
+    # Return python point cloud
+    return wrapper
