@@ -1,33 +1,61 @@
 <!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Dataset · SUMO: The Scene Understanding and Modeling Challenge</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## Description"/><meta property="og:title" content="Dataset · SUMO: The Scene Understanding and Modeling Challenge"/><meta property="og:type" content="website"/><meta property="og:url" content="https://sumochallenge.org/index.html"/><meta property="og:description" content="## Description"/><meta property="og:image" content="https://sumochallenge.org/img/sumo-logo-plain.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://sumochallenge.org/img/sumo-logo-plain.png"/><link rel="shortcut icon" href="/img/sumo-logo-plain.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://sumochallenge.org/blog/atom.xml" title="SUMO: The Scene Understanding and Modeling Challenge Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://sumochallenge.org/blog/feed.xml" title="SUMO: The Scene Understanding and Modeling Challenge Blog RSS Feed"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible doc separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/sumo-logo-plain.png" alt="SUMO: The Scene Understanding and Modeling Challenge"/><h2 class="headerTitleWithLogo">SUMO: The Scene Understanding and Modeling Challenge</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/blog" target="_self">Blog</a></li><li class=""><a href="/docs/participate.html" target="_self">Participate</a></li><li class="siteNavItemActive"><a href="/docs/dataset.html" target="_self">Dataset</a></li><li class=""><a href="/docs/workshop.html" target="_self">Workshop</a></li><li class=""><a href="/docs/people.html" target="_self">People</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1>Dataset</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="description"></a><a href="#description" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Description</h2>
 <p>The SUMO challenge currently operates using synthetic data.  The data
-is derived from the <a href="http://suncg.cs.princeton.edu/">SUN-CG dataset</a>.
-It is processed using the <a href="https://research.fb.com/downloads/house3d-a-rich-and-realistic-3d-environment/">House3D
-library</a>
-to render 360-degree RGB-D images represented as cube-maps.</p>
+is derived from the <a href="http://suncg.cs.princeton.edu/">SUN-CG dataset</a>
+The scenes are processed to produce 360-degree RGB-D images
+represented as cube-maps.  The file formats are also described in
+detail in the <a href="https://sumochallenge.org/en/sumo-white-paper.pdf">SUMO Challenge white paper</a>.</p>
 <h2><a class="anchor" aria-hidden="true" id="input-format"></a><a href="#input-format" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Input Format</h2>
-<p>The SUMO input format is an RGB-D image represented as a cube-map.
+<p>The official SUMO input format is an RGB-D image represented as a
+cube-map.  Here is a <a href="https://sumochallenge.org/en/sumo-input.tif">sample SUMO input file</a>.
 The cube-map is stored in a multi-page TIFF file, with the color image
-and the depth image stored separately.  Each image is 6K x 1K pixels
-in size.  The color image is 8 bits per color channel.  The depth
-image is actually stored as inverse depth.  The cube-map faces are
-stored in the following order: back, left, front, right, top, bottom.</p>
+and the depth image stored separately.  Each image is 6000 x 1000 pixels
+in size.  The cube-map faces are stored in the following order: back,
+left, front, right, top, bottom.  Each face is 1000 x 1000 pixels
+(i.e., side length = 1000).</p>
+<p>The color image is 8 bits per color channel, and the channels are
+stored in OpenCV order (i.e., BGR rather than RGB).</p>
+<p>The range image is stored as unsigned 16 bit integers using inverse
+values. A value of 0 represents infinity (i.e., unknown range), and a
+maximum value (2^16-1) represents the minimum distance, which is 0.3
+meters.</p>
+<p>Range values are converted to 3D using a standard pinhole model with
+a focal length of 500 (0.5 x side length) and image center at (500,
+500).</p>
+<p>In addition to the official RGBD input, we also provide optional category and
+instance images
+for assisting in training.  Pixels in the category image are integer
+values corresponding to element category IDs as described below.
+Pixels in the instance image are integer values also.  An instance of
+an object (i.e., a chair) is assigned a unique instance ID, which
+matches the ID of the corresponding element in the ground truth
+scene.  Category and instance images are not provided for evaluation
+scenes, and your algorithm is expected to operate without the need for
+these images at test time.</p>
+<p>The multi-page TIFF contains these four images in the following order:
+1 RGB
+2 range
+3 category
+4 instance</p>
 <h2><a class="anchor" aria-hidden="true" id="output-format"></a><a href="#output-format" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Output Format</h2>
 <p>The SUMO output format is a directory containing an xml file and, for
 the voxel and mesh performance tracks, a set of additional files
-describing the element geometry.  The format of the xml is specified
-by an xsd file.  Here is an example xml scene file.  For the voxel
-track, the elements are represented by voxel grids in hdf5 format,
+describing the element geometry (<a href="https://sumochallenge.org/en/sumo-output.zip">example scene file</a>)The format
+of the xml is specified by an <a href="sumo-scene-format.xsd">xsd file</a>.  Here is an <a href="https://sumochallenge.org/en/sample_output.xml">example xml scene
+file</a>.  For the voxel
+track, the elements are represented by voxel grids in <a href="https://support.hdfgroup.org/HDF5/">hdf5
+format</a>,
 each in a separate file.  For the mesh track, the elements are
-represented by textured meshes in glb format.</p>
+represented by textured meshes in <a href="https://www.khronos.org/gltf/">glb</a>
+format.  (Note that glb is the binary version of glTF).</p>
 <h2><a class="anchor" aria-hidden="true" id="categories"></a><a href="#categories" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Categories</h2>
 <p>The categories for the SUMO challenge elements are a subset of those
 in the SUN-CG fine-grained class list (<a href="https://sumochallenge.org/en/categories.txt">categories
 list</a>).  Three types of
 categories have been removed:</p>
 <ol>
-<li>animate objects (e.g., human, pet)</li>
-<li>categories with than 100 instances in the training data</li>
-<li>&quot;unknown&quot; category.  Instances in the unknown category are primarily
+<li>Animate objects (e.g., human, pet).</li>
+<li>Categories with than 100 instances in the training data.</li>
+<li>&quot;Unknown&quot; category.  Instances in the unknown category are primarily
 box-shaped objects, which may be used to represent instances from a
 variety of categories.  In the underlying annotations, these objects
 are unlabeled, and in this challenge, those objects are not evaluated.</li>
@@ -38,6 +66,22 @@ input format, write the output format, and compute the evaluation
 metrics for a given scene.  The SUMO software can be downloaded from
 <a href="https://github.com/facebookresearch/sumo-challenge">GitHub</a>.</p>
 <h2><a class="anchor" aria-hidden="true" id="dataset-download"></a><a href="#dataset-download" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dataset Download</h2>
-<p>The SUMO dataset is still under development.  It will be made
-available for download when the challenge is officially launched in July.</p>
+<p>The dataset is large (approximately 1.8 TB) and consists of
+approximately 59,000 training scenes and 360 development evaluation
+scenes.  An additional set of evaluation scenes (the challenge
+evaluation set) will be released shortly before the contest concludes
+for determining the final rankings.</p>
+<p>To reduce downloading problems, the input views and output scenes
+have been split into five subsets each.  Downloading the data is a
+simple process:</p>
+<ol>
+<li>Since the SUMO data set is derived from the <a href="http://suncg.cs.princeton.edu">SUN-CG data
+set</a>, it is necessary to fill out
+and submit the <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFXZDbC8_kE55xnrTXyMOoB7NzZ-tAD7h_yjRPjZR4Ce5JBA/viewform">SUN-CG release
+form</a>.</li>
+<li>Submit the <a href="https://sumochallenge.wufoo.com/forms/sumo-challenge-dataset-term-of-use/">SUMO data release form</a></li>
+<li>Once we receive confirmation of these two forms, we will send the
+link for downloading.</li>
+</ol>
+<p>The data is quite large.  Please download the data only once.</p>
 </span></div></article></div><div class="docs-prevnext"></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#description">Description</a></li><li><a href="#input-format">Input Format</a></li><li><a href="#output-format">Output Format</a></li><li><a href="#categories">Categories</a></li><li><a href="#software-download">Software Download</a></li><li><a href="#dataset-download">Dataset Download</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="copyright">Copyright © 2018 Facebook, Inc.</section></footer></div></body></html>
