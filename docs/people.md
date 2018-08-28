@@ -25,6 +25,7 @@ The SUMO Challenge has been developed by a team of computer vision researchers a
 * Bahram Dahi (Facebook)
 * Jay Huang (Facebook)
 * Nandita Nayak (Facebook)
+* John Princen (Facebook)
 * Ruben Sethi (Facebook)
 * Richard Skarbez (Virginia Tech)
 * Deshraj Yadav (Georgia Tech)

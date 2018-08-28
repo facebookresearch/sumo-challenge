@@ -17,13 +17,12 @@ detail in the [SUMO Challenge white paper](https://sumochallenge.org/en/sumo-whi
 The official SUMO input format is an RGB-D image represented as a
 cube-map.  Here is a [sample SUMO input file](https://sumochallenge.org/en/sumo-input.tif).
 The cube-map is stored in a multi-page TIFF file, with the color image
-and the depth image stored separately.  Each image is 6000 x 1000 pixels
+and the depth image stored separately.  Each image is 6K x 1K (6144 x 1024) pixels
 in size.  The cube-map faces are stored in the following order: back,
-left, front, right, top, bottom.  Each face is 1000 x 1000 pixels
-(i.e., side length = 1000).
+left, front, right, top, bottom.  Each face is 1K x 1K (1024 x 1024) pixels
+(i.e., side length = 1024).
 
-The color image is 8 bits per color channel, and the channels are
-stored in OpenCV order (i.e., BGR rather than RGB).  
+The color image is stored with 8 bits per color channel, in RGB order.
 
 The range image is stored as unsigned 16 bit integers using inverse
 values. A value of 0 represents infinity (i.e., unknown range), and a
@@ -31,8 +30,8 @@ maximum value (2^16-1) represents the minimum distance, which is 0.3
 meters.
 
 Range values are converted to 3D using a standard pinhole model with
-a focal length of 500 (0.5 x side length) and image center at (500,
-500).
+a focal length of 512 (0.5 x side length) and image center at (512,
+512).
 
 In addition to the official RGBD input, we also provide optional category and
 instance images 
@@ -46,17 +45,18 @@ scenes, and your algorithm is expected to operate without the need for
 these images at test time.
 
 The multi-page TIFF contains these four images in the following order:
-1 RGB
-2 range
-3 category
-4 instance
+1. RGB
+2. range
+3. category
+4. instance
 
 ## Output Format
 
 The SUMO output format is a directory containing an xml file and, for
 the voxel and mesh performance tracks, a set of additional files
 describing the element geometry ([example scene file](https://sumochallenge.org/en/sumo-output.zip))The format
-of the xml is specified by an [xsd file](sumo-scene-format.xsd).  Here is an [example xml scene
+of the xml is specified by an [xsd file](https://sumochallenge.org/en/sumo-scene-format.xsd).  Here
+is a very simple [example xml scene
 file](https://sumochallenge.org/en/sample_output.xml).  For the voxel
 track, the elements are represented by voxel grids in [hdf5
 format](https://support.hdfgroup.org/HDF5/),
@@ -71,7 +71,7 @@ in the SUN-CG fine-grained class list ([categories
 list](https://sumochallenge.org/en/categories.txt)).  Three types of
 categories have been removed:
 1) Animate objects (e.g., human, pet).
-2) Categories with than 100 instances in the training data.
+2) Categories with fewer than 100 instances in the training data.
 3) "Unknown" category.  Instances in the unknown category are primarily
 box-shaped objects, which may be used to represent instances from a
 variety of categories.  In the underlying annotations, these objects
@@ -100,10 +100,8 @@ have been split into five subsets each.  Downloading the data is a
 simple process:
 1. Since the SUMO data set is derived from the [SUN-CG data
 set](http://suncg.cs.princeton.edu), it is necessary to fill out 
-and submit the [SUN-CG release
+and submit the combined [SUN-CG/SUMO terms of use
 form](https://docs.google.com/forms/d/e/1FAIpQLSfFXZDbC8_kE55xnrTXyMOoB7NzZ-tAD7h_yjRPjZR4Ce5JBA/viewform).
-2. Submit the [SUMO data release form](https://sumochallenge.wufoo.com/forms/sumo-challenge-dataset-term-of-use/)
-3. Once we receive confirmation of these two forms, we will send the
-link for downloading.
+3. Once we receive confirmation, we will send the link for downloading.
 
 The data is quite large.  Please download the data only once.  

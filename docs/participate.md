@@ -4,9 +4,15 @@ title: Participate in the SUMO Challenge
 sidebar_label: Participate
 ---
 
+## Rules
+
+By participating in the SUMO Challenge, you agree to be bound by the
+[official SUMO Challenge Contest
+Rules](https://sumochallenge.org/en/sumo-challenge-official-rules.pdf)
+
 ## Tracks
 
-The SUMO challenge is organized into three performance tracks based on
+The SUMO Challenge is organized into three performance tracks based on
 the output representation of the scene.  A scene is represented as a
 collection of elements, each of which models one object in the scene
 (e.g., a wall, the floor, or a chair).  An element is represented in one
@@ -14,20 +20,20 @@ of three increasingly descriptive representations: bounding box, voxel
 grid, or surface mesh. All aspects of a scene are modeled using the
 same representation.  
 
-### Bounding Box Track
+### Bounding Boxes Track
 
-In the bounding box track, a scene is represented by a collection of
+In the bounding boxes track, a scene is represented by a collection of
 oriented bounding boxes.  This is similar to the SUN RGB-D Object
 Detection Challenge.
 
-### Voxel Track
+### Voxels Track
 
-In the voxel track, a scene is represented by a collection of oriented
+In the voxels track, a scene is represented by a collection of oriented
 voxel grids.
 
-### Mesh Track
+### Meshes Track
 
-In the mesh track, a scene is represented by a collection of textured
+In the meshes track, a scene is represented by a collection of textured
 surface meshes.
 
 ## Metrics
@@ -42,29 +48,25 @@ metrics measure the accuracy of the model according to human
 perception.  The evaluation metrics are described in detail in the
 [SUMO Challenge white paper](https://sumochallenge.org/en/sumo-white-paper.pdf)
 
-## Prizes (Tentative)
+## Prizes 
 
 * 1st prize - winner of mesh track: $2,500 in cash + Titan X GPU
 * 2nd prize - winner of voxel track: $2,000 in cash + Titan X GPU
 * 3rd prize - winner of bounding box track: $1,500 in cash + Titan X GPU
 
-Note: Prizes and Prize availability have not been finalized and are
-subject to change.  Not all challenge winners may be eligible for
-prizes.  A final description of prizes and applicable terms and
-conditions will be posted here prior to the
-start of the SUMO challenge.
+See the [official SUMO Challenge Contest
+Rules](https://sumochallenge.org/en/sumo-challenge-official-rules.pdf)
+for details.
 
 ## How to Participate
 
 1. Familiarize yourself with the input and output formats.
-2. Download the SUMO software and the data set
+2. Download the SUMO software and the data set.  See the [data set
+page](https://sumochallenge.org/docs/dataset.html) for details.
 3. Develop your algorithm.
 4. Submit your results using EvalAI.
 
-## Software Download
-
-The SUMO Challenge software includes Python code to read the SUMO input format, write the output format, and compute the evaluation metrics for a given scene.  The software is still under development.  It will be made available as open source on Github when the challenge is officially launched in July.
 
 ## Leaderboard
 
-Once the challenge is launched, the leaderboard will be hosted by EvalAI.
+The leaderboard will be hosted by EvalAI and is still under development.
