@@ -31,16 +31,19 @@ matches the ID of the corresponding element in the ground truth
 scene.  Category and instance images are not provided for evaluation
 scenes, and your algorithm is expected to operate without the need for
 these images at test time.</p>
-<p>The multi-page TIFF contains these four images in the following order:
-1 RGB
-2 range
-3 category
-4 instance</p>
+<p>The multi-page TIFF contains these four images in the following order:</p>
+<ol>
+<li>RGB</li>
+<li>range</li>
+<li>category</li>
+<li>instance</li>
+</ol>
 <h2><a class="anchor" aria-hidden="true" id="output-format"></a><a href="#output-format" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Output Format</h2>
 <p>The SUMO output format is a directory containing an xml file and, for
 the voxel and mesh performance tracks, a set of additional files
 describing the element geometry (<a href="https://sumochallenge.org/en/sumo-output.zip">example scene file</a>)The format
-of the xml is specified by an <a href="sumo-scene-format.xsd">xsd file</a>.  Here is an <a href="https://sumochallenge.org/en/sample_output.xml">example xml scene
+of the xml is specified by an <a href="sumo-scene-format.xsd">xsd file</a>.  Here
+is a very simple <a href="https://sumochallenge.org/en/sample_output.xml">example xml scene
 file</a>.  For the voxel
 track, the elements are represented by voxel grids in <a href="https://support.hdfgroup.org/HDF5/">hdf5
 format</a>,
@@ -77,9 +80,9 @@ simple process:</p>
 <ol>
 <li>Since the SUMO data set is derived from the <a href="http://suncg.cs.princeton.edu">SUN-CG data
 set</a>, it is necessary to fill out
-and submit the <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFXZDbC8_kE55xnrTXyMOoB7NzZ-tAD7h_yjRPjZR4Ce5JBA/viewform">SUN-CG release
+and submit the <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFXZDbC8_kE55xnrTXyMOoB7NzZ-tAD7h_yjRPjZR4Ce5JBA/viewform">SUN-CG terms of use
 form</a>.</li>
-<li>Submit the <a href="https://sumochallenge.wufoo.com/forms/sumo-challenge-dataset-term-of-use/">SUMO data release form</a></li>
+<li>Submit the <a href="https://sumochallenge.wufoo.com/forms/sumo-challenge-dataset-term-of-use/">SUMO data release form</a>.</li>
 <li>Once we receive confirmation of these two forms, we will send the
 link for downloading.</li>
 </ol>
