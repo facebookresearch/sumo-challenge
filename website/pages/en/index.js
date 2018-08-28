@@ -226,10 +226,27 @@ class Index extends React.Component {
        elements represented in one of three increasingly descriptive
        representations: bounding boxes, voxel grids, or surface meshes.
 
-       <h2>Latest News</h2>
-	      <b>Launch delay</b> (July 30, 2018)<br/>  We are experiencing some small delays in generating the data.  Our new target launch date is August 13.  Please be patient, and we will have the data online shortly. <br />
+      <h2>Latest News</h2>
+	      <p><b>SUMO launch</b> (Aug 29, 2018)<br/>  Today we
+	      officially launch the SUMO challenge.  We invite you to
+	      participate in this exciting contest aimed at finding
+	      comprehensive solutions to the problem of scene
+	      understanding and modeling.   <a
+	      href={siteConfig.baseUrl +
+		    "blog/2018/08/29/announcement.html"}>Details</a>.
+	      </p>
+	  
+	      <p><b>Launch delay</b> (July 30, 2018)<br/>  We are
+	      experiencing some small delays in generating the data.
+	      Please be patient, and we will have the data online
+	      shortly. <br /> 
+	      </p>
 
-	      <b>SUMO Challenge Announced</b> (June 22nd, 2018)<br/>  The SUMO Challenge was announced at CVPR.  <a href={siteConfig.baseUrl + "blog/2018/06/22/announcement.html"}>Details</a>.
+	      <p><b>SUMO Challenge Announced</b> (June 22, 2018)<br/>
+	      The SUMO Challenge was announced at CVPR.  <a
+	      href={siteConfig.baseUrl +
+	      "blog/2018/06/22/announcement.html"}>Details</a>. 
+	      </p>
 
        <h2>Important Dates</h2>
        <table>
