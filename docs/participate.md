@@ -32,7 +32,15 @@ surface meshes.
 
 ## Metrics
 
-The SUMO evaluation metrics focus on the four aspects of the representation: geometry, appearance, semantics, and perceptual (GASP).  These metrics are based on best practices from challenges and peer reviewed papers for related tasks. Geometry encompasses object shape accuracy and pose error, appearance measures diffuse reflection error, semantics captures class label precision, and perceptual metrics measure the accuracy of the model according to human perception.
+The SUMO evaluation metrics focus on the four aspects of the
+representation: geometry, appearance, semantics, and perceptual
+(GASP).  These metrics are based on best practices from challenges and
+peer reviewed papers for related tasks. Geometry encompasses object
+shape accuracy and pose error, appearance measures diffuse reflection
+error, semantics captures class label precision, and perceptual
+metrics measure the accuracy of the model according to human
+perception.  The evaluation metrics are described in detail in the
+[SUMO Challenge white paper](https://sumochallenge.org/en/sumo-white-paper.pdf)
 
 ## Prizes (Tentative)
 
