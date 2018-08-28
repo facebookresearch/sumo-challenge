@@ -8,19 +8,18 @@ detail in the <a href="https://sumochallenge.org/en/sumo-white-paper.pdf">SUMO C
 <p>The official SUMO input format is an RGB-D image represented as a
 cube-map.  Here is a <a href="https://sumochallenge.org/en/sumo-input.tif">sample SUMO input file</a>.
 The cube-map is stored in a multi-page TIFF file, with the color image
-and the depth image stored separately.  Each image is 6000 x 1000 pixels
+and the depth image stored separately.  Each image is 6K x 1K (6144 x 1024) pixels
 in size.  The cube-map faces are stored in the following order: back,
-left, front, right, top, bottom.  Each face is 1000 x 1000 pixels
-(i.e., side length = 1000).</p>
-<p>The color image is 8 bits per color channel, and the channels are
-stored in OpenCV order (i.e., BGR rather than RGB).</p>
+left, front, right, top, bottom.  Each face is 1K x 1K (1024 x 1024) pixels
+(i.e., side length = 1024).</p>
+<p>The color image is stored with 8 bits per color channel, in RGB order.</p>
 <p>The range image is stored as unsigned 16 bit integers using inverse
 values. A value of 0 represents infinity (i.e., unknown range), and a
 maximum value (2^16-1) represents the minimum distance, which is 0.3
 meters.</p>
 <p>Range values are converted to 3D using a standard pinhole model with
-a focal length of 500 (0.5 x side length) and image center at (500,
-500).</p>
+a focal length of 512 (0.5 x side length) and image center at (512,
+512).</p>
 <p>In addition to the official RGBD input, we also provide optional category and
 instance images
 for assisting in training.  Pixels in the category image are integer
@@ -42,7 +41,7 @@ these images at test time.</p>
 <p>The SUMO output format is a directory containing an xml file and, for
 the voxel and mesh performance tracks, a set of additional files
 describing the element geometry (<a href="https://sumochallenge.org/en/sumo-output.zip">example scene file</a>)The format
-of the xml is specified by an <a href="sumo-scene-format.xsd">xsd file</a>.  Here
+of the xml is specified by an <a href="https://sumochallenge.org/en/sumo-scene-format.xsd">xsd file</a>.  Here
 is a very simple <a href="https://sumochallenge.org/en/sample_output.xml">example xml scene
 file</a>.  For the voxel
 track, the elements are represented by voxel grids in <a href="https://support.hdfgroup.org/HDF5/">hdf5
@@ -57,7 +56,7 @@ list</a>).  Three types of
 categories have been removed:</p>
 <ol>
 <li>Animate objects (e.g., human, pet).</li>
-<li>Categories with than 100 instances in the training data.</li>
+<li>Categories with fewer than 100 instances in the training data.</li>
 <li>&quot;Unknown&quot; category.  Instances in the unknown category are primarily
 box-shaped objects, which may be used to represent instances from a
 variety of categories.  In the underlying annotations, these objects

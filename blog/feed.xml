@@ -4,7 +4,7 @@
         <title>SUMO: The Scene Understanding and Modeling Challenge Blog</title>
         <link>https://sumochallenge.org/blog</link>
         <description>The best place to stay up-to-date with the latest SUMO: The Scene Understanding and Modeling Challenge news and events.</description>
-        <lastBuildDate>Fri, 22 Jun 2018 06:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 29 Aug 2018 06:00:00 GMT</lastBuildDate>
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
         <generator>Feed for Node.js</generator>
         <image>
@@ -13,6 +13,12 @@
             <link>https://sumochallenge.org/blog</link>
         </image>
         <copyright>Copyright © 2018 Facebook, Inc.</copyright>
+        <item>
+            <title><![CDATA[SUMO Challenge Launch]]></title>
+            <link>https://sumochallenge.org/blog/2018/08/29/announcement.html</link>
+            <guid>https://sumochallenge.org/blog/2018/08/29/announcement.html</guid>
+            <pubDate>Wed, 29 Aug 2018 06:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[SUMO Challenge is announced]]></title>
             <link>https://sumochallenge.org/blog/2018/06/22/announcement.html</link>

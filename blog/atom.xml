@@ -2,12 +2,23 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sumochallenge.org/blog</id>
     <title>SUMO: The Scene Understanding and Modeling Challenge Blog</title>
-    <updated>2018-06-22T06:00:00Z</updated>
+    <updated>2018-08-29T06:00:00Z</updated>
     <generator>Feed for Node.js</generator>
     <link rel="alternate" href="https://sumochallenge.org/blog"/>
     <subtitle>The best place to stay up-to-date with the latest SUMO: The Scene Understanding and Modeling Challenge news and events.</subtitle>
     <logo>https://sumochallenge.org/img/sumo-logo-plain.png</logo>
     <rights>Copyright © 2018 Facebook, Inc.</rights>
+    <entry>
+        <title type="html"><![CDATA[SUMO Challenge Launch]]></title>
+        <id>https://sumochallenge.org/blog/2018/08/29/announcement.html</id>
+        <link href="https://sumochallenge.org/blog/2018/08/29/announcement.html">
+        </link>
+        <updated>2018-08-29T06:00:00Z</updated>
+        <author>
+            <name>Daniel Huber</name>
+            <uri>https://www.facebook.com/dhuber23</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[SUMO Challenge is announced]]></title>
         <id>https://sumochallenge.org/blog/2018/06/22/announcement.html</id>
