@@ -251,15 +251,22 @@ class Index extends React.Component {
        <h2>Important Dates</h2>
        <table>
        <tr> <td>June 22, 2018</td> <td>SUMO Announced at CVPR </td> </tr>
-       <tr> <td>August 13, 2018</td> <td>SUMO Launch - API and data to be released</td></tr>
+       <tr> <td>August 29, 2018</td> <td>SUMO Launch - API and data to be released</td></tr>
        <tr> <td>November 16, 2018</td> <td>Final submission deadline</td></tr>
        <tr> <td>December 3, 2018</td> <td>SUMO Workshop (ACCV 2018)</td></tr>
        </table>
 
-       <h2>Contact Information</h2>
-
-       For more information about the SUMO Challenge, contact Daniel Huber (dhuber at fb dot com)
-
+      <h2>Contact Information</h2>
+        <p>
+              <b><a href="https://groups.google.com/forum/#!forum/sumo-challenge">SUMO Challenge mailing list</a></b>
+	</p>
+	<p>      
+	      <b><a href="https://www.facebook.com/groups/502199146909618/">SUMO Challenge Facebook group</a></b>
+        </p>
+	      
+        <p>
+          Organizer - Daniel Huber (dhuber at fb dot com)
+        </p>
      </Container>
   </div>
 </div>
