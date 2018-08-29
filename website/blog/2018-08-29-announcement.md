@@ -5,7 +5,7 @@ authorURL: https://www.facebook.com/dhuber23
 authorFBID: 1158791588
 ---
 
-The Scene Understanding and Modeling (SUMO) Challenge
+Facebook Reality Labs Launches the Scene Understanding and Modeling (SUMO) Challenge
 
 ![SUMO input and output](assets/sumo-input-output.jpg)
 
