@@ -10,12 +10,12 @@ The SUMO challenge currently operates using synthetic data.  The data
 is derived from the [SUN-CG dataset](http://suncg.cs.princeton.edu/)
 The scenes are processed to produce 360-degree RGB-D images
 represented as cube-maps.  The file formats are also described in
-detail in the [SUMO Challenge white paper](https://sumochallenge.org/en/sumo-white-paper.pdf).
+detail in the [SUMO Challenge white paper](assets/sumo-white-paper.pdf).
 
 ## Input Format
 
 The official SUMO input format is an RGB-D image represented as a
-cube-map.  Here is a [sample SUMO input file](https://sumochallenge.org/en/sumo-input.tif).
+cube-map.  Here is a [sample SUMO input file](assets/sumo-input.tif).
 The cube-map is stored in a multi-page TIFF file, with the color image
 and the depth image stored separately.  Each image is 6K x 1K (6144 x 1024) pixels
 in size.  The cube-map faces are stored in the following order: back,
@@ -54,10 +54,10 @@ The multi-page TIFF contains these four images in the following order:
 
 The SUMO output format is a directory containing an xml file and, for
 the voxel and mesh performance tracks, a set of additional files
-describing the element geometry ([example scene file](https://sumochallenge.org/en/sumo-output.zip))The format
+describing the element geometry ([example scene file](assets/sumo-output.zip))The format
 of the xml is specified by an [xsd file](https://sumochallenge.org/en/sumo-scene-format.xsd).  Here
 is a very simple [example xml scene
-file](https://sumochallenge.org/en/sample_output.xml).  For the voxel
+file](assets/sample_output.xml).  For the voxel
 track, the elements are represented by voxel grids in [hdf5
 format](https://support.hdfgroup.org/HDF5/),
 each in a separate file.  For the mesh track, the elements are
@@ -68,7 +68,7 @@ format.  (Note that glb is the binary version of glTF).
 
 The categories for the SUMO challenge elements are a subset of those
 in the SUN-CG fine-grained class list ([categories
-list](https://sumochallenge.org/en/categories.txt)).  Three types of
+list](assets/categories.txt)).  Three types of
 categories have been removed:
 1) Animate objects (e.g., human, pet).
 2) Categories with fewer than 100 instances in the training data.
@@ -101,7 +101,7 @@ simple process:
 1. Since the SUMO data set is derived from the [SUN-CG data
 set](http://suncg.cs.princeton.edu), it is necessary to fill out 
 and submit the combined [SUN-CG/SUMO terms of use
-form](https://docs.google.com/forms/d/e/1FAIpQLSfFXZDbC8_kE55xnrTXyMOoB7NzZ-tAD7h_yjRPjZR4Ce5JBA/viewform).
+form](https://docs.google.com/forms/d/e/1FAIpQLSc81CMMrthfgNfBS72_UxFYDVYuxcRq4jh1QiIZfKRRZxlv0Q/viewform?usp=sf_link).
 3. Once we receive confirmation, we will send the link for downloading.
 
 The data is quite large.  Please download the data only once.  

@@ -8,7 +8,7 @@ sidebar_label: Participate
 
 By participating in the SUMO Challenge, you agree to be bound by the
 [official SUMO Challenge Contest
-Rules](https://sumochallenge.org/en/sumo-challenge-official-rules.pdf)
+Rules](assets/sumo-challenge-official-rules.pdf)
 
 ## Tracks
 
@@ -46,7 +46,7 @@ shape accuracy and pose error, appearance measures diffuse reflection
 error, semantics captures class label precision, and perceptual
 metrics measure the accuracy of the model according to human
 perception.  The evaluation metrics are described in detail in the
-[SUMO Challenge white paper](https://sumochallenge.org/en/sumo-white-paper.pdf)
+[SUMO Challenge white paper](assets/sumo-white-paper.pdf).
 
 ## Prizes 
 
@@ -55,14 +55,14 @@ perception.  The evaluation metrics are described in detail in the
 * 3rd prize - winner of bounding box track: $1,500 in cash + Titan X GPU
 
 See the [official SUMO Challenge Contest
-Rules](https://sumochallenge.org/en/sumo-challenge-official-rules.pdf)
+Rules](assets/sumo-challenge-official-rules.pdf)
 for details.
 
 ## How to Participate
 
 1. Familiarize yourself with the input and output formats.
 2. Download the SUMO software and the data set.  See the [data set
-page](https://sumochallenge.org/docs/dataset.html) for details.
+page](dataset.html) for details.
 3. Develop your algorithm.
 4. Submit your results using EvalAI.
 
