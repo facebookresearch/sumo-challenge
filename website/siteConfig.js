@@ -13,6 +13,7 @@ const siteConfig = {
   tagline: '',
   url: 'https://sumochallenge.org' /* your website url */,
   baseUrl: '/' /* base url for your project */,
+  cname: 'sumochallenge.org',
   // For github.io type URLs, you would set the url and baseUrl like:
   //   url: 'https://facebook.github.io',
   //   baseUrl: '/test-site/',
