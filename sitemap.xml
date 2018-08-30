@@ -4,7 +4,6 @@
 <url> <loc>https://sumochallenge.org/blog/2018/08/29/announcement.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://sumochallenge.org/blog/2018/06/22/announcement.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://sumochallenge.org/docs/dataset.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://sumochallenge.org/docs/dataset.html" /> </url>
-<url> <loc>https://sumochallenge.org/docs/doc3.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://sumochallenge.org/docs/doc3.html" /> </url>
 <url> <loc>https://sumochallenge.org/docs/participate.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://sumochallenge.org/docs/participate.html" /> </url>
 <url> <loc>https://sumochallenge.org/docs/people.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://sumochallenge.org/docs/people.html" /> </url>
 <url> <loc>https://sumochallenge.org/docs/workshop.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://sumochallenge.org/docs/workshop.html" /> </url>
