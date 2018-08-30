@@ -7,7 +7,7 @@ authorFBID: 1158791588
 
 Facebook Reality Labs Launches the Scene Understanding and Modeling (SUMO) Challenge
 
-![SUMO input and output](assets/sumo-input-output.jpg)
+![SUMO input and output](/blog/assets/sumo-input-output.jpg)
 
 Facebook Reality Labs is launching the Scene Understanding and Modeling (SUMO) Challenge. The SUMO challenge targets development of comprehensive 3D scene understanding and modeling algorithms. The challenge has been developed by a team of computer vision researchers at Facebook together with collaborators from Stanford, Princeton, and Virginia Tech. 
 
