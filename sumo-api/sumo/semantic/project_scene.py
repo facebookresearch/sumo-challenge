@@ -15,7 +15,7 @@ from sumo.semantic.project_object_dict import ProjectObjectDict
 DEFAULT_SETTINGS = {
     "version": "2.0",
     "categories_id": "fb_categories_v1.0",
-    "categories_url": "http://www.notarealwebaddress.com",
+    "categories_url": "https://sumochallenge.org/en/categories-1_0.json",
 }
 
 
@@ -86,7 +86,7 @@ class ProjectScene(object):
 
         # create xml tree
         scene = ET.Element(
-            "scene", attrib={"xmlns:sumo": "https://www.sumochallenge.net"}
+            "scene", attrib={"xmlns:sumo": "https://www.sumochallenge.org"}
         )
 
         # version section
