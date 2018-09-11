@@ -84,8 +84,8 @@
                 <br><br><br>
                 <h1><b>Scene Understanding and Modeling Challenge</b></h1>
                 <hr class="hr-black">
-                <p class="grey-text">The SUMO challenge encourages the development of algorithms for complete understanding of 3D indoor scenes from <b>360&deg;</b> RGB-D panoramas with the goal of enabling <b>social AR and VR research and experiences</b>.
-                The target 3D models of indoor scenes include all visible layout elements and objects complete with <b>pose</b>, <b>semantic information</b>, and <b>texture</b>. Algorithms submitted are evaluated at 3 levels of complexity corresponding to 3 tracks of the challenge: oriented 3D <b>bounding boxes</b>, oriented <b>3D voxel grids</b>, and oriented <b>3D meshes</b>.
+                <p class="grey-text">The SUMO challenge encourages the development of algorithms for complete understanding of 3D indoor scenes from <b>360&deg; RGB-D panoramas</b> with the goal of enabling <b>social AR and VR research and experiences</b>.
+                The target 3D models of indoor scenes include all visible layout elements and objects complete with <b>pose</b>, <b>semantic information</b>, and <b>texture</b>. Algorithms submitted are evaluated at 3 levels of complexity corresponding to 3 tracks of the challenge: oriented <b>3D bounding boxes</b>, oriented <b>3D voxel grids</b>, and oriented <b>3D meshes</b>.
 
             </div>
             <br>
@@ -93,13 +93,13 @@
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center sep" style="padding-left:2px;padding-right:2px">
                     <h4><b>360&deg; RGB-D Input</b></h4>
                     <div class="sideways-lr">
-                        <div class="col-1"><h4><b>360&deg; RGB</b></h4></div>
+                        <div class="col-1 flip"><h4><b>360&deg; RGB</b></h4></div>
                         <br>
                         <div class="col-5"><canvas id="viewer_0" width="500" height="200"></canvas></div>
                     </div>
                     <br>
                     <div class="sideways-lr">
-                        <div class="col-1"><h4><b>360&deg; Depth</b></h4></div>
+                        <div class="col-1 flip"><h4><b>360&deg; Depth</b></h4></div>
                         <br>
                         <div class="col-5"><canvas id="viewer_1" width="500" height="200"></canvas></div>
                     </div>
@@ -107,12 +107,12 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center" style="padding-left:45px;padding-right:2px">
                     <h4><b>Complete 3D Scene Output</b></h4>
-                    <div class="sideways-rl">
+                    <div class="vertical-rl">
                         <div class="col-1"><h4 style="padding:30px"><b>3D Texture + Pose</b></h4></div>
                         <br>
                         <div class="col-5"><x-model class="model" src="rgb.glb"></x-model></div>
                     </div>
-                    <div class="sideways-rl">
+                    <div class="vertical-rl">
                         <div class="col-1" ><h4 style="padding:30px"><b>3D Semantic + Instance</b></h4></div>
                         <br>
                         <div class="col-5"><x-model class="model" src="sem.glb"></x-model></div>
