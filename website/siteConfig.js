@@ -69,7 +69,11 @@ const siteConfig = {
   // template. For example, if you need your repo's URL...
   //   repoUrl: 'https://github.com/facebook/test-site',
 
-  disableTitleTagline: true
+  disableTitleTagline: true,
+
+  // Directories inside which any css files will not be processed and concatenated to Docusaurus' styles. 
+  // This is to support static html pages that may be separate from Docusaurus with completely separate styles.
+  separateCss: ['static/css/bootstrap.min.css', 'static/css/da-slider.css', 'static/css/isotope.css', 'static/css/styles.css', 'static/js/owl-carousel/owl.carousel.css', 'static/js/owl-carousel/owl.carousel.css'],
 };
 
 module.exports = siteConfig;
