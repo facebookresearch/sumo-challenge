@@ -81,13 +81,16 @@ class Rgbdci360(object):
         instance = page_map[MultiImagePageType.Instance]
         return cls(rgb, range, category, instance)
 
-    def show(self, figsize=(12, 6)):
+    def show(self, figsize=(12, 6), category_lut=None):
         """
         Show using matplotlib.  Does not call plt.show().
 
         Inputs:
             figsize (tuple - (width, height))
               where width (int), height (int)  are figure size in pixels
+            category_lut (nx1 np.array) - look up table where each row index
+                contains the RGB values for the category id corresponding to
+                that index.	
         """
         fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(4, 1, 1)
@@ -107,7 +110,7 @@ class Rgbdci360(object):
         ax.grid(False)
         ax.set_xticks([])
         ax.set_yticks([])
-        plt.imshow(self.category)
+        plt.imshow(self.category if category_lut is None else category_lut[self.category])
         ax.set_title('Category')
         ax = fig.add_subplot(4, 1, 4)
         ax.grid(False)
