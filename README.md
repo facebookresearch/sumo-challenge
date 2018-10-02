@@ -19,6 +19,20 @@ libeigen3-dev libboost-python-dev libopencv-dev python-opencv \
 libgmp-dev libcgal-qt5-dev swig
 ```
 
+### Install OS dependencies (Fedora / RedHat / Centos)
+
+```
+sudo yum install -y python35 python3-pip python3-devel cmake git swig \
+opencv-python opencv-devel boost-devel gmp-devel qt5-qtbase-devel \
+freetype-devel libpng-devel libtiff-devel 
+```
+
+Note: on the Amazon EC2 instance where we tested, the Eigen package was not available.  As a workaround, you can manually install:
+```
+wget http://springdale.math.ias.edu/data/puias/computational/7/x86_64//eigen3-devel-3.2.3-2.sdl7.noarch.rpm
+sudo rpm -Uvh eigen3-devel-3.2.3-2.sdl7.noarch.rpm 
+```
+
 ### Clone repository
 
 ```
@@ -29,7 +43,7 @@ git clone https://github.com/facebookresearch/sumo-challenge.git
 
 Create a virtual evironment where the required packages will be installed in isolation.
 ```
-cd libsumo
+cd sumo-challenge/sumo-api
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
