@@ -26,13 +26,7 @@ const siteConfig = {
   //   organizationName: 'JoelMarcey'
 
   // For no header links in the top nav bar -> headerLinks: [],
-  headerLinks: [
-    {blog: true, label: 'Blog'},
-    {doc: 'participate', label: 'Participate'},
-    {doc: 'dataset', label: 'Dataset'},
-    {doc: 'workshop', label: 'Workshop'},
-    {doc: 'people', label: 'People'}
-  ],
+  headerLinks: [],
 
   /* path to images for header/footer */
   headerIcon: 'img/sumo-logo-plain.png',
