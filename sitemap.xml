@@ -2,8 +2,4 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 <url> <loc>https://sumochallenge.org/blog/2018/08/29/announcement.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://sumochallenge.org/blog/2018/06/22/announcement.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
-<url> <loc>https://sumochallenge.org/docs/dataset.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://sumochallenge.org/docs/dataset.html" /> </url>
-<url> <loc>https://sumochallenge.org/docs/participate.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://sumochallenge.org/docs/participate.html" /> </url>
-<url> <loc>https://sumochallenge.org/docs/people.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://sumochallenge.org/docs/people.html" /> </url>
-<url> <loc>https://sumochallenge.org/docs/workshop.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://sumochallenge.org/docs/workshop.html" /> </url>
 </urlset>
