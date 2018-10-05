@@ -85,27 +85,27 @@ def download_one(args, zip_filename):
     try:
         logging.info("Downloading {}.".format(zip_filename))
         server_url = "{}{}/{}".format(args.server_name, args.version, zip_filename)
-        with requests.get(server_url, stream=True) as response:
-            if not response.ok:
-                raise RuntimeError(
-                    "Cannot read zip file {} from the server".format(zip_filename)
-                )
-            total_length = int(response.headers.get("content-length"))
-            with open(os.path.join(args.destination_dir, zip_filename), "wb") as f:
-                if total_length == 0:
-                    f.write(response.content)
-                else:
-                    for idx, chunk in enumerate(
+        response = requests.get(server_url, stream=True)
+        if not response.ok:
+            raise RuntimeError(
+                "Cannot read zip file {} from the server".format(zip_filename)
+            )
+        total_length = int(response.headers.get("content-length"))
+        with open(os.path.join(args.destination_dir, zip_filename), "wb") as f:
+            if total_length == 0:
+                f.write(response.content)
+            else:
+                for idx, chunk in enumerate(
                         response.iter_content(chunk_size=CHUNK_SIZE)
-                    ):
-                        logging.debug(
-                            " -- {} {:.0%}".format(
-                                zip_filename, (idx + 1) * CHUNK_SIZE / total_length
-                            )
+                ):
+                    logging.debug(
+                        " -- {} {:.0%}".format(
+                            zip_filename, (idx + 1) * CHUNK_SIZE / total_length
                         )
-                        if chunk:
-                            f.write(chunk)
-                            f.flush()
+                    )
+                    if chunk:
+                        f.write(chunk)
+                        f.flush()
 
     except KeyboardInterrupt:
         if os.path.exists(os.path.join(args.destination_dir, zip_filename)):
