@@ -60,13 +60,13 @@ def remove_existing_files(zip_files, existing_zip_files):
 def read_config(args):
     """Reads the configuration file from the server, which contains the list of
     files to download."""
-    with requests.get(args.server_name + CONFIG_FILE_PATH) as response:
-        if response.status_code != 200:
-            raise RuntimeError(
-                "Cannot read config file from the server. Check your connection "
-                "or proxy settings (if needed)"
-            )
-        config = response.json()
+    response = requests.get(args.server_name + CONFIG_FILE_PATH)
+    if response.status_code != 200:
+        raise RuntimeError(
+            "Cannot read config file from the server. Check your connection "
+            "or proxy settings (if needed)"
+        )
+    config = response.json()
 
     if config["version"] != "v1":
         raise RuntimeError(
