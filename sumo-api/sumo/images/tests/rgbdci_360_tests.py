@@ -8,12 +8,13 @@ LICENSE file in the root directory of this source tree.
 Rgbd360 unit tests.
 """
 
+import numpy as np
 import os
 import shutil
 import tempfile
 import unittest
 
-import numpy as np
+from libfb.py import parutil
 from sumo.images.rgbdci_360 import Rgbdci360
 
 
@@ -38,7 +39,7 @@ class TestRgbdci360(unittest.TestCase):
     def test_rgbdci_tiff(self):
         """We can write and read a tiff file"""
         tiff_path = os.path.join(self.temp_directory, "test.tif")
-        rgb = np.random.randint(0, 255, size=(5, 5, 3)).astype(np.uint8)
+        rgb = np.random.randint(0, 255, size=(100, 100, 3)).astype(np.uint8)
         # Note near plane is 0.3, which is minimum representable range
         range = np.random.uniform(0.3, 10.0, size=(100, 100)).astype(np.float32)
         category = np.random.randint(0, 32000, size=(100, 100)).astype(np.uint16)
@@ -54,5 +55,19 @@ class TestRgbdci360(unittest.TestCase):
         np.testing.assert_array_equal(rgbdci_360_read.instance, rgbdci_360.instance)
 
 
+    def test_create_point_cloud(self):
+        "Create point cloud from random data and check the number of points."
+
+        rgb = np.random.randint(0, 255, size=(100, 100, 3)).astype(np.uint8)
+        # Note near plane is 0.3, which is minimum representable range
+        range = np.random.uniform(0.3, 10.0, size=(100, 100)).astype(np.float32)
+        category = np.random.randint(0, 32000, size=(100, 100)).astype(np.uint16)
+        instance = np.random.randint(0, 32000, size=(100, 100)).astype(np.uint16)
+        rgbdci_360 = Rgbdci360(rgb, range, category, instance)
+
+        point_cloud = rgbdci_360.create_point_cloud()
+        self.assertEqual(point_cloud.num_points(), 10000)
+
+        
 if __name__ == "__main__":
     unittest.main()

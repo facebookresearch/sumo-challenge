@@ -123,34 +123,34 @@ class Rgbdci360(object):
 
     def create_point_cloud(self, bool all_points=False):
         '''Creates point cloud in camera frame.'''
-        if not self.same_size():
-            raise ValueError("create_point_cloud needs rgb and depth sizes to agree.")
+        if self.rgb.shape[0:2] != self.range.shape[0:2]:
+            raise ValueError("create_point_cloud needs rgb and range sizes to agree.")
 
-        return create_point_cloud_(self.rgb, self.depth, all_points)
+        return create_point_cloud_(self.rgb, self.range, all_points)
 
 
 #---------------
 # End of public interface
 
 cdef create_point_cloud_(np.ndarray[Uint8, ndim=3] rgb,
-                         np.ndarray[Float32, ndim=2] depth,
+                         np.ndarray[Float32, ndim=2] range,
                          bool all_points):
     ''' Wrapper for C++ version.
         Keyword arguments:
             rgb -- h*w*3 numpy array with 3-channel uint8 RGB image
-            depth -- h*w numpy array with 1-channel float32 depth image
+            range -- h*w numpy array with 1-channel float32 range image
             all_points -- return a cloud with all points, invalid points are
                           0,0,0
     '''
     cdef Mat3b* rgb_cv = mat3b_from_array(rgb)
-    cdef Mat1f* depth_cv = mat1f_from_array(depth)
+    cdef Mat1f* range_cv = mat1f_from_array(range)
 
     # Create PointCloud instance and take posession of C++ instance
     wrapper = <PointCloud>PointCloud.__new__(PointCloud)
-    wrapper._c_ptr = createPointCloud(rgb_cv[0], depth_cv[0], all_points)
+    wrapper._c_ptr = createPointCloud(rgb_cv[0], range_cv[0], all_points)
 
     # De-allocate OpenCV objects, underlying memory remains with numpy
-    del depth_cv
+    del range_cv
     del rgb_cv
 
     # Return python point cloud

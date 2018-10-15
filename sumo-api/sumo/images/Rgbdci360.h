@@ -14,12 +14,12 @@ namespace sumo {
 class PointCloud;
 
 /**
- * Create point cloud from RGBD.
+ * Create point cloud from RGBD (where D is range image).
  *      rgb -- 3-channel uint8 RGB image
- *      depth -- 1-channel float32 depth image
+ *      range -- 1-channel float32 range image
  * Returns newly allocated PointCloud instance.
  */
-PointCloud* createPointCloud(const cv::Mat3b& rgb, const cv::Mat1f& depth,
+PointCloud* createPointCloud(const cv::Mat3b& rgb, const cv::Mat1f& range,
   bool all_points);
 
 
