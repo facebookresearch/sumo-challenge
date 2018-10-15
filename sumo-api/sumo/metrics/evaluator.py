@@ -37,6 +37,10 @@ class Evaluator():
     categories (list of string) - categories for which the semantic metric
       should be evaluated.  Default: a small subset of the SUMO
       evaluation categories (see default_settings)
+    density (float) - sampling density (in points/square meter).  Used
+      in meshes track only.
+    mesh_overlap_thresh (float) - max distance for establishing
+      a correspondence between two points sampled from mesh surfaces (meters)
     """
 
     def __init__(self, submission, ground_truth, settings=None):
@@ -50,7 +54,7 @@ class Evaluator():
         submission (ProjectScene) - Submitted scene to be evaluated
         ground_truth (ProjectScene) - The ground truth scene
         settings (EasyDict) - configuration for the evaluator.  See top of
-          file for recognized keys and values.  
+          file for recognized attributes and values.  
         """
 #        print("Evaluator constructor")
         
@@ -84,10 +88,14 @@ class Evaluator():
         thresholds = np.linspace(0.5, 0.95, 10)
         recall_samples = np.linspace(0, 1, 101)
         categories = ["wall", "chair"]
+        density = 625
+        mesh_overlap_thresh = 0.1  # meters
         
         return edict({"thresholds": thresholds,
                       "recall_samples": recall_samples,
-                      "categories": categories
+                      "categories": categories,
+                      "density": density,
+                      "mesh_overlap_thresh": mesh_overlap_thresh,
         })
     
 
@@ -268,12 +276,32 @@ class Evaluator():
         return Rot3(utils.euler_to_matrix(det_euler))
         
 
-    def appearance_score(self):
+
+    def rms_points_error(self):
         """
-        Compute appeareance score for the submission.
+        Compute RMS symmetric surface distance (RMSSSD).
+        Equation 11 in SUMO white paper.  This is only defined for
+        voxels and mesh tracks.  
 
         Return:
-        float - appearance score (Equation 13 in SUMO white paper)
+        float - RMSSSD 
+
+        Reference:
+        https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf   
+        """
+        raise NotImplementedError('Instantiate a child class')
+    
+    def rms_color_error(self):
+        """
+        Compute RMS symmetric surface color distance (RMSSSCD).
+        Equation 13 in SUMO white paper.  This is only defined for
+        voxels and mesh tracks.  
+
+        Return:
+        float - RMSSSCD 
+        
+        Reference:
+        https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
         """
         raise NotImplementedError('Instantiate a child class')
 

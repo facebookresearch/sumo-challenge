@@ -4,22 +4,24 @@
 
 import math
 import numpy as np
+from sklearn.neighbors import BallTree  # for nearest neighbors
 
 from sumo.geometry.rot3 import Rot3
 
+# ::: go through these and verify they are still used
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import pymesh
 from pymesh.meshutils import remove_duplicated_vertices_raw
 import pyny3d.geoms as pyny
-from numpy import linalg as LA
 from sympy.geometry import Point, Segment
-from sklearn.neighbors import BallTree
-from collections import defaultdict
-from scipy import stats
 
 #from sumo.metrics.voxelize_cpu import voxelize
+
+#-------------------------------------------------
+# Transformations between rotation representations
+#-------------------------------------------------
 
 def matrix_to_quat(M):
     """
@@ -166,6 +168,9 @@ def matrix_to_euler(matrix):
     """
     return quat_to_euler(matrix_to_quat(matrix))
     
+#-------------------------------------
+# Precision recall curves
+#-------------------------------------
 
 def compute_pr(det_matches, det_scores, n_gt, recall_samples=None, interp=False):
     """
@@ -266,245 +271,192 @@ def plot_pr(precision, recall):
     return fig
 
 
-def voxel_or_points_iou(pv1, pv2, config):
+#----------------------------------------
+# Surface and voxel similarity support
+#----------------------------------------
+
+def points_iou(points1, points2, thresh):
     """
-    Compute voxel or points intersection over union for two objects.
-    To compare the similarity between the mesh (resp voxel centers) of
-    object i and j, we define a point(resp voxel centers) IoU metric as
-    the ratio of overlapping mesh points (resp voxel centers) over the
-    total number of mesh points (resp voxel centers). An overlapping point
-    (resp voxel center) in element i is a point (resp voxel center) whose
-    center is within a small distance threshold of at least one other
-    point (resp voxel center) in element j
+    Compute the IoU metric for two point sets.  Equations 2 and 3 in
+    SUMO white paper.  The metric is the ratio of overlapping points
+    to the total number of points in both sets.  A point is
+    overlapping if it's nearest neighbor in the other set is less than
+    a threshold distance.
 
-    Args:
-    pv1, pv2: (N X 7) points or voxel centers for ProjectObject
-    instances whose shapes to compare
-    config.voxel_th: distance threshold expressed as number of voxels
-    config.voxel_size: Voxel Size
-    config.voxel_th * config.voxel_size is the distance
-    threshold for 2 points or voxel centers to be considered "the same"
-
-    Returns:
-    iou: points (resp voxel centers) intersection over union -
-    inter/union - where inter  = (n1 + n2) where n1/n2 is the number
-    of points (resp voxel centers of obj1/obj2 that are within the
-    threshold distance of another point(resp voxel center) of obj2/obj1
-    union is the total number of points(resp voxels centers) in obj1
-    and obj2
-    """
-    id1, id2, dist1, dist2 = nearest_neighbor(pv1, pv2)
-    inter1 = np.sum(dist1 <= config.voxel_size * config.voxel_th)
-    inter2 = np.sum(dist2 <= config.voxel_size * config.voxel_th)
-    inter = inter1 + inter2
-    union = id1.shape[0] + id2.shape[0]
-
-    return inter/union
-
-
-def nearest_neighbor(pv1, pv2):
-    """
-        Compute nearest neighbor of points from one set of points to the other
-        Args:
-            pv1, pv2: (N X 7) points or voxel centers
-        Returns:
-            id1, id2: (N,) id of nearest neighbor in other point set
-            dist1, dist2: (N,) corresponding distance to nearest neigbor for
-            each point
-
-    """
-    tree1 = BallTree(pv1[:, 0:3])
-    tree2 = BallTree(pv2[:, 0:3])
-    dist1, ind1 = tree2.query(pv1[:, 0:3])
-    dist2, ind2 = tree1.query(pv2[:, 0:3])
-    ind1 = ind1.flatten()
-    ind2 = ind2.flatten()
-    return ind1, ind2, dist1, dist2
-
-def sample_mesh(faces, density=5e2):
-    """ 
-    Sample points from a mesh surface using barycentric coordinates
-    
     Inputs:
-    faces (np array - 3*N x 6) -  matrix representing vertices and faces with
-      X, Y, Z, R, G, B faces[0:3, :] is the first face. N is the number of faces
-    density (float) - Number of points per square meter
+    points1 (np array N x 3 of float) - points in set 1. N points by 3 coordinates.
+    points2 (np array N x 3 of float) - points in set 2. N points by 3 coordinates.
+    thresh (float) - threshold for a pair of corresponding points to
+      be considered overlapping.
 
     Return:
-    points (np array - N X 6 matrix of sampled points
+    IoU (float) - intersection over union as defined in Eq. 2 and 3 in
+    the SUMO white paper.
     """
-    A, B, C = faces[0::3, :], faces[1::3, :], faces[2::3, :]
-    cross = np.cross(A[:, 0:3] - C[:, 0:3] , B[:, 0:3] - C[:, 0:3])
-    areas = 0.5*(np.sqrt(np.sum(cross**2, axis=1)))
+    ind1to2, ind2to1, dist1to2, dist2to1 = nearest_neighbors(points1[:,0:3], points2[:,0:3])
+    intersection = np.sum(dist1to2 <= thresh) + np.sum(dist2to1 <= thresh)
+    union = points1.shape[0] + points2.shape[0]
+    return intersection/union
 
-    # ::: set minimum of 1 sample
-    Nsamples_per_face = (density*areas).astype(int)
-    N = np.sum(Nsamples_per_face)
-    #TODO: Remove after mesh reading bug is fixed
-    if N == 0:
-        return np.empty((0, 3))
-    face_ids = np.zeros((N,), dtype=int)
+
+def nearest_neighbors(points1, points2):
+    """
+    Compute bidirectional nearest neighbors between two sets of points.
+
+    Inputs:
+    points1 (np array N x 3 of float) - points in set 1. N points by 3 coordinates.
+    points2 (np array N x 3 of float) - points in set 2. N points by 3 coordinates.
+
+    Return:
+    (ind1to2, ind2to1, dist1to2, dist2to1) - tuple where:
+    ind1to2 (np vector (N,) of int) - closest points for points1 
+      (ind1to2[i] = index from points2 that is closest to points1[i,:])
+    ind2to1 (np vector (N,) of int) - closest points for points2 
+      (ind2to1[i] = index from points1 that is closest to points2[i,:])
+    dist1to2 (np vector (N,) of float) - distances from points1 to closest points in points2
+      (dist1to2[i] = distance between points1[i,:] and points2[ind1to2[i],:])
+    dist2to1 (np vector (N,) of float) - distances from points2 to closest points in points1 
+      (dist2to1[i] = distance between points2[i,:] and points1[ind2to1[i],:])
+    """
+    tree1 = BallTree(points1)
+    tree2 = BallTree(points2)
+    dist1to2, ind1to2 = tree1.query(points2)
+    dist2to1, ind2to1 = tree2.query(points1)
+    ind1to2 = ind1to2.flatten()
+    ind2to1 = ind2to1.flatten()
+    return ind1to2, ind2to1, dist1to2, dist2to1
+
+
+def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=False):
+    """
+    Compute average root mean squared symmetric surface distance
+    (RMSSSD). Equation 11 in SUMO white paper.
+
+    Inputs:
+    submission (ProjectScene) - Submitted scene to be evaluated 
+    ground_truth (ProjectScene) - The ground truth scene
+    overlap_thresh (float) - max distance (meters) for establishing a
+      correspondence between sampled points
+
+    Return:
+        RMSSSD (float or NaN if there are no corresponding points
+        within the threshold) 
+
+    References:
+        [2]https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
+    """
+
+    # cache distances:  rmsssd_cache[dt_id][gt_id] = rmsssd
+    rmsssd_cache = {}  
+
+    settings = evaluator._settings
+    data_assoc = evaluator._amodal_data_assoc
+
+    rmsssd1 = []  # list of rmsssd per correspondence
+    for t in settings.thresholds:
+        for det_id in data_assoc[t]:
+            if det_id not in rmsssd_cache:
+                rmsssd_cache[det_id] = {}
+            for gt_id in data_assoc[t][det_id]:
+                if gt_id in rmsssd_cache[det_id]:
+                    # get from cache
+                    rmsssd1.append(rmsssd_cache[det_id][gt_id])
+                else: # compute from scratch
+                    # TODO: The nearest neighbors are also computed when making
+                    # the sim_cache.  It should be possible to only do
+                    # this computation once, but it will require a
+                    # fair amount of refactoring
+
+                    if voxels:
+                        points1 = evaluator._submission[det_id].voxel_centers
+                        points2 = evaluator._ground_truth[gt_id].voxel_centers
+                    else:
+                        points1 = evaluator._submission[det_id].points
+                        points2 = evaluator._ground_truth[gt_id].points
+                    ind1to2, ind2to1, dist1to2, dist2to1 = nearest_neighbors(points1[:,0:3], points2[:,0:3])
+                    # SUMO white paper Eq 12
+                    rmsssd = np.sqrt(
+                        (np.sum(np.square(np.where(dist1to2 <= overlap_thresh))) +
+                         np.sum(np.square(np.where(dist2to1 <= overlap_thresh)))) /
+                         (dist1to2.shape[0] + dist2to1.shape[0]))
+                    rmsssd_cache[det_id][gt_id] = rmsssd
+                    rmsssd1.append(rmsssd)
+
+    if len(rmsssd1) > 0:
+        return np.mean(rmsssd1)
+    else:
+        return math.nan  # no corrs found
+
     
-    count = 0
-    for i, n in enumerate(Nsamples_per_face):
-        face_ids[count:count + Nsamples_per_face[i]] = i
-        count += Nsamples_per_face[i]
+def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=False):
+    """
+    Compute average root mean squared symmetric surface color distance
+    (RMSSSCD). Equation 13 in SUMO white paper.
 
-    A = A[face_ids, :]; B = B[face_ids, :]; C = C[face_ids, :]
-    r = np.random.uniform(0, 1, (N, 2))
-    sqrt_r1 = np.sqrt(r[:, 0:1])
-    points = (1 - sqrt_r1)*A + sqrt_r1*(1 - r[:, 1:])*B + sqrt_r1*r[:, 1:]*C
-    return points
+    Inputs:
+    submission (ProjectScene) - Submitted scene to be evaluated 
+    ground_truth (ProjectScene) - The ground truth scene
+    overlap_thresh (float) - max distance (meters) for establishing a
+      correspondence between sampled points
 
+    Return:
+        RMSSSCD (float or NaN if there are no corresponding points
+        within the threshold) 
 
+    References:
+        [2]https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
+    """
+    # cache distances:  rmssscd_cache[dt_id][gt_id] = rmssscd
+    rmssscd_cache = {}  
 
+    settings = evaluator._settings
+    data_assoc = evaluator._amodal_data_assoc
 
+    rmssscd1 = []  # list of rmssscd per correspondence
+    for t in settings.thresholds:
+        for det_id in data_assoc[t]:
+            if det_id not in rmssscd_cache:
+                rmssscd_cache[det_id] = {}
+            for gt_id in data_assoc[t][det_id]:
+                if gt_id in rmssscd_cache[det_id]:
+                    # get from cache
+                    rmssscd1.append(rmssscd_cache[det_id][gt_id])
+                else: # compute from scratch
+                    # TODO: The nearest neighbors are also computed when making
+                    # the sim_cache.  It should be possible to only do
+                    # this computation once, but it will require a
+                    # fair amount of refactoring
 
+                    if voxels:
+                        sub_points = evaluator._submission[det_id].voxel_centers
+                        gt_points = evaluator._ground_truth[gt_id].voxel_centers
+                    else:
+                        sub_points = evaluator._submission[det_id].points
+                        gt_points = evaluator._ground_truth[gt_id].points
 
+                        
+                    idx1to2, idx2to1, dist1to2, dist2to1 = nearest_neighbors(sub_points[:,0:3], gt_points[:,0:3])
+                    idx_sub = np.argwhere(dist1to2 <= overlap_thresh)
+                    idx_gt = np.argwhere(dist2to1 <= overlap_thresh)
 
+                    color_diff1to2 = sub_points[idx_sub, 3:6] - gt_points[idx1to2[idx_sub]], 3:6]
+                    color_diff2to1 = gt_points[idx_gt, 3:6] - sub_points[idx2to1[idx_gt]], 3:6]
+
+                    # SUMO white paper Eq 13
+                    rmssscd = np.sqrt(
+                        (np.sum(np.matmul(color_diff1to2.T, color_diff1to2)) +
+                         np.sum(np.matmul(color_diff2to1.T, color_Diff2to1))) /
+                         (color_diff1to2.shape[0] + color_diff2to1.shape[0]))
+                    rmssscd_cache[det_id][gt_id] = rmssscd
+                    rmssscd1.append(rmssscd)
+
+    if len(rmssscd1) > 0:
+        return np.mean(rmssscd1)
+    else:
+        return math.nan  # no corrs found
 
 
 # :::not used
-def category_filter_matched(matched, ground_truth, submission, category):
-    """
-        Filter matches by keeping only dictionary elements for which
-        either the key or value elements are of a given category
-        Args:
-            matched: dictionary of values gt_id:sub_id representing a
-            match between a ground-truth instance and a submitted instance
-            ground_truth: ground-truth - list of projectobject instances
-            submission: submission - list of projectobject instances
-            category: category used for filtering
-        Returns:
-            filtered: dictionary of values gt_id:sub_id representing a
-            match between a ground-truth instance and a submitted instance
-            where either the ground_truth or the submitted instance or both,
-            are belong to category
-    """
-    filtered = {}
-    for gt_id, sub_id in matched.items():
-        gt = ground_truth[gt_id]
-        sub = submission[sub_id]
-        if gt.category == category or sub.category == category:
-            filtered[gt_id] = sub_id
-    return filtered
-
-
-def category_filter_list(item_ids, object_list, category):
-    """
-        Filter list of objects by keeping only elements that belong to the
-        given category
-        Args:
-            item_ids: IDs of select objects in object_list
-            object_list: list of projectobject instances
-            category: category used for filtering
-        Returns:
-            filtered: subset of item_ids corresponding to objects that belong
-            to category
-    """
-
-    filtered = []
-    for id_ in item_ids:
-        item = object_list[id_]
-        if item.category == category:
-            filtered.append(id_)
-    return filtered
-
-
-def AP(evaluator, ground_truth, submission):
-    """
-        Compute average precision by averaging precision values across
-        IoU thresholds in config.IoU_start:config.IoU_step:config.IoU_step
-        range
-        Args:
-            evaluator: Evaluator object
-            ground_truth: ground-truth - list of projectobject instances
-            submission: submission - list of projectobject instances
-        Returns:
-            AP: average precision
-    """
-    APs = []
-    config = evaluator.config
-    for IoU_th in range(config.IoU_start, config.IoU_end, config.IoU_step):
-        matched, missed, extra = evaluator.association_cache[IoU_th]
-        P, R = compute_PR(matched, missed, extra)
-        APs.append(P)  # these are precisions, not average precisons :::
-    return np.mean(APs)
-
-
-def count_category_instances(items, category):
-    """
-        Count the number of objects in items that belong to category
-        Args:
-            ground_truth: ground-truth - list of projectobject instances
-            category: category of interest
-        Returns:
-            count: count of elements in items belonging to category
-    """
-    count = 0
-    for item in items:
-        if item.category == category:
-            count += 1
-    return count
-
-
-def mAP(evaluator, ground_truth, submission):
-    """
-        Compute mean Average precision by averaging precision across categories
-        and across shape similarity thresholds
-        Args:
-            evaluator: Evaluator object
-            ground_truth: ground-truth - list of projectobject instances
-            submission: submission - list of projectobject instances
-        Returns:
-            mAP: mean Average Precision
-        References:
-            http://cocodataset.org/#detections-eval
-    """
-
-    APs = []
-    config = evaluator.config
-    for IoU_th in range(config.IoU_start, config.IoU_end, config.IoU_step):
-        classAP = []
-        matched, missed, extra = evaluator.association_cache[IoU_th]
-        for category in evaluator.config.categories:
-            if count_category_instances(ground_truth, category) + \
-                    count_category_instances(submission, category) == 0:
-                continue
-            fmatched = category_filter_matched(matched, ground_truth, submission, category)
-            fmissed = category_filter_list(missed, ground_truth, category)
-            fextra = category_filter_list(extra, submission, category)
-            P, R = compute_PR(fmatched, fmissed, fextra)
-            classAP.append(P)
-        APs.append(np.mean(classAP))
-    return np.mean(APs)
-
-
-
-def oriented_box2mesh(obj):
-    """
-        Represents the 3D bounding box of an object as a mesh object
-        Args:
-            obj: ProjectObject instance
-        Returns:
-            boxmesh: pymesh.Mesh object representation of obj's oriented
-            3D bounding box
-    """
-    box = obj._bounds
-    pose = obj.pose
-    i1, i2, i3, i4, i5, i6, i7, i8 = range(8)
-    faces = [[i1, i2, i3], [i1, i3, i4], [i4, i3, i8], [i4, i8, i5],
-             [i5, i8, i7], [i5, i7, i6], [i6, i7, i2], [i6, i2, i1],
-             [i1, i4, i5], [i1, i5, i6], [i2, i7, i8], [i2, i8, i3]]
-
-    vertices = box.corners().T
-    for i in range(len(vertices)):
-            vertices[i] = np.dot(vertices[i], pose.R.R) + pose.t
-
-    boxmesh = pymesh.form_mesh(np.array(vertices), np.array(faces))
-
-    return boxmesh
-
 
 def voxelize_points(points, config, min_xyz, max_xyz):
     """ Voxelize point cloud
@@ -597,87 +549,6 @@ def get_obj_points_and_voxels(obj, config, with_voxels=False):
 
 
 
-def points_rmsd(evaluator, ground_truth, submission, use_voxels):
-    """
-    For voxel and mesh representation, we use [2] to compare matched scene
-    elements by computing a measure of the distance from the points (or voxel
-    centers) of one element to the points (or voxel centers) of the other. We
-    average this value across thresholds to obtain the average root mean
-    squared surface distance measure (RMSD)
-    Args:
-        evaluator: Evaluator object
-        ground_truth: ground-truth - list of projectobject instances
-        submission: submission - list of projectobject instances
-        use_voxels: if True, use voxel centers, else, use mesh points
-    Returns:
-        average root mean squared surface distance measure (RMSD)
-    References:
-        [2]https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
-    """
-    config = evaluator.config
-    rmsd_IoU = []
-    for IoU_th in range(config.IoU_start, config.IoU_end, config.IoU_step):
-        matched, missed, extra = evaluator.association_cache[IoU_th]
-        rmsd = []
-        for gt_id, sub_id in list(matched.items()):
-            if use_voxels:
-                gt_pv = ground_truth[gt_id].vcenters
-                sub_pv = submission[sub_id].vcenters
-            else:
-                gt_pv = ground_truth[gt_id].points
-                sub_pv = submission[sub_id].points
-            ind1, ind2, dist1, dist2 = nearest_neighbor(gt_pv, sub_pv)
-            rmsd.append(np.sqrt((np.sum(dist1**2) +
-                         np.sum(dist2**2))/(dist1.shape[0] + dist2.shape[0])))
-        rmsd_IoU.append(np.mean(rmsd))
-    return np.mean(rmsd_IoU)
-
-def color_rmsd(evaluator, ground_truth, submission, use_voxels):
-    """
-    For voxel and mesh representation, we use a variant of [2] to compare
-    the color of matched scene elements by computing a measure of the distance
-    from the points (or voxel centers)'s color of one element to the points
-    (or voxel centers)'color of the other. For each point in one element,
-    we aggregate the color difference between the point and it's neighbor in
-    the other element and derive a root mean square error. We average this
-    value across thresholds to obtain the average root mean squared
-    surface color distance measure (RMSCD)
-    Args:
-        evaluator: Evaluator object
-        ground_truth: ground-truth - list of projectobject instances
-        submission: submission - list of projectobject instances
-        use_voxels: if True, use voxel centers, else, use mesh points
-    Returns:
-        average root mean squared surface color distance measure (RMSCD)
-    References:
-        [2]https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
-    """
-
-    config = evaluator.config
-    rmsd_IoU = []
-    for IoU_th in range(config.IoU_start, config.IoU_end, config.IoU_step):
-        matched, missed, extra = evaluator.association_cache[IoU_th]
-        rmsd = []
-        for gt_id, sub_id in list(matched.items()):
-            if use_voxels:
-                gt_pv = ground_truth[gt_id].vcenters
-                sub_pv = submission[sub_id].vcenters
-            else:
-                gt_pv = ground_truth[gt_id].points
-                sub_pv = submission[sub_id].points
-            ind1, ind2, dist1, dist2 = nearest_neighbor(gt_pv, sub_pv)
-            if use_voxels:
-                pv1 = ground_truth[gt_id].vcenters
-                pv2 = submission[sub_id].vcenters
-            else:
-                pv1 = ground_truth[gt_id].points
-                pv2 = submission[sub_id].points
-            dist1 = pv1[:, 3:6] - pv2[ind1, 3:6]
-            dist2 = pv2[:, 3:6] - pv1[ind2, 3:6]
-            rmsd.append(np.sqrt((np.sum(dist1**2) + np.sum(dist2**2))
-                                / (dist1.shape[0] + dist2.shape[0])))
-        rmsd_IoU.append(np.mean(rmsd))
-    return np.mean(rmsd_IoU)
 
 
 

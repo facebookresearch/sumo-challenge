@@ -32,19 +32,6 @@ class BBEvaluator(Evaluator):
         """
         super(BBEvaluator, self).__init__(submission, ground_truth, settings)
 
-    def evaluate_perceptual(self, ground_truth, submission):
-        """
-            Computes perceptual score for a participant's submission
-            Args:
-                ground_truth: Ground-truth - list of ProjectObject instances
-                submission: Submission - list of ProjectObject instances
-            Returns:
-                perceptual_score: a list of 3 tuples [(s1, s1m), (s2, s2m),
-                (s3, s3m)] where s1, s2, s3 are layout, furniture and clutter
-                scores respectively and s1m, s2m, s3m are the maximum possible
-                scores for layout, furniture, and clutter respectively.
-        """
-        raise NotImplementedError('Instantiate a child class')
 
     def evaluate_all(self):
         """
@@ -69,6 +56,21 @@ class BBEvaluator(Evaluator):
 
         return metrics
 
+    
+    def evaluate_perceptual(self, ground_truth, submission):
+        """
+            Computes perceptual score for a participant's submission
+            Args:
+                ground_truth: Ground-truth - list of ProjectObject instances
+                submission: Submission - list of ProjectObject instances
+            Returns:
+                perceptual_score: a list of 3 tuples [(s1, s1m), (s2, s2m),
+                (s3, s3m)] where s1, s2, s3 are layout, furniture and clutter
+                scores respectively and s1m, s2m, s3m are the maximum possible
+                scores for layout, furniture, and clutter respectively.
+        """
+        raise NotImplementedError('Instantiate a child class')
+
 #------------------------
 # End of public interface
 #------------------------
@@ -81,9 +83,6 @@ class BBEvaluator(Evaluator):
         Inputs:
         element1 (ProjectObject)
         element2 (ProjectObject) 
-
-        pv1, pv2: optional points and voxel centers for ProjectObject
-        instances whose shapes to compare
 
         Return:
         float - bounding box IoU (Equation 1 in SUMO white paper)

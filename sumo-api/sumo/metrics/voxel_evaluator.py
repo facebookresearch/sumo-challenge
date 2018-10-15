@@ -4,15 +4,14 @@ Copyright (c) Facebook, Inc. and its affiliates.
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 
-Algorithm class: Evaluate a mesh track submission
+Algorithm class: Evaluate a voxel track submission
 """
 
-from sumo.metrics.utils import color_rmsd
-from sumo.metrics.utils import voxel_or_points_iou, points_rmsd
 from sumo.metrics.Evaluator import Evaluator
+import sumo.metrics.utils as utils
+from sumo.threedee.compute_bbox import ComputeBbox
 
-
-class MeshEvaluator(Evaluator):
+class VoxelEvaluator(Evaluator):
     """
     Algorithm to evaluate a submission for the mesh track.
     """
@@ -29,7 +28,20 @@ class MeshEvaluator(Evaluator):
         settings (EasyDict) - configuration for the evaluator.  See
         Evaluator.py for recognized keys and values.   
         """
-        super(MeshEvaluator, self).__init__(submission, ground_truth, settings)
+
+        
+        # sample GT, voxelize, and store in voxels field
+        for e in gt.elements:
+            points = self._sample_element(e, settings.density)
+            bbox = ComputeBbox.from_point_cloud(points[0:3].T)
+            e.voxels = VoxelGrid(voxel_size, bbox.min_corner, points)
+
+        # extract voxel centers
+        for e in submission.elements + gt.elements:
+            e.voxel_centers = e.voxels.voxel_centers()
+            
+        super(VoxelEvaluator, self).__init__(config, ground_truth, submission)
+
 
     def evaluate_all(self)
         """
@@ -45,20 +57,83 @@ class MeshEvaluator(Evaluator):
         """
         metrics = {}
 
-        ::: fixme
         metrics["shape_score"] = self.shape_similarity_score()
         rotation_error, translation_error = self.pose_error()
         metrics["rotation_error"] = rotation_error
         metrics["translation_error"] = translation_error
+        metrics["rms_points_error"] = self.rms_points_error()
+        metrics["rms_color_error"] = self.rms_color_error()
         metrics["semantics_score"] = self.semantics_score()
         metrics["perceptual_score"] = self.perceptual_score()
 
         return metrics
 
 
+    def rms_points_error(self):
+        """
+        Compute RMS symmetric surface distance (RMSSSD).
+          Equation 11 in SUMO white paper.
+
+        Return:
+        float - RMSSSD 
+
+        Reference:
+        https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf   
+        """
+        return utils.points_rmsssd(self, self._submission, self._ground_truth, settings.voxel_overlap_thresh, voxels=True)
+        
+        
+    def rms_color_error(self):
+        """
+        Compute RMS symmetric surface color distance (RMSSSCD).
+          Equation 13 in SUMO white paper.
+
+        Return:
+        float - RMSSSCD 
+        
+        Reference:
+        https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
+        """
+        return utils.color_rmsssd(self, submission, ground_truth, settings.voxel_overlap_thresh, voxels=True)
+    
+
+    def evaluate_perceptual(self, submission, ground_truth):
+        """
+            Computes perceptual score for a participant's submission
+            Args:
+                ground_truth: Ground-truth - list of ProjectObject instances
+                submission: Submission - list of ProjectObject instances
+            Returns:
+                perceptual_score: a list of 3 tuples [(s1, s1m), (s2, s2m),
+                (s3, s3m)] where s1, s2, s3 are layout, furniture and clutter
+                scores respectively and s1m, s2m, s3m are the maximum possible
+                scores for layout, furniture, and clutter respectively.
+        """
+        raise NotImplementedError('Instantiate a child class')
+    
+#------------------------
+# End of public interface
+#------------------------
+
+    def _shape_similarity(self, element1, element2):
+        """
+        Similarity function that compares the mesh overlap of
+        <element1> and <element2>.
+
+        Inputs:
+        element1 (ProjectObject)
+        element2 (ProjectObject) 
+
+        Return:
+        float - voxel IoU (Equation 2 in SUMO white paper)
+        """
+        return utils.points_iou(element1.voxel_centers, element2.voxel_centers, self._config.voxel_overlap_thresh)
+        
+        
+
     def evaluate_geometry(self, ground_truth, submission):
         """
-            Computes shape score, pose score, and points root mean squared
+            Computes shape score, pose score, and voxel root mean squared
             symmetric distance for a participant's submission
             Args:
                 ground_truth: Ground-truth - list of ProjectObject instances
@@ -67,18 +142,18 @@ class MeshEvaluator(Evaluator):
                 pose_score: (R_error, t_error) tuple representing average
                 rotation matrix geodesic distance, and translation error
                 shape_score: Average Precision (class-agnostic) of submission
-                pts_rmsd: root mean squared symmetric surface distance of
-                object points. See https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
+                voxel_rmsd: root mean squared symmetric surface distance of
+                voxel centers. See https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
         """
         shape_score, pose_score = super(
-            MeshEvaluator, self).evaluate_geometry(ground_truth, submission)
-        pts_rmsd = points_rmsd(self, ground_truth, submission, use_voxels=False)
+            VoxelEvaluator, self).evaluate_geometry(ground_truth, submission)
+        voxel_rmsd = points_rmsd(self, ground_truth, submission, use_voxels=True)
 
-        return shape_score, pose_score, pts_rmsd
+        return shape_score, pose_score, voxel_rmsd
 
     def evaluate_appearance(self, ground_truth, submission):
         """
-            Computes shape score, pose score, and points root mean squared
+            Computes shape score, pose score, and voxel root mean squared
             symmetric distance for a participant's submission
             Args:
                 ground_truth: Ground-truth - list of ProjectObject instances
@@ -87,13 +162,13 @@ class MeshEvaluator(Evaluator):
                 pose_score: (R_error, t_error) tuple representing average
                 rotation matrix geodesic distance, and translation error
                 shape_score: Average Precision (class-agnostic) of submission
-                pts_color_rmsd: root mean squared symmetric surface distance of
-                object points. See https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
+                voxel_color_rmsd: root mean squared symmetric surface distance of
+                voxel centers. See https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
         """
 
-        pts_color_rmsd = color_rmsd(self, ground_truth, submission, use_voxels=False)
+        voxel_color_rmsd = color_rmsd(self, ground_truth, submission, use_voxels=True)
 
-        return pts_color_rmsd
+        return voxel_color_rmsd
 
     def evaluate_perceptual(self, ground_truth, submission):
         """
@@ -130,27 +205,4 @@ class MeshEvaluator(Evaluator):
         metrics[self.config.metrics.rmsd[0]] = rmsd
         metrics[self.config.metrics.rmscd[0]] = rmscd
         metrics[self.config.metrics.mAP[0]] = mAP
-
         return metrics
-
-
-#------------------------
-# End of public interface
-#------------------------
-
-    def _shape_similarity(self, obj1, obj2):
-        """
-            Defines a similarity function that compares the shape of 2 object
-            meshes
-            Args:
-                obj1.points, obj2.points: points of ProjectObject instances
-                self.config.voxel_th: voxel distance threshold
-                self.config.voxel_size: voxel size
-                self.config.voxel_th * self.config.voxel_size is the distance
-                threshold for 2 points to be considered "the same"
-            Returns:
-                shape_sim : points distance IoU
-        """
-        return voxel_or_points_iou(obj1.points, obj2.points, self.config)
-
-    
