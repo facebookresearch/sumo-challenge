@@ -2,6 +2,8 @@
     Metrics helper functions
 """
 
+import pdb
+
 import math
 import numpy as np
 from sklearn.neighbors import BallTree  # for nearest neighbors
@@ -352,35 +354,37 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
     settings = evaluator._settings
     data_assoc = evaluator._amodal_data_assoc
 
+#    pdb.set_trace()
+    
     rmsssd1 = []  # list of rmsssd per correspondence
     for t in settings.thresholds:
         for det_id in data_assoc[t]:
             if det_id not in rmsssd_cache:
                 rmsssd_cache[det_id] = {}
-            for gt_id in data_assoc[t][det_id]:
-                if gt_id in rmsssd_cache[det_id]:
-                    # get from cache
-                    rmsssd1.append(rmsssd_cache[det_id][gt_id])
-                else: # compute from scratch
-                    # TODO: The nearest neighbors are also computed when making
-                    # the sim_cache.  It should be possible to only do
-                    # this computation once, but it will require a
-                    # fair amount of refactoring
+            gt_id = data_assoc[t][det_id].gt_id
+            if gt_id in rmsssd_cache[det_id]:
+                # get from cache
+                rmsssd1.append(rmsssd_cache[det_id][gt_id])
+            else: # compute from scratch
+                # TODO: The nearest neighbors are also computed when making
+                # the sim_cache.  It should be possible to only do
+                # this computation once, but it will require a
+                # fair amount of refactoring
 
-                    if voxels:
-                        points1 = evaluator._submission[det_id].voxel_centers
-                        points2 = evaluator._ground_truth[gt_id].voxel_centers
-                    else:
-                        points1 = evaluator._submission[det_id].points
-                        points2 = evaluator._ground_truth[gt_id].points
-                    ind1to2, ind2to1, dist1to2, dist2to1 = nearest_neighbors(points1[:,0:3], points2[:,0:3])
-                    # SUMO white paper Eq 12
-                    rmsssd = np.sqrt(
-                        (np.sum(np.square(np.where(dist1to2 <= overlap_thresh))) +
-                         np.sum(np.square(np.where(dist2to1 <= overlap_thresh)))) /
-                         (dist1to2.shape[0] + dist2to1.shape[0]))
-                    rmsssd_cache[det_id][gt_id] = rmsssd
-                    rmsssd1.append(rmsssd)
+                if voxels:
+                    points1 = evaluator._submission.elements[det_id].voxel_centers
+                    points2 = evaluator._ground_truth.elements[gt_id].voxel_centers
+                else:
+                    points1 = evaluator._submission.elements[det_id].points
+                    points2 = evaluator._ground_truth.elements[gt_id].points
+                ind1to2, ind2to1, dist1to2, dist2to1 = nearest_neighbors(points1[:,0:3], points2[:,0:3])
+                # SUMO white paper Eq 12
+                rmsssd = np.sqrt(
+                    (np.sum(np.square(np.where(dist1to2 <= overlap_thresh))) +
+                     np.sum(np.square(np.where(dist2to1 <= overlap_thresh)))) /
+                    (dist1to2.shape[0] + dist2to1.shape[0]))
+                rmsssd_cache[det_id][gt_id] = rmsssd
+                rmsssd1.append(rmsssd)
 
     if len(rmsssd1) > 0:
         return np.mean(rmsssd1)
@@ -417,38 +421,40 @@ def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fal
         for det_id in data_assoc[t]:
             if det_id not in rmssscd_cache:
                 rmssscd_cache[det_id] = {}
-            for gt_id in data_assoc[t][det_id]:
-                if gt_id in rmssscd_cache[det_id]:
-                    # get from cache
-                    rmssscd1.append(rmssscd_cache[det_id][gt_id])
-                else: # compute from scratch
-                    # TODO: The nearest neighbors are also computed when making
-                    # the sim_cache.  It should be possible to only do
-                    # this computation once, but it will require a
-                    # fair amount of refactoring
+            gt_id = data_assoc[t][det_id].gt_id
+            if gt_id in rmssscd_cache[det_id]:
+                # get from cache
+                rmssscd1.append(rmssscd_cache[det_id][gt_id])
+            else: # compute from scratch
+                # TODO: The nearest neighbors are also computed when making
+                # the sim_cache.  It should be possible to only do
+                # this computation once, but it will require a
+                # fair amount of refactoring
 
-                    if voxels:
-                        sub_points = evaluator._submission[det_id].voxel_centers
-                        gt_points = evaluator._ground_truth[gt_id].voxel_centers
-                    else:
-                        sub_points = evaluator._submission[det_id].points
-                        gt_points = evaluator._ground_truth[gt_id].points
+                if voxels:
+                    sub_points = evaluator._submission.elements[det_id].voxel_centers
+                    gt_points = evaluator._ground_truth.elements[gt_id].voxel_centers
+                else:
+                    sub_points = evaluator._submission.elements[det_id].points
+                    gt_points = evaluator._ground_truth.elements[gt_id].points
 
                         
-                    idx1to2, idx2to1, dist1to2, dist2to1 = nearest_neighbors(sub_points[:,0:3], gt_points[:,0:3])
-                    idx_sub = np.argwhere(dist1to2 <= overlap_thresh)
-                    idx_gt = np.argwhere(dist2to1 <= overlap_thresh)
+                idx1to2, idx2to1, dist1to2, dist2to1 = nearest_neighbors(sub_points[:,0:3], gt_points[:,0:3])
+                idx_sub = np.argwhere((dist1to2 <= overlap_thresh).flatten()).flatten()  # vector
+                idx_gt = np.argwhere((dist2to1 <= overlap_thresh).flatten()).flatten()   # vector
 
-                    color_diff1to2 = sub_points[idx_sub, 3:6] - gt_points[idx1to2[idx_sub]], 3:6]
-                    color_diff2to1 = gt_points[idx_gt, 3:6] - sub_points[idx2to1[idx_gt]], 3:6]
+#                pdb.set_trace()
+                
+                color_diff1to2 = sub_points[idx_sub, 3:6] - gt_points[idx1to2[idx_sub], 3:6]
+                color_diff2to1 = gt_points[idx_gt, 3:6] - sub_points[idx2to1[idx_gt], 3:6]
 
-                    # SUMO white paper Eq 13
-                    rmssscd = np.sqrt(
-                        (np.sum(np.matmul(color_diff1to2.T, color_diff1to2)) +
-                         np.sum(np.matmul(color_diff2to1.T, color_Diff2to1))) /
-                         (color_diff1to2.shape[0] + color_diff2to1.shape[0]))
-                    rmssscd_cache[det_id][gt_id] = rmssscd
-                    rmssscd1.append(rmssscd)
+                # SUMO white paper Eq 13
+                rmssscd = np.sqrt(
+                    (np.sum(np.matmul(color_diff1to2.T, color_diff1to2)) +
+                     np.sum(np.matmul(color_diff2to1.T, color_diff2to1))) /
+                    (color_diff1to2.shape[0] + color_diff2to1.shape[0]))
+                rmssscd_cache[det_id][gt_id] = rmssscd
+                rmssscd1.append(rmssscd)
 
     if len(rmssscd1) > 0:
         return np.mean(rmssscd1)

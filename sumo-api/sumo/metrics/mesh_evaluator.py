@@ -7,7 +7,10 @@ LICENSE file in the root directory of this source tree.
 Algorithm class: Evaluate a mesh track submission
 """
 
-from sumo.metrics.Evaluator import Evaluator
+import numpy as np
+import pdb
+
+from sumo.metrics.evaluator import Evaluator
 import sumo.metrics.utils as utils
 
 
@@ -16,7 +19,7 @@ class MeshEvaluator(Evaluator):
     Algorithm to evaluate a submission for the mesh track.
     """
 
-    def __init__(self, submission, ground_truth, settings):
+    def __init__(self, submission, ground_truth, settings=None):
         """
         Constructor.  Computes similarity between all elements in the
         submission and ground_truth and also computes amodal and modal
@@ -30,12 +33,14 @@ class MeshEvaluator(Evaluator):
         """
 
         # sample submission and GT and store in points field
-        for e in submission.elements + gt.elements:
+        for e in submission.elements.values():
             e.points = self._sample_element(e, settings.density)
-            
+        for e in ground_truth.elements.values():
+            e.points = self._sample_element(e, settings.density)
+
         super(MeshEvaluator, self).__init__(submission, ground_truth, settings)
 
-    def evaluate_all(self)
+    def evaluate_all(self):
         """
         Compute all metrics for the submission
 
@@ -49,7 +54,7 @@ class MeshEvaluator(Evaluator):
         """
         metrics = {}
 
-        metrics["shape_score"] = self.shape_similarity_score()
+        metrics["shape_score"] = self.shape_score()
         rotation_error, translation_error = self.pose_error()
         metrics["rotation_error"] = rotation_error
         metrics["translation_error"] = translation_error
@@ -72,7 +77,8 @@ class MeshEvaluator(Evaluator):
         Reference:
         https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf   
         """
-        return utils.points_rmsssd(self, self._submission, self._ground_truth, settings.mesh_overlap_thresh)
+        return utils.points_rmsssd(self, self._submission, self._ground_truth,
+                                   self._settings.mesh_overlap_thresh)
         
         
     def rms_color_error(self):
@@ -86,7 +92,8 @@ class MeshEvaluator(Evaluator):
         Reference:
         https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
         """
-        return utils.color_rmsssd(self, submission, ground_truth, settings.voxel_overlap_thresh)
+        return utils.color_rmsssd(self, self._submission, self._ground_truth,
+                                  self._settings.voxel_overlap_thresh)
 
 
     def evaluate_perceptual(self, submission, ground_truth):
@@ -120,7 +127,9 @@ class MeshEvaluator(Evaluator):
         Return:
         float - mesh IoU (Equation 3 in SUMO white paper)
         """
-        return utils.points_iou(element1.points, element2.points, self._config.mesh_overlap_thresh)
+        sim = utils.points_iou(element1.points, element2.points, self._settings.mesh_overlap_thresh)
+        print("computed sim {} <--> {} = {}".format(element1.id, element2.id, sim))
+        return sim
 
     
     def _sample_element(self, element, density=625):
@@ -138,28 +147,37 @@ class MeshEvaluator(Evaluator):
 
         # count the # of faces in all the component meshes
         # and allocate space for faces
-        counts = [m.numIndices() for m in element.meshes.primitive_meshes()
-                  if m.is_textured()]
+        counts = [m.num_indices() for m in element.meshes.primitive_meshes()]
         n_faces3 = np.sum(counts)  # 3 x num faces
-        faces = np.zeros(n_faces3, 6)  
+        faces = np.zeros((n_faces3, 6))
         
         # build faces list from element component meshes
         start = 0
-        for i, mesh in enumerate(element.meshes.primitive_meshes()):
-            if mesh.is_textured():
-                temp = mesh.vertices()[:, mesh.indices()]
-                faces[start:start+counts[i],0:3] = temp.T
 
-                h, w = base_color_texture.shape[0:2]
-                
-                r = np.mod(np.floor(mesh.uv_coords()[0,:] * h))
-                c = np.mod(np.floor(mesh.uv_coords()[1,:] * w))
-                
-                colors = base_color_texture[r, c, :]
-                faces[start:start+counts[i], 3:6] = colors
-                
+        for i, mesh in enumerate(element.meshes.primitive_meshes()):
+            posed_mesh = mesh.transform(element.pose)
+            # replicate verts based on face ids
+            # temp[:,i] = vertex for face_id i
+            temp = posed_mesh.vertices()[:, posed_mesh.indices()]  # 3 x N_indices
+            faces[start:start+counts[i],0:3] = temp.T  # faces[i,:] = vertex
+
+            h, w = 0, 0  #  texture height and width
+            if posed_mesh.is_textured():
+                h, w = posed_mesh.base_color().shape[0:2]
+            
+            if not posed_mesh.is_textured() or h == 0 or w == 0:
+                # base color is not defined (some bad models have this problem)
+                # In this case, we just use [128,128,128] (grey) for the color.
+                colors = np.array([[128, 128, 128]])
             else:
-                print("Warning: skipping sampling of non-textured mesh.")
+                uv_coords = posed_mesh.uv_coords()  # 2 x N_verts
+                temp2 = uv_coords[:, posed_mesh.indices()]  # 2 x N_indices
+                r = np.mod(np.floor(temp2[0,:] * h).astype(int), h)  # 1 x n_vertices
+                c = np.mod(np.floor(temp2[1,:] * w).astype(int), w)  # "
+                colors = posed_mesh.base_color()[r, c, :]
+
+            faces[start:start+counts[i], 3:6] = colors
+            start += counts[i]
             
         # sample 
         return self._sample_mesh(faces, density)

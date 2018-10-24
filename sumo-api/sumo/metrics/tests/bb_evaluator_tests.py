@@ -6,7 +6,6 @@ LICENSE file in the root directory of this source tree.
 
 Test BBEvaluator functions
 """
-
 from copy import deepcopy
 from easydict import EasyDict as edict
 import math
@@ -33,7 +32,6 @@ class TestBBEvaluator(unittest.TestCase):
         self.settings.categories = ['wall', 'floor', 'ceiling', 'sofa', 'coffee_table']
 
 
-    @unittest.skip
     def test_shape_similarity(self):
         """
         Verify that the shape similarity measure is producing sane outputs.
@@ -41,7 +39,7 @@ class TestBBEvaluator(unittest.TestCase):
         
         # make a dummy scene
         scene = ProjectScene("bounding_box")
-        evaluator = BBEvaluator(scene, scene)
+        evaluator = BBEvaluator(scene, scene, self.settings)
         
         obj1 = next(iter(self.submission.elements.values()))
 
@@ -64,7 +62,6 @@ class TestBBEvaluator(unittest.TestCase):
         self.assertAlmostEqual(sim, 0)
 
 
-    @unittest.skip
     def test_shape_score(self):
         """
         Test amodal shape score metric
@@ -97,7 +94,6 @@ class TestBBEvaluator(unittest.TestCase):
         self.assertTrue(semantic_score < 1)
 
 
-    @unittest.skip
     def test_pose_error(self):
         """
         Test rotation and translation error metric.
@@ -150,7 +146,6 @@ class TestBBEvaluator(unittest.TestCase):
         self.assertEqual(translation_error, None)
         
         
-    @unittest.skip
     def test_semantic_score(self):
         # We cannot test Evaluator directly.  This creates the similarity cache and
         # does data association (both modal and amodal)

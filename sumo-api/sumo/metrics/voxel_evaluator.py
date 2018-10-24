@@ -7,7 +7,7 @@ LICENSE file in the root directory of this source tree.
 Algorithm class: Evaluate a voxel track submission
 """
 
-from sumo.metrics.Evaluator import Evaluator
+from sumo.metrics.evaluator import Evaluator
 import sumo.metrics.utils as utils
 from sumo.threedee.compute_bbox import ComputeBbox
 

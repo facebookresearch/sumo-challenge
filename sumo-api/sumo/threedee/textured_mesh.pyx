@@ -138,13 +138,22 @@ cdef class TexturedMesh:
         return array_from_mat3b(mat[0])
 
     def rotate(self, R):
-      """Return rotated mesh, given Rot3 instance <R>."""
-      return TexturedMesh(self.indices(),
-                          (R * self.vertices()).astype(np.float32),
-                          (R * self.normals()).astype(np.float32),
-                          self.uv_coords(),
-                          self.base_color(),
-                          self.metallic_roughness())
+            """Return rotated mesh, given Rot3 instance <R>."""
+            return TexturedMesh(self.indices(),
+                                (R * self.vertices()).astype(np.float32),
+                                (R * self.normals()).astype(np.float32),
+                                self.uv_coords(),
+                                self.base_color(),
+                                self.metallic_roughness())
+
+    def transform(self, T):
+            '''Return transformed textured mesh, given Pose3 instance <T>.'''
+            return TexturedMesh(self.indices(),
+                                (T * self.vertices()).astype(np.float32),
+			        (T.R * self.normals()).astype(np.float32),
+		                self.uv_coords(),	
+                                self.base_color(),
+                                self.metallic_roughness())
 
     def renumber(self, size_t num_new_vertices, list vertex_renumbering):
         """Wrapper around CTexturedMesh::renumber."""

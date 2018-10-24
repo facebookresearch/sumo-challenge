@@ -11,7 +11,7 @@ import numpy as np
 import pymesh
 from pymesh.meshutils import remove_duplicated_vertices_raw
 
-from sumo.metrics.Evaluator import Evaluator
+from sumo.metrics.evaluator import Evaluator
 
 class BBEvaluator(Evaluator):
     """
@@ -47,7 +47,7 @@ class BBEvaluator(Evaluator):
         """
         metrics = {}
 
-        metrics["shape_score"] = self.shape_similarity_score()
+        metrics["shape_score"] = self.shape_score()
         rotation_error, translation_error = self.pose_error()
         metrics["rotation_error"] = rotation_error
         metrics["translation_error"] = translation_error

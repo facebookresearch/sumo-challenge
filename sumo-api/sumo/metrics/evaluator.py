@@ -90,12 +90,14 @@ class Evaluator():
         categories = ["wall", "chair"]
         density = 625
         mesh_overlap_thresh = 0.1  # meters
+        voxel_overlap_thresh = 0.1  # meters
         
         return edict({"thresholds": thresholds,
                       "recall_samples": recall_samples,
                       "categories": categories,
                       "density": density,
                       "mesh_overlap_thresh": mesh_overlap_thresh,
+                      "voxel_overlap_thresh": voxel_overlap_thresh,
         })
     
 
@@ -111,7 +113,7 @@ class Evaluator():
         raise NotImplementedError('Instantiate a child class')
     
 
-    def shape_similarity_score(self):
+    def shape_score(self):
         """
         Compute shape similarity score (Equation 6 in SUMO white paper)
 
