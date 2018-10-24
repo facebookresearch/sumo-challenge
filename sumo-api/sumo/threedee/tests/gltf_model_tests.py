@@ -28,9 +28,14 @@ TEST_PATH = parutil.get_file_path("sumo/threedee/test_data")
 
 class TestGltfModel(unittest.TestCase):
     def test_deep_copy(self):
+        """Check that we can copy gltf models"""
+        
         input_path = os.path.join(TEST_PATH, "bed.glb")
         model = GltfModel.load_from_glb(input_path)
-        model2 = deepcopy(model)
+        model2 = model.deepcopy()
+        self.assertEqual(model.num_primitive_meshes(), model2.num_primitive_meshes())
+        model = GltfModel.example()
+        self.assertNotEqual(model.num_primitive_meshes(), model2.num_primitive_meshes())
 
     def test_add_mesh(self):
         """Test python wrapper to go from TexturedMesh to GltfModel."""
