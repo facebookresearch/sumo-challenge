@@ -41,8 +41,6 @@ cdef class GltfModel:
         """Destructor deletes C++ object."""
         del self.c_ptr
 
-<<<<<<< Updated upstream
-=======
     def deepcopy(self):
         """
         Make a copy of self and return it.
@@ -55,7 +53,6 @@ cdef class GltfModel:
         new_model.c_ptr[0] = self.c_ptr[0]
         return new_model
         
->>>>>>> Stashed changes
     @staticmethod
     def load_from_gltf(unicode path):
         """
