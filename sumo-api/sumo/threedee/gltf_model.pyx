@@ -41,9 +41,6 @@ cdef class GltfModel:
         """Destructor deletes C++ object."""
         del self.c_ptr
 
-    def __getstate__(self):
-
-    
     @staticmethod
     def load_from_gltf(unicode path):
         """
