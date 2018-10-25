@@ -5,12 +5,24 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 
 Test MeshEvaluator functions
+
+TODO:
+More tests:
+Explicitly test sample_mesh / sample_element.  Currently, this
+is implicitly tested in the constructor. 
+
+Explicitly test data association.  Add test to verify that
+removing an element generates a false positive and detecting an
+extra element generates a missed detection.  Add test to
+check that moving an element gives lowered geometric scores
+
+Visualize sampled point cloud and colors to verify that they are
+correct.
 """
 from easydict import EasyDict as edict
 import numpy as np
 import os
 import unittest
-import pdb
 
 from sumo.geometry.pose3 import Pose3
 from sumo.semantic.project_scene import ProjectScene
@@ -27,8 +39,8 @@ class TestMeshEvaluator(unittest.TestCase):
         self.submission = ProjectScene.load(self.data_path, 'sample2')
         self.settings = Evaluator.default_settings()
         self.settings.categories = ['wall', 'floor', 'ceiling', 'sofa', 'coffee_table']
-
-    @unittest.skip
+        self.settings.density = 100
+        
     def test_shape_similarity(self):
         """
         Verify that the shape similarity measure is producing sane outputs.
@@ -63,74 +75,31 @@ class TestMeshEvaluator(unittest.TestCase):
         shape_score = evaluator.shape_score()
         self.assertAlmostEqual(shape_score, 1)
 
-    @unittest.skip
     def test_rms_points_error(self):
         evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
 
         rms_points_error = evaluator.rms_points_error()
-        self.assertAlmostEqual(rms_points_error, 0)
+        self.assertTrue(rms_points_error < 0.05)
 
     def test_rms_color_error(self):
         evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
 
         rms_color_error = evaluator.rms_color_error()
-        self.assertAlmostEqual(rms_color_error, 0)
-    
+        print(rms_color_error)
+        self.assertTrue(rms_color_error < 25)
+        # Note: All the test objects are textured.  The variation is significant.  Manually verified that color variations of 25 on average are normal over short (5 cm) distances.   
 
-    #     def test_association(self):
-    #     matched, missed, extra = self.evaluator.association(self.ground_truth, self.submission, 0.5)
-    #     expected = len(self.ground_truth)
-    #     result = len(matched)
-    #     self.assertEqual(result, expected,
-    #                      "Expected %d matches, found %d.\n" %
-    #                      (expected, result))
-    #     expected = 0
-    #     result = len(missed)
-    #     self.assertEqual(result, expected,
-    #                      "Expected %d missed, found %d.\n" % (expected, result))
-    #     expected = 0
-    #     result = len(extra)
-    #     self.assertEqual(result, expected,
-    #                      "Expected %d found %d.\n" % (expected, result))
-
-    # def test_evaluate_geometry(self):
-    #     shape_score, pose_score, pts_rmsd = self.evaluator.evaluate_geometry(
-    #         self.ground_truth, self.submission)
-    #     expected = 1
-    #     result = shape_score
-    #     self.assertEqual(result, expected,
-    #                      "Expected shape score of %.3f, found %.3f.\n" %
-    #                      (expected, result))
-    #     expected = 0
-    #     result = pose_score[0]
-    #     self.assertAlmostEqual(result, expected, 9,
-    #                      "Expected geodesic distance of %.3f, found %.3f.\n" %
-    #                      (expected, result))
-    #     expected = 0
-    #     result = pose_score[1]
-    #     self.assertEqual(result, expected,
-    #                      "Expected translation error of %.3f, found %.3f.\n" %
-    #                      (expected, result))
-    #     expected = self.evaluator.config.voxel_size
-    #     result = pts_rmsd
-    #     self.assertLessEqual(result, expected,
-    #                      "Expected Voxel RMSD less than %.3f, found %.3f.\n" %
-    #                      (expected, result))
-
-    # def test_evaluate_appearance(self):
-    #     color_pts_rmsd = self.evaluator.evaluate_appearance(
-    #         self.ground_truth, self.submission)
-    #     expected = 1e-5
-    #     result = color_pts_rmsd
-    #     self.assertLessEqual(result, expected,
-    #                      "Expected color voxel error less than %.3f, found %.3f.\n" %
-    #                      (expected, result))
-
-    # def test_evaluate_semantic(self):
-    #     semantic_score = self.evaluator.evaluate_semantics(
-    #         self.ground_truth, self.submission)
-    #     expected = 1
-    #     result = semantic_score
-    #     self.assertEqual(result, expected,
-    #                      "Expected semantic score of %.3f, found %.3f.\n" %
-    #                      (expected, result))
+    def test_semantics_score(self):
+        evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
+        semantics_score = evaluator.semantics_score()
+        self.assertAlmostEqual(semantics_score, 1)
+        
+    def test_evaluate_all(self):
+        """
+        Test the evaluate_all function by running it and checking the
+        resulting metric values.  Only a subset of metrics are checked.
+        """
+        evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
+        metrics = evaluator.evaluate_all()
+        self.assertTrue(metrics["rms_points_error"] < 0.05)
+        self.assertAlmostEqual(metrics["shape_score"], 1)

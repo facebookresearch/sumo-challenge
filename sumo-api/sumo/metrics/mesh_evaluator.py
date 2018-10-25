@@ -198,7 +198,7 @@ class MeshEvaluator(Evaluator):
         """
         A, B, C = faces[0::3, :], faces[1::3, :], faces[2::3, :]
         cross = np.cross(A[:, 0:3] - C[:, 0:3] , B[:, 0:3] - C[:, 0:3])
-        areas = 0.5*(np.sqrt(np.sum(cross**2, axis=1)))
+        areas = 0.5 * (np.sqrt(np.sum(cross**2, axis=1)))
 
         # ::: set minimum of 1 sample?  ::: this will fail if all faces
         # are small enough

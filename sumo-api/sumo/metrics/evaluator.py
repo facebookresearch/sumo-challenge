@@ -367,7 +367,7 @@ class Evaluator():
         return np.mean(aps)  # Equation 16
 
     
-    def evaluate_perceptual(self):
+    def perceptual_score(self):
         """
         ::: need to fix
             Computes perceptual score for a participant's submission
@@ -380,7 +380,8 @@ class Evaluator():
                 scores respectively and s1m, s2m, s3m are the maximum possible
                 scores for layout, furniture, and clutter respectively.
         """
-        raise NotImplementedError('Instantiate a child class')
+        print("Warning: perceptual_score not implemented yet")
+#        raise NotImplementedError('Instantiate a child class')
 
     
 #------------------------

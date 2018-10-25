@@ -64,24 +64,24 @@ class TestBBEvaluator(unittest.TestCase):
 
     def test_shape_score(self):
         """
-        Test amodal shape score metric
+        Test class-specific shape score metric
         """
         
         # verify no offset gives sim = 1
         evaluator = BBEvaluator(self.submission, self.ground_truth, self.settings)
-        shape_similarity = evaluator.shape_similarity_score()
+        shape_similarity = evaluator.shape_score()
         self.assertAlmostEqual(shape_similarity, 1)
 
         # verify that no submission gives sim = 0
         scene = ProjectScene("bounding_box")
         evaluator2 = BBEvaluator(scene, self.ground_truth, self.settings)
-        semantic_score = evaluator2.shape_similarity_score()
+        semantic_score = evaluator2.shape_score()
         self.assertEqual(semantic_score, 0)
 
         # verify that missed detection gives sim < 1
         self.submission.elements.pop("1069")
         evaluator3 = BBEvaluator(self.submission, self.ground_truth, self.settings)
-        semantic_score = evaluator3.shape_similarity_score()
+        semantic_score = evaluator3.shape_score()
         print("semantic score = {}".format(semantic_score))
         self.assertTrue(semantic_score < 1)
 
@@ -89,7 +89,7 @@ class TestBBEvaluator(unittest.TestCase):
         self.ground_truth.elements.pop("57")
         self.ground_truth.elements.pop("1069")
         evaluator4 = BBEvaluator(self.submission, self.ground_truth, self.settings)
-        semantic_score = evaluator4.shape_similarity_score()
+        semantic_score = evaluator4.shape_score()
         print("semantic score = {}".format(semantic_score))
         self.assertTrue(semantic_score < 1)
 
