@@ -25,7 +25,6 @@ from sumo.metrics.utils import to_surface, visualize_mesh
 
 
 from sumo.geometry.rot3 import Rot3
-#from sumo.metrics.utils import matrix_to_quat, quat_to_matrix, quat_to_euler, euler_to_quat
 import sumo.metrics.utils as utils
 
 """
@@ -107,25 +106,10 @@ class TestUtils(unittest.TestCase):
         m = utils.euler_to_matrix(euler)
         euler2 = utils.matrix_to_euler(m)
 
-        print("e = {}".format(euler))
-        print("e2 = {}".format(euler2))
-
         for i in range(3):
             self.assertAlmostEqual(euler[i], euler2[i]) 
     
 
-    # def setUp(self):
-    #     """
-    #         Common setup for test cases
-    #     """
-    #     self.ground_truth = ProjectScene().read(os.path.join(os.getcwd(), 'sumo/metrics/data'), 'living_room')
-    #     self.submission = ProjectScene().read(os.path.join(os.getcwd(), 'sumo/metrics/data'), 'living_room')
-    #     self.ground_truth = [v for k, v in list(self.ground_truth.project_layout.items())] + \
-    #         [v for k, v in list(self.ground_truth.project_furniture.items())] + \
-    #         [v for k, v in list(self.ground_truth.project_clutter.items())]
-    #     self.submission = [v for k, v in list(self.submission.project_layout.items())] + \
-    #         [v for k, v in list(self.submission.project_furniture.items())] + \
-    #         [v for k, v in list(self.submission.project_clutter.items())]
 
     # def test_iou(self):
     #     center = np.array([0.5, 0.5, 0.5])

@@ -56,8 +56,6 @@ class Evaluator():
         settings (EasyDict) - configuration for the evaluator.  See top of
           file for recognized attributes and values.  
         """
-#        print("Evaluator constructor")
-        
         self._settings = self.default_settings() if settings is None else settings
         self._settings.thresholds = np.sort(self._settings.thresholds)
         self._submission = submission
@@ -66,13 +64,13 @@ class Evaluator():
         # compute similarity between all detections and gt elements
         self._similarity_cache = self._make_similarity_cache(submission, ground_truth)
 
-        # compute amodal and modal data association (for all thresholds)
-        self._amodal_data_assoc = self._compute_amodal_data_assoc(
+        # compute-agnostic and category-aware association (for all thresholds)
+        self._agnostic_data_assoc = self._compute_agnostic_data_assoc(
             submission.elements, ground_truth.elements,
             self._settings.thresholds, self._similarity_cache
         )
 
-        self._modal_data_assoc = self._compute_modal_data_assoc(
+        self._category_data_assoc = self._compute_category_data_assoc(
             submission.elements, ground_truth.elements,
             self._settings.thresholds,
             self._settings.categories, self._similarity_cache
@@ -131,7 +129,7 @@ class Evaluator():
             det_matches = []
             det_scores = []
             for element in self._submission.elements.values():
-                if element.id in self._amodal_data_assoc[t]:
+                if element.id in self._agnostic_data_assoc[t]:
                     det_matches.append(1)  # correct detection
                 else:
                     det_matches.append(0)  # false positive
@@ -171,7 +169,7 @@ class Evaluator():
 
         for t in self._settings.thresholds:
             rot_errors1, trans_errors1 = [], []
-            for corr in self._amodal_data_assoc[t].values():
+            for corr in self._agnostic_data_assoc[t].values():
                 det_element = self._submission.elements[corr.det_id]
                 gt_element = self._ground_truth.elements[corr.gt_id]
 
@@ -203,7 +201,6 @@ class Evaluator():
         Return:
         float - rotation error metric (Eq. 8)
         """
-        print("rotation_error_1")
         sym_list = [gt_element.symmetry.x_symmetry,
                     gt_element.symmetry.y_symmetry,
                     gt_element.symmetry.z_symmetry]
@@ -211,7 +208,6 @@ class Evaluator():
         det_rot = det_element.pose.R  # Rot3 
         
         # collect a list of equvalent rots for the target object in rots_to_check
-        print("id = " + gt_element.id)
         rots_to_check = [gt_element.pose.R]
         for (axis, sym) in enumerate(sym_list):
             if sym == SymmetryType.spherical:
@@ -229,14 +225,11 @@ class Evaluator():
                 rots_to_check = [self.cylindrical_symmetric_rot(det_element.pose.R, rot, axis) for rot in rots_to_check]
             # else sym = SymmetryType.none -> do nothing
 
-        print("rots_to_check = {}".format(rots_to_check))
         # get minimum error
         # Eq. 8, source: https://chrischoy.github.io/research/measuring-rotation/
         errors = [np.sqrt(0.5) *
                   np.linalg.norm(logm(np.matmul(det_element.pose.R.R.T, gt_rot.R)))
                   for gt_rot in rots_to_check]
-        print("errors = {}".format(errors))
-        
         return min(errors)
 
     
@@ -312,7 +305,7 @@ class Evaluator():
         """
         Compute semantic score for the submission.
         Return:
-        semantic_score (float) - mean Average Precision (mean AP across classes)
+        semantic_score (float) - mean Average Precision (mean AP across categories)
         of submission (Equation 15 in SUMO white paper)
         """
 
@@ -346,12 +339,10 @@ class Evaluator():
             for element in self._submission.elements.values():
                 cat = element.category
                 if cat in self._settings.categories:
-                    if element.id in self._modal_data_assoc[cat][t]:
+                    if element.id in self._category_data_assoc[cat][t]:
                         det_matches[cat].append(1)  # correct detection
-#                        print("correct detection")
                     else:
                         det_matches[cat].append(0)  # false positive
-#                        print("false positive")
                     det_scores[cat].append(element.score)
             
             
@@ -371,17 +362,13 @@ class Evaluator():
         """
         ::: need to fix
             Computes perceptual score for a participant's submission
-            Args:
-                ground_truth: Ground-truth - list of ProjectObject instances
-                submission: Submission - list of ProjectObject instances
             Returns:
                 perceptual_score: a list of 3 tuples [(s1, s1m), (s2, s2m),
                 (s3, s3m)] where s1, s2, s3 are layout, furniture and clutter
                 scores respectively and s1m, s2m, s3m are the maximum possible
                 scores for layout, furniture, and clutter respectively.
         """
-        print("Warning: perceptual_score not implemented yet")
-#        raise NotImplementedError('Instantiate a child class')
+        raise NotImplementedError('Instantiate a child class')
 
     
 #------------------------
@@ -433,9 +420,9 @@ class Evaluator():
         """
         raise NotImplementedError('Instantiate a child class')
 
-    def _compute_amodal_data_assoc(self, det_elements, gt_elements, thresholds, sim_cache):
+    def _compute_agnostic_data_assoc(self, det_elements, gt_elements, thresholds, sim_cache):
         """
-        Computes amodal (category-independent) data association
+        Computes agnostic (category-independent) data association
         between the elements in <submission> and <ground_truth> for
         each similarity threshold in <thresholds>.
 
@@ -475,16 +462,13 @@ class Evaluator():
         # Note: This allows us to reuse edits to similarity cache,
         # since any putative matches ruled out for a given threshold
         # will also be ruled out for higher thresholds.
-        print("Amodal DA")
         for thresh in thresholds:
-            print("thresh: {}".format(thresh))
             data_assoc[thresh] = {}
             
             # remove matches with similarity < thresh
             for det_id in sim_cache2.keys():
                 for gt_id in list(sim_cache2[det_id].keys()):
                     if sim_cache2[det_id][gt_id].similarity < thresh:
-                        print("Removing from cache: det: {}, gt: {} with sim: {}".format(det_id, gt_id, sim_cache2[det_id][gt_id].similarity))
                         sim_cache2[det_id].pop(gt_id)
 
             # for tracking GT elements that have already been assigned
@@ -505,11 +489,9 @@ class Evaluator():
                     corr for corr in sim_cache2[det_id].values()
                     if corr.gt_id not in assigned_gts]
                 sort_corrs_by_similarity(possible_corrs)
-#                print("num possible corrs: " + str(len(possible_corrs)))
                 
                 # create match with last corr in list
                 if len(possible_corrs) > 0:
-                    print("Associating: det: {}  gt: {}".format(det_id, possible_corrs[-1].gt_id))
                     data_assoc[thresh][det_id] = possible_corrs[-1]
                     assigned_gts[possible_corrs[-1].gt_id] = det_id
                 # else no match for this det_id
@@ -517,10 +499,10 @@ class Evaluator():
         return data_assoc
 
 
-    def _compute_modal_data_assoc(self, det_elements, gt_elements,
+    def _compute_category_data_assoc(self, det_elements, gt_elements,
                                   thresholds, categories, sim_cache):
         """
-        Computes modal (category-specific) data association
+        Computes category-specific data association
         between the elements in <submission> and <ground_truth> for
         each similarity threshold in <thresholds>.
 
@@ -545,13 +527,12 @@ class Evaluator():
         that category;  If both lists are empty, we skip the category.
         2. Construct submission and ground truth ProjectScenes using
         only elements with category C.
-        3. Compute amodal data association using these subsets.
+        3. Compute category-agnostic data association using these subsets.
 
         """
 
         # Split detections and gt elements by category and store in
         # dict of ProjectObjectDicts.
-        print("Modal DA")
         
         dets_by_cat = {}
         gts_by_cat = {}
@@ -571,8 +552,6 @@ class Evaluator():
         data_assoc = {}  # for storing results (key is category)
 
         for cat in categories:
-            print("category = " + cat)
-             
             dets = dets_by_cat[cat]
             gts = gts_by_cat[cat]
             if (len(dets) + len(gts)) == 0:
@@ -587,11 +566,8 @@ class Evaluator():
                         sim_cache_cat[det_id][gt_id] = sim_cache[det_id][gt_id]
 
             # do data association
-#            print("sim cache =")
-#            self._print_sim_cache(sim_cache_cat)
-            data_assoc[cat] = self._compute_amodal_data_assoc(dets, gts, thresholds, sim_cache_cat)
+            data_assoc[cat] = self._compute_agnostic_data_assoc(dets, gts, thresholds, sim_cache_cat)
 
-#        print("------")
         return data_assoc
 
 

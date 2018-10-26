@@ -26,8 +26,8 @@ class TestBBEvaluator(unittest.TestCase):
         Common setup for test cases
         """
         self.data_path = os.path.join(os.getcwd(), 'sumo/metrics/test_data')
-        self.ground_truth = ProjectScene.load(self.data_path, 'sample2')
-        self.submission = ProjectScene.load(self.data_path, 'sample2')
+        self.ground_truth = ProjectScene.load(self.data_path, 'bounding_box_sample')
+        self.submission = ProjectScene.load(self.data_path, 'bounding_box_sample')
         self.settings = Evaluator.default_settings()
         self.settings.categories = ['wall', 'floor', 'ceiling', 'sofa', 'coffee_table']
 
@@ -82,7 +82,6 @@ class TestBBEvaluator(unittest.TestCase):
         self.submission.elements.pop("1069")
         evaluator3 = BBEvaluator(self.submission, self.ground_truth, self.settings)
         semantic_score = evaluator3.shape_score()
-        print("semantic score = {}".format(semantic_score))
         self.assertTrue(semantic_score < 1)
 
         # verify that extra detection gives sim < 1
@@ -90,7 +89,6 @@ class TestBBEvaluator(unittest.TestCase):
         self.ground_truth.elements.pop("1069")
         evaluator4 = BBEvaluator(self.submission, self.ground_truth, self.settings)
         semantic_score = evaluator4.shape_score()
-        print("semantic score = {}".format(semantic_score))
         self.assertTrue(semantic_score < 1)
 
 
@@ -99,8 +97,8 @@ class TestBBEvaluator(unittest.TestCase):
         Test rotation and translation error metric.
         """
         
-        self.ground_truth = ProjectScene.load(self.data_path, 'sample3')
-        self.submission = ProjectScene.load(self.data_path, 'sample3')
+        self.ground_truth = ProjectScene.load(self.data_path, 'bounding_box_sample2')
+        self.submission = ProjectScene.load(self.data_path, 'bounding_box_sample2')
         self.settings.thresholds = [0.5]
 
         # verify that correct pose is ok
@@ -148,15 +146,15 @@ class TestBBEvaluator(unittest.TestCase):
         
     def test_semantic_score(self):
         # We cannot test Evaluator directly.  This creates the similarity cache and
-        # does data association (both modal and amodal)
-#        evaluator = BBEvaluator(self.submission, self.ground_truth, self.settings)
+        # does data association 
+        evaluator = BBEvaluator(self.submission, self.ground_truth, self.settings)
 
         # submission and GT are exactly the same, should get mAP = 1
-#        semantic_score = evaluator.semantics_score()
-#        expected = 1
-#        self.assertEqual(semantic_score, expected,
-#                         "Expected semantic score of %.3f, found %.3f.\n" %
-#                         (expected, semantic_score))
+        semantic_score = evaluator.semantics_score()
+        expected = 1
+        self.assertEqual(semantic_score, expected,
+                         "Expected semantic score of %.3f, found %.3f.\n" %
+                         (expected, semantic_score))
 
         # move the coffee table by a bit to get IoU ~ 0.72.  Should
         # get 0.5 since the average precision in 5 of the 10

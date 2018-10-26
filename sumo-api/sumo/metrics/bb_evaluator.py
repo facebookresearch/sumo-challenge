@@ -21,7 +21,7 @@ class BBEvaluator(Evaluator):
     def __init__(self, submission, ground_truth, settings=None):
         """
         Constructor.  Computes similarity between all elements in the
-        submission and ground_truth and also computes amodal and modal
+        submission and ground_truth and also computes
         data association caches. 
 
         Inputs:
@@ -106,7 +106,6 @@ class BBEvaluator(Evaluator):
         # or maybe vertex ordering 
         intersection = abs(inter_mesh.volume)  
         union = abs(box1.volume) + abs(box2.volume) - intersection
-#        print("Computing BB similarity: I: {} | U: {} | IOU: {}".format(intersection, union, intersection / union))
         return intersection / union
 
 

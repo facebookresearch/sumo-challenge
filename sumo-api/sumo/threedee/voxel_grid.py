@@ -105,6 +105,11 @@ class VoxelGrid(object):
 
         Exceptions:
         ValueError - if a point less than the min_corner on any axis is added
+
+        Algorithm:
+        In order to efficiently add the points, the voxel indices (3D)
+        are temporarily converted to a 1D representation and then
+        converdet back to 3D indices.
         """
         # convert points to voxel coordinates
         # voxel_index = floor((point - min_corner) * scale)

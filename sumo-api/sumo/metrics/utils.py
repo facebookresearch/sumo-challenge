@@ -2,24 +2,17 @@
     Metrics helper functions
 """
 
-import pdb
-
 import math
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use("TkAgg")
 import numpy as np
+import pymesh
+import pyny3d.geoms as pyny
 from sklearn.neighbors import BallTree  # for nearest neighbors
 
 from sumo.geometry.rot3 import Rot3
 
-# ::: go through these and verify they are still used
-import matplotlib
-matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
-import pymesh
-from pymesh.meshutils import remove_duplicated_vertices_raw
-import pyny3d.geoms as pyny
-from sympy.geometry import Point, Segment
-
-#from sumo.metrics.voxelize_cpu import voxelize
 
 #-------------------------------------------------
 # Transformations between rotation representations
@@ -206,9 +199,6 @@ def compute_pr(det_matches, det_scores, n_gt, recall_samples=None, interp=False)
     tps = np.not_equal(sorted_matches, 0)
     fps = np.equal(sorted_matches, 0)
 
-#    print(tps)
-#    print(fps)
-#    print(sorted_matches)
     # compute basic PR curve
     tp_sum = np.cumsum(tps)
     fp_sum = np.cumsum(fps)
@@ -243,10 +233,6 @@ def compute_pr(det_matches, det_scores, n_gt, recall_samples=None, interp=False)
         precision = precision2
         recall = recall_samples
 
-#    print("precision = {}".format(str(precision)))
-#    print("recall = {}".format(str(recall)))
-    
-        
     return (precision, recall)
     
     
@@ -352,7 +338,7 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
     rmsssd_cache = {}  
 
     settings = evaluator._settings
-    data_assoc = evaluator._amodal_data_assoc
+    data_assoc = evaluator._agnostic_data_assoc
 
     rmsssd1 = []  # list of rmsssd per correspondence
     for t in settings.thresholds:
@@ -412,7 +398,7 @@ def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fal
     rmssscd_cache = {}  
 
     settings = evaluator._settings
-    data_assoc = evaluator._amodal_data_assoc
+    data_assoc = evaluator._agnostic_data_assoc
 
     rmssscd1 = []  # list of rmssscd per correspondence
     for t in settings.thresholds:
@@ -451,120 +437,24 @@ def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fal
                     (color_diff1to2.shape[0] + color_diff2to1.shape[0]))
                 rmssscd_cache[det_id][gt_id] = rmssscd
                 rmssscd1.append(rmssscd)
-
-#                pdb.set_trace()
-
     
     if len(rmssscd1) > 0:
         return np.mean(rmssscd1)
     else:
         return math.nan  # no corrs found
 
-
-# :::not used
-
-def voxelize_points(points, config, min_xyz, max_xyz):
-    """ Voxelize point cloud
-
-    ¦   Args:
-    ¦   ¦   points (Nx7 float)   : raw points
-    ¦   ¦   config                 : Easy and configuration
-            min_xyz: minimum x, y, x coordinates to consider
-            max_xyz: maximum x, y, x coordinates to consider
-    ¦   Returns:
-    ¦   ¦   voxels (kxlxmx5)     : the voxelized cloud
-    """
-    vox_size = float(config.voxel_size)
-    num_categories = int(len(config.categories))
-    noColor = float(config.empty_color)  # color value for empty voxels
-    noCat = float(config.empty_cat)    # category value for empty voxels
-    voxels = voxelize(points.astype(np.float32), min_xyz[0],
-                      max_xyz[0], min_xyz[1], max_xyz[1],
-                      min_xyz[2], max_xyz[2], vox_size, noColor,
-                      noCat, num_categories)
-    return voxels[:, :, :, 0:5]
-
-def voxel_to_centers(voxels, voxel_size, min_xyz):
-    """
-        Extract voxel centers from a voxelized volume
-        Args:
-            voxels [K X L X M X C] voxelized volume
-        Returns:
-            centers [N X (C + 2)] array of voxel centers
-    """
-    centers = []
-    for i in range(voxels.shape[0]):
-        for j in range(voxels.shape[1]):
-            for k in range(voxels.shape[2]):
-                if voxels[i, j, k, 0] == 1:
-                    xyz = voxel_size*np.array([i, j, k]) + min_xyz + voxel_size/2
-                    centers.append(xyz[np.newaxis, :])
-    if len(centers) == 0:
-        centers = np.empty((0, 0))
-    else:
-        centers = np.concatenate(centers, axis=0)
-
-    return centers
-
-
-def get_obj_points_and_voxels(obj, config, with_voxels=False):
-    """
-        Uniformly sample and return object points and optionally
-        voxel centers
-        Args:
-            obj: ProjectObject instance
-            config.voxel_size: Voxel Size
-            with_voxels: if true, voxelize sampled mesh
-        Returns:
-            points: N X 7 sampled mesh (X, Y, Z, R, G, B, Cat)
-            centers: N X 3 matrix of voxel centers in real-world coordinates
-    """
-    vertices = obj.mesh.vertices().T
-    vertices_xyz_rgb_cat = np.zeros((vertices.shape[0], 7))
-    indices = obj.mesh.indices()
-    uv_coords = obj.mesh.uv_coords().T
-    base_color = obj.mesh.base_color()
-    W, H, _ = base_color.shape
-    ucoord = np.mod((uv_coords[:, 0] * W).astype(int), W)
-    vcoord = np.mod((uv_coords[:, 1] * H).astype(int), H)
-    vertices_xyz_rgb_cat[:, 0:3] = vertices
-    vertices_xyz_rgb_cat[:, 3:6] = base_color[ucoord, vcoord, :]
-    vertices_xyz_rgb_cat[:, 6] = config.categories.index(obj.category)
-    # Workaround for Mesh reading bug
-    # TODO: Fix bug and remove this
-    new_indices = []
-    for i in range(0, indices.shape[0], 3):
-        if np.sum(indices[i:i+3] < vertices.shape[0]) == 3:
-            for j in range(3):
-                new_indices.append(indices[i + j])
-    indices = np.array(new_indices)
-    faces = vertices_xyz_rgb_cat[indices, :]
-    points = sample_mesh(faces)
-    centers = None
-    if points.shape[0] > 0:
-        if with_voxels:
-            min_xyz = np.min(points[:, 0:3], axis=0)
-            max_xyz = np.max(points[:, 0:3], axis=0)
-            voxels = voxelize_points(points, config, min_xyz, max_xyz)
-            centers = voxel_to_centers(voxels, config.voxel_size, min_xyz)
-    obj.points = points
-    obj.vcenters = centers
-    return obj
-
-
-
-
-
-
-
+#---------------------
+# Visualization
+#---------------------
 
 def to_surface(mesh):
     """
-        Convert Mesh object into pyny.Surface object (used for visualization)
-        Args:
-            mesh: Mesh object
-        Returns:
-            pyny.Surface object
+    Convert Mesh object into pyny.Surface object (used for visualization)
+    Inputs:
+    mesh (Mesh)
+
+    Return:
+    pyny.Surface - converted mesh
     """
     vert = mesh.vertices
     faces = mesh.faces
@@ -576,6 +466,10 @@ def to_surface(mesh):
 
 
 def visualize_mesh(obj, visualize):
+    """
+    Visualize mesh.
+
+    """
     vertices = obj.mesh.vertices().T.reshape((-1, 3))
     indices = obj.mesh.indices().reshape((-1, 3))
     mesh = pymesh.form_mesh(vertices, indices)

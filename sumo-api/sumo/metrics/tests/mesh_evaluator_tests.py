@@ -35,8 +35,8 @@ class TestMeshEvaluator(unittest.TestCase):
         Common setup for test cases
         """
         self.data_path = os.path.join(os.getcwd(), 'sumo/metrics/test_data')
-        self.ground_truth = ProjectScene.load(self.data_path, 'sample2')
-        self.submission = ProjectScene.load(self.data_path, 'sample2')
+        self.ground_truth = ProjectScene.load(self.data_path, 'meshes_sample')
+        self.submission = ProjectScene.load(self.data_path, 'meshes_sample')
         self.settings = Evaluator.default_settings()
         self.settings.categories = ['wall', 'floor', 'ceiling', 'sofa', 'coffee_table']
         self.settings.density = 100
@@ -57,7 +57,7 @@ class TestMeshEvaluator(unittest.TestCase):
 
         # verify no offset gives sim = 1
         sim = evaluator._shape_similarity(obj1, obj2)
-        self.assertAlmostEqual(sim, 1)
+        self.assertAlmostEqual(sim, 1, places=1)
    
         # verify small offset gives sim between 0 and 1
         points_orig = obj2.points
@@ -73,7 +73,7 @@ class TestMeshEvaluator(unittest.TestCase):
         obj2.points = points_orig
         
         shape_score = evaluator.shape_score()
-        self.assertAlmostEqual(shape_score, 1)
+        self.assertAlmostEqual(shape_score, 1, places=1)
 
     def test_rms_points_error(self):
         evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
@@ -85,14 +85,13 @@ class TestMeshEvaluator(unittest.TestCase):
         evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
 
         rms_color_error = evaluator.rms_color_error()
-        print(rms_color_error)
         self.assertTrue(rms_color_error < 25)
         # Note: All the test objects are textured.  The variation is significant.  Manually verified that color variations of 25 on average are normal over short (5 cm) distances.   
 
     def test_semantics_score(self):
         evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
         semantics_score = evaluator.semantics_score()
-        self.assertAlmostEqual(semantics_score, 1)
+        self.assertAlmostEqual(semantics_score, 1, places=1)
         
     def test_evaluate_all(self):
         """

@@ -5,7 +5,7 @@
     <id>fb_categories_v1_0</id>
     <url>https://sumochallenge.org/en/categories-1_0.json</url>
   </categories>
-  <project_type>meshes</project_type>
+  <project_type>bounding_box</project_type>
   <elements>
     <element>
       <id>51</id>
