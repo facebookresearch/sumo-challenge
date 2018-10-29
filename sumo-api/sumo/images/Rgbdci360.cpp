@@ -27,7 +27,7 @@ Vector3 pointFromRange(
 
 PointCloud* createPointCloud(
     const cv::Mat3b& rgb,
-    const cv::Mat1f& depth,
+    const cv::Mat1f& range,
     bool all_points)
 {
   size_t width = rgb.cols, height = rgb.rows;
@@ -35,15 +35,15 @@ PointCloud* createPointCloud(
   points.reserve(height * width);
   vector<PointCloud::Color> colors;
   colors.reserve(height * width);
-  // ::: can rgb and depth be different?
+  // ::: can rgb and range be different?
   CubeMap cube_map = CubeMap(height);
 
   for (size_t row = 0; row < height; ++row) {
     Vector2 pixel = CubeMap::pixelCoordinates(row, 0);
     for (size_t col = 0; col < width; ++col) {
-      float depth_value = depth(row, col);
-      if (depth_value > 0.0 and depth_value != INFINITY) {
-        Vector3 point = pointFromRange(cube_map, pixel, depth_value);
+      float range_value = range(row, col);
+      if (range_value > 0.0 and range_value != INFINITY) {
+        Vector3 point = pointFromRange(cube_map, pixel, range_value);
         points.push_back(point);
         auto color = rgb(row, col);
         colors.emplace_back(color[0], color[1], color[2]);
