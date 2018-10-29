@@ -41,6 +41,18 @@ cdef class GltfModel:
         """Destructor deletes C++ object."""
         del self.c_ptr
 
+    def deepcopy(self):
+        """
+        Make a copy of self and return it.
+        TODO: Figure out how to make this use the deepcopy module interface.  
+        
+        Return:
+        new_model (GltfModel) - copy of self.
+        """
+        new_model = GltfModel()
+        new_model.c_ptr[0] = self.c_ptr[0]
+        return new_model
+        
     @staticmethod
     def load_from_gltf(unicode path):
         """
