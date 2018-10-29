@@ -86,7 +86,6 @@ class TestVoxelEvaluator(unittest.TestCase):
         evaluator = VoxelEvaluator(self.submission, self.ground_truth, self.settings)
 
         rms_color_error = evaluator.rms_color_error()
-        print(rms_color_error)
         self.assertTrue(rms_color_error < 25)
         # Note: All the test objects are textured.  The variation is
         # significant.  Manually verified that color variations of 25

@@ -92,7 +92,6 @@ def sample_mesh(faces, density=625):
     Nsamples_per_face = (density*areas).astype(int)
     N = np.sum(Nsamples_per_face)  # N = total # of samples
 
-    #TODO: Remove after mesh reading bug is fixed :::? what?
     if N == 0:
         return np.empty((0, 3))
 

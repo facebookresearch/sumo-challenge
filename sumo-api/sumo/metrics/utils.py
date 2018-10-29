@@ -465,16 +465,23 @@ def to_surface(mesh):
     return pyny.Surface(surface)
 
 
-def visualize_mesh(obj, visualize):
+def visualize_mesh(mesh, visualize=True):
     """
     Visualize mesh.
+    
+    Inputs:
+    mesh (Mesh) - mesh to visualize
+    visualize (Boolean) - if False, mesh will not actually be
+      visualized (this is useful for testing)
 
     """
-    vertices = obj.mesh.vertices().T.reshape((-1, 3))
-    indices = obj.mesh.indices().reshape((-1, 3))
+    vertices = mesh.vertices().T.reshape((-1, 3))
+    indices = mesh.indices().reshape((-1, 3))
     mesh = pymesh.form_mesh(vertices, indices)
+    surface = to_surface(mesh)
+
     if visualize:
-        to_surface(mesh).plot('r')
+        surface.plot('r')
         plt.show()
         plt.waitforbuttonpress()
         plt.close()

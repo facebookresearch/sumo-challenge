@@ -31,33 +31,6 @@ import sumo.metrics.utils as utils
     Test Evaluator utils functions
 """
 
-
-
-# def create_box(center, w, h,l, anglexyz):
-#     v1 = center + l/2 + w/2 + h/2
-#     v2 = center + l/2 + w/2 - h/2
-#     v3 = center + l/2 - w/2 - h/2
-#     v4 = center + l/2 - w/2 + h/2
-#     v5 = center - l/2 - w/2 + h/2
-#     v6 = center - l/2 + w/2 + h/2
-#     v7 = center - l/2 + w/2 - h/2
-#     v8 = center - l/2 - w/2 - h/2
-#     i1, i2, i3, i4, i5, i6, i7, i8 = range(8)
-#     faces =[[i1, i2, i3], [i1, i3, i4], [i4, i3, i8], [i4, i8, i5],
-#             [i5, i8, i7], [i5, i7, i6], [i6, i7, i2], [i6, i2, i1],
-#             [i1, i4, i5], [i1, i5, i6], [i2, i7, i8], [i2, i8, i3]]
-
-#     vertices = [v1, v2, v3, v4, v5, v6, v7, v8]
-#     for i in range(len(vertices)):
-#         for j in range(3):
-#             M = transforms3d.zooms.zfdir2mat(1)
-#             M = np.dot(transforms3d.axangles.axangle2mat([j==0,j==1,j==2], anglexyz[j]), M)
-#             vertices[i] = np.dot(vertices[i], M.T)
-
-#     boxmesh = pymesh.form_mesh(np.array(vertices), np.array(faces))
-
-#     return boxmesh
-
 class TestUtils(unittest.TestCase):
 
     def test_quat_matrix(self):
@@ -108,31 +81,13 @@ class TestUtils(unittest.TestCase):
 
         for i in range(3):
             self.assertAlmostEqual(euler[i], euler2[i]) 
-    
 
 
-    # def test_iou(self):
-    #     center = np.array([0.5, 0.5, 0.5])
-    #     w, h, l = 1.0, 1.0, 1.0
-    #     w = np.array([w, 0, 0])
-    #     l = np.array([0, l, 0])
-    #     h = np.array([0, 0, h])
-    #     box1 = create_box(center, w, h, l, [0, 0, 0])
-    #     box2 = create_box(center + np.array([0.5, 0, 0]), w, h, l , [0, 0, 0])
-    #     #box2 = create_box(center, w, h, l, [math.pi/4, math.pi/4, math.pi/4])
-    #     inter = pymesh.boolean(box1, box2, operation='intersection', engine='cgal')
-    #     visualize = False
-    #     ivert, ifaces, _ = remove_duplicated_vertices_raw(inter.vertices, inter.faces)
-    #     inter = pymesh.form_mesh(ivert, ifaces)
-    #     if visualize:
-    #         to_surface(box1).plot('r')
-    #         to_surface(box2).plot('g')
-    #         to_surface(inter).plot('b')
-    #         plt.show()
-    #     inter = inter.volume
-
-    # def test_visualize_mesh(self):
-    #     visualize = False
-    #     for obj in self.ground_truth:
-    #         visualize_mesh(obj, visualize)
+    def test_visualize_mesh(self):
+         visualize = False
+         self.data_path = os.path.join(os.getcwd(), 'sumo/metrics/test_data')
+         self.ground_truth = ProjectScene.load(self.data_path, 'meshes_sample')
+         project_object = next(iter(self.ground_truth.elements.values()))
+         mesh = next(iter(project_object.meshes.primitive_meshes()))
+         visualize_mesh(mesh, visualize)
 

@@ -92,22 +92,12 @@ class BBEvaluator(Evaluator):
         inter = pymesh.boolean(box1, box2, operation='intersection', engine='cgal')
         ivert, ifaces, _ = remove_duplicated_vertices_raw(inter.vertices, inter.faces)
         inter_mesh = pymesh.form_mesh(ivert, ifaces)
-        # ::: Remove debugging code
-        # visualize = False
-        # if visualize:
-        #     to_surface(box1).plot('r')
-        #     to_surface(box2).plot('g')
-        #     to_surface(intersect).plot('b')
-        #     plt.show()
-        #     plt.waitforbuttonpress()
-        #     plt.close()
         
         # Note: pymesh may give -volume depending on surface normals
         # or maybe vertex ordering 
         intersection = abs(inter_mesh.volume)  
         union = abs(box1.volume) + abs(box2.volume) - intersection
         return intersection / union
-
 
     
 def _bbox2pymesh(element):
