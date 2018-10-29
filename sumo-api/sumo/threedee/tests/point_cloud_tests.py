@@ -3,6 +3,7 @@
 
 import numpy as np
 import os
+import tempfile
 import unittest
 
 from libfb.py import parutil
@@ -49,7 +50,8 @@ class TestPointCloud(unittest.TestCase):
         cloud_input = PointCloud.load_ply(file_path)
 
         # Write test signal into write_ply
-        file_path = os.path.join(folder_path, 'example_write.ply')
+        temp_dir = tempfile.mkdtemp()
+        file_path = os.path.join(temp_dir, 'example_write.ply')
         cloud_input.write_ply(file_path)
         cloud_output = PointCloud.load_ply(file_path)
 
@@ -58,16 +60,27 @@ class TestPointCloud(unittest.TestCase):
         np.testing.assert_array_equal(
             cloud_output.points(), cloud_input.points()
         )
-
+        os.remove(file_path)
+        
     def test_write_ply_with_colors(self):
-        n = 100  # number of colors in original cloud, which we will thin to n/2
+        n = 100  # number of colors in original cloud
         cloud_input = PointCloud(np.zeros((3, n)), np.zeros((3, n), np.uint8))
 
-        # Write test signal into write_ply
+        # Write test signal into a file
         folder_path = parutil.get_file_path('sumo/threedee/test_data')
-        file_path = os.path.join(folder_path, 'example_write.ply')
+        temp_dir = tempfile.mkdtemp()
+
+        file_path = os.path.join(temp_dir, 'example_write.ply')
         cloud_input.write_ply(file_path)
 
+        # TODO: The current PointCloud class does not actually read
+        # colors.  Add implementation.
+        # cloud_output = PointCloud.load_ply(file_path)
+        # self.assertTrue(isinstance(cloud_output, PointCloud))
+        # self.assertTrue(cloud_output.colored())
+        # self.assertEqual(cloud_output.colors().shape, [3, n])
+        os.remove(file_path)
+        
     def test_sum(self):
         ''' Test overloads of add for merging point clouds. '''
         cloud = PointCloud(np.zeros((3, 10)), np.zeros((3, 10), np.uint8))
