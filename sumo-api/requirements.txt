@@ -2,6 +2,7 @@ astroid==1.6.2
 cycler==0.10.0
 Cython==0.27.3
 decorator==4.2.1
+easydict==1.8
 greenlet==0.4.13
 h5py>=2.7.1
 ipdb==0.10.2

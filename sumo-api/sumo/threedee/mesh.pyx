@@ -84,6 +84,12 @@ cdef class Mesh:
                   (R * self.vertices()).astype(np.float32),
                   (R * self.normals()).astype(np.float32))
 
+  def transform(self, T):
+      '''Return transformed mesh, given Pose3 instance <T>.'''
+      return Mesh(self.indices(),
+                  (T * self.vertices()).astype(np.float32),
+                  (T.R * self.normals()).astype(np.float32))
+
   @staticmethod
   def calculate_face_normals(np.ndarray[np.uint32_t, ndim=1] indices, np.ndarray[np.float32_t, ndim=2] vertices):
     cdef vector[unsigned int] cpp_indices = uint32s_of_array(indices)

@@ -45,7 +45,6 @@ class VoxelGrid(object):
         min_corner (Vector3f) - the minimum corner of voxel grid in local
            coordinates (default = [0,0,0]).
         points (Nx3 vector of float) - initial 3D points to insert into the grid.
-        colors
 
         Exceptions:
         ValueError - if a point in <points> is less than the min_corner on any
@@ -106,6 +105,11 @@ class VoxelGrid(object):
 
         Exceptions:
         ValueError - if a point less than the min_corner on any axis is added
+
+        Algorithm:
+        In order to efficiently add the points, the voxel indices (3D)
+        are temporarily converted to a 1D representation and then
+        converdet back to 3D indices.
         """
         # convert points to voxel coordinates
         # voxel_index = floor((point - min_corner) * scale)

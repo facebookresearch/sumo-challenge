@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns:sumo="https://www.sumochallenge.org">
+  <version>2.0</version>
+  <categories>
+    <id>fb_categories_v1_0</id>
+    <url>https://sumochallenge.org/en/categories-1_0.json</url>
+  </categories>
+  <project_type>bounding_box</project_type>
+  <elements>
+    <element>
+      <id>1069</id>
+      <category>coffee_table</category>
+      <bounds>
+        <corner1>-0.34999999, -0.22495887, -0.34999999</corner1>
+        <corner2> 0.34999999,  0.22495885,  0.34999999</corner2>
+      </bounds>
+      <pose>
+        <translation>-2.74280183, -1.22495879,  2.01189847</translation>
+        <rotation>
+          <c1> 1.,  0.,  0.</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3> 0.,  0.,  1.</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>twoFold</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>0.6</detectionScore>
+    </element>
+  </elements>
+</scene>

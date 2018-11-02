@@ -53,12 +53,11 @@ class ProjectObject(object):
         """
         Constructor.  Preferred method of creation is one of the factory methods:
         gen_bounding_box_object, gen_voxels_object, or gen_meshes_object.
-        Only certain combinations of bounding_box, voxels, meshes are allowed,
 
         For this constructor, representation is selected based on the <project_type>:
         bounding box track: bounds is used
-        voxels track: voxels is used
-        mesh track: meshes is used
+        voxels track: voxels and bounds are used
+        mesh track: meshes and bounds are used
 
         Inputs:
         id (string) - Unique identifier for the object
@@ -88,11 +87,11 @@ class ProjectObject(object):
             self.voxels = None
             self.meshes = None
         elif project_type == "voxels":
-            self.bounds = None
+            self.bounds = bounds
             self.voxels = voxels
             self.meshes = None
         elif project_type == "meshes":
-            self.bounds = None
+            self.bounds = bounds
             self.voxels = None
             self.meshes = meshes
         else:
@@ -114,7 +113,7 @@ class ProjectObject(object):
             pose=pose, category=category, symmetry=symmetry, score=score)
 
     @classmethod
-    def gen_voxels_object(cls, id, voxels=None, pose=None, category="unknown",
+    def gen_voxels_object(cls, id, bounds=None, voxels=None, pose=None, category="unknown",
     symmetry=None, score=-1):
         """
         Factory method for making a ProjectObject that holds a voxel grid.
@@ -125,11 +124,11 @@ class ProjectObject(object):
         Return:
         new ProjectObject (project_type = "voxels")
         """
-        return cls(id, "voxels", bounds=None, voxels=voxels, meshes=None,
+        return cls(id, "voxels", bounds=bounds, voxels=voxels, meshes=None,
             pose=pose, category=category, symmetry=symmetry, score=score)
 
     @classmethod
-    def gen_meshes_object(cls, id, meshes=None, pose=None, category="unknown",
+    def gen_meshes_object(cls, id, bounds=None, meshes=None, pose=None, category="unknown",
     symmetry=None, score=-1):
         """
         Factory method for making a ProjectObject that holds a mesh model.
@@ -140,7 +139,7 @@ class ProjectObject(object):
         Return:
         new ProjectObject (project_type = "meshes")
         """
-        return cls(id, "meshes", bounds=None, voxels=None, meshes=meshes,
+        return cls(id, "meshes", bounds=bounds, voxels=None, meshes=meshes,
             pose=pose, category=category, symmetry=symmetry, score=score)
 
     # Restrict id to be read only.
@@ -244,12 +243,12 @@ class ProjectObject(object):
         elif project_type == "voxels":
             voxels = VoxelGrid.from_file(os.path.join(path, id + ".h5"))
             return ProjectObject.gen_voxels_object(
-                id=id, voxels=voxels, pose=pose, category=category,
+                id=id, bounds=bounds, voxels=voxels, pose=pose, category=category,
                 symmetry=symmetry, score=score)
         elif project_type == "meshes":
             meshes = GltfModel.load_from_glb(os.path.join(path, id + ".glb"))
             return ProjectObject.gen_meshes_object(
-                id=id, meshes=meshes, pose=pose, category=category,
+                id=id, bounds=bounds, meshes=meshes, pose=pose, category=category,
                 symmetry=symmetry, score=score)
         else:
             raise ValueError("Invalid project_type: " + project_type)

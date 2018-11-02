@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scene xmlns:sumo="https://www.sumochallenge.org">
+  <version>2.0</version>
+  <categories>
+    <id>fb_categories_v1_0</id>
+    <url>https://sumochallenge.org/en/categories-1_0.json</url>
+  </categories>
+  <project_type>bounding_box</project_type>
+  <elements>
+    <element>
+      <id>51</id>
+      <category>wall</category>
+      <bounds>
+        <corner1>-1.40000153, -1.36749995, -0.02500153</corner1>
+        <corner2> 1.39999771,  1.36749995,  0.02499771</corner2>
+      </bounds>
+      <pose>
+        <translation> 1.15719969, -0.13250005,  1.46690031</translation>
+        <rotation>
+          <c1> 1.,  0.,  0.</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3> 0.,  0.,  1.</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>twoFold</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>0.4</detectionScore>
+    </element>
+    <element>
+      <id>53</id>
+      <category>wall</category>
+      <bounds>
+        <corner1>-1.29000092, -1.36749995, -0.02499771</corner1>
+        <corner2> 1.29000092,  1.36749995,  0.02500153</corner2>
+      </bounds>
+      <pose>
+        <translation>-0.22780244, -0.13250005,  2.74190183</translation>
+        <rotation>
+          <c1> -2.22044605e-16,   0.00000000e+00,  -1.00000000e+00</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3>  1.00000000e+00,   0.00000000e+00,  -2.22044605e-16</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>twoFold</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>0.3</detectionScore>
+    </element>
+    <element>
+      <id>47</id>
+      <category>wall</category>
+      <bounds>
+        <corner1>-3.93000031, -1.36749995, -0.02500153</corner1>
+        <corner2> 3.93000031,  1.36749995,  0.02499771</corner2>
+      </bounds>
+      <pose>
+        <translation>-1.37279908, -0.13250005, -1.08310275</translation>
+        <rotation>
+          <c1>-1.,  0.,  0.</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3> 0.,  0., -1.</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>twoFold</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>0.6</detectionScore>
+    </element>
+    <element>
+      <id>57</id>
+      <category>wall</category>
+      <bounds>
+        <corner1>-2.59000015, -1.36749995, -0.02500153</corner1>
+        <corner2> 2.59000015,  1.36749995,  0.02499771</corner2>
+      </bounds>
+      <pose>
+        <translation>-5.23780458, -0.13250005,  1.44189878</translation>
+        <rotation>
+          <c1> -2.22044605e-16,   0.00000000e+00,   1.00000000e+00</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3> -1.00000000e+00,   0.00000000e+00,  -2.22044605e-16</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>twoFold</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>0.6</detectionScore>
+    </element>
+    <element>
+      <id>49</id>
+      <category>wall</category>
+      <bounds>
+        <corner1>-1.34000015, -1.36749995, -0.02499771</corner1>
+        <corner2> 1.34000015,  1.36749995,  0.02500153</corner2>
+      </bounds>
+      <pose>
+        <translation> 2.49219878, -0.13250005,  0.19189878</translation>
+        <rotation>
+          <c1> -2.22044605e-16,   0.00000000e+00,  -1.00000000e+00</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3>  1.00000000e+00,   0.00000000e+00,  -2.22044605e-16</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>twoFold</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>0.6</detectionScore>
+    </element>
+    <element>
+      <id>43</id>
+      <category>floor</category>
+      <bounds>
+        <corner1>-2.56999969, -0.025     , -3.90999985</corner1>
+        <corner2> 2.56999969,  0.025     ,  3.90999985</corner2>
+      </bounds>
+      <pose>
+        <translation>-1.3727991, -1.475    ,  1.4418988</translation>
+        <rotation>
+          <c1>  0.00000000e+00,   2.22044605e-16,   1.00000000e+00</c1>
+          <c2>  0.00000000e+00,   1.00000000e+00,  -2.22044605e-16</c2>
+          <c3>-1.,  0.,  0.</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>twoFold</x>
+        <y>cylindrical</y>
+        <z>twoFold</z>
+      </symmetry>
+      <detectionScore>0.6</detectionScore>
+    </element>
+    <element>
+      <id>45</id>
+      <category>ceiling</category>
+      <bounds>
+        <corner1>-2.56999969, -0.0250001 , -3.90999985</corner1>
+        <corner2> 2.56999969,  0.02499986,  3.90999985</corner2>
+      </bounds>
+      <pose>
+        <translation>-1.37279908,  1.21500015,  1.44189878</translation>
+        <rotation>
+          <c1>  0.00000000e+00,   2.22044605e-16,   1.00000000e+00</c1>
+          <c2>  0.00000000e+00,   1.00000000e+00,  -2.22044605e-16</c2>
+          <c3>-1.,  0.,  0.</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>twoFold</x>
+        <y>cylindrical</y>
+        <z>twoFold</z>
+      </symmetry>
+      <detectionScore>0.7</detectionScore>
+    </element>
+    <element>
+      <id>1065</id>
+      <category>sofa</category>
+      <bounds>
+        <corner1>-1.51508999, -0.40655354, -1.03508997</corner1>
+        <corner2> 1.51508999,  0.40655354,  1.03508997</corner2>
+      </bounds>
+      <pose>
+        <translation>-4.11271076, -1.04344653,  2.31198771</translation>
+        <rotation>
+          <c1>  2.22044605e-16,   0.00000000e+00,  -1.00000000e+00</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3>  1.00000000e+00,   0.00000000e+00,   2.22044605e-16</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>fourFold</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>0.6</detectionScore>
+    </element>
+    <element>
+      <id>1067</id>
+      <category>sofa</category>
+      <bounds>
+        <corner1>-0.45500001, -0.38110003, -0.44      </corner1>
+        <corner2> 0.45500001,  0.3811    ,  0.44      </corner2>
+      </bounds>
+      <pose>
+        <translation>-1.93280046, -1.0689    ,  0.60190244</translation>
+        <rotation>
+          <c1> 1.,  0.,  0.</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3> 0.,  0.,  1.</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>none</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>0.6</detectionScore>
+    </element>
+    <element>
+      <id>1066</id>
+      <category>sofa</category>
+      <bounds>
+        <corner1>-0.45500001, -0.38110003, -0.44      </corner1>
+        <corner2> 0.45500001,  0.3811    ,  0.44      </corner2>
+      </bounds>
+      <pose>
+        <translation>-3.14279954, -1.0689    ,  0.60190244</translation>
+        <rotation>
+          <c1> 1.,  0.,  0.</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3> 0.,  0.,  1.</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>none</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>0.6</detectionScore>
+    </element>
+    <element>
+      <id>1069</id>
+      <category>coffee_table</category>
+      <bounds>
+        <corner1>-0.34999999, -0.22495887, -0.34999999</corner1>
+        <corner2> 0.34999999,  0.22495885,  0.34999999</corner2>
+      </bounds>
+      <pose>
+        <translation>-2.74280183, -1.22495879,  2.01189847</translation>
+        <rotation>
+          <c1> 1.,  0.,  0.</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3> 0.,  0.,  1.</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>twoFold</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>0.6</detectionScore>
+    </element>
+  </elements>
+</scene>

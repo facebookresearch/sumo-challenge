@@ -9,6 +9,7 @@ LICENSE file in the root directory of this source tree.
 GLTF unit tests.
 """
 
+from copy import deepcopy
 import numpy as np
 import os
 import shutil
@@ -26,7 +27,6 @@ TEST_PATH = parutil.get_file_path("sumo/threedee/test_data")
 
 
 class TestGltfModel(unittest.TestCase):
-
     def test_deep_copy(self):
         """Check that we can copy gltf models"""
         
