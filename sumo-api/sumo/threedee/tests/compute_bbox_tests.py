@@ -26,7 +26,8 @@ class TestComputeBbox(unittest.TestCase):
         point1 = Vector3(1, 0, 0)
         point2 = Vector3(0, 1, 0)
         point3 = Vector3(0, 0, 1)
-        points = np.column_stack([point1, point2, point3])
+        point4 = Vector3(0.5, 0.5, 0.5)
+        points = np.column_stack([point1, point2, point3, point4])
         box = ComputeBbox().from_point_cloud(points)
         corners = box.corners()
         corners_target = np.column_stack(

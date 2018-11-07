@@ -19,8 +19,14 @@ class ComputeBbox(object):
         pass
 
     def from_point_cloud(self, points):
-        """ Compute the bounding box of point cloud <points>.
-            Return: Box3d object
+        """ 
+        Compute the bounding box of point cloud <points>.
+        
+        Input:
+        points (numpy array of float - 3xN)
+
+        Return: 
+        Box3d object
         """
 
         num_points = points.shape[1]
