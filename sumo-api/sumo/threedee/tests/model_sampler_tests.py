@@ -34,7 +34,20 @@ class TestModelSampler(unittest.TestCase):
         self.assertEqual(samples.shape[1], 6)
         self.assertTrue(samples.shape[0] > 0)
 
-# This code will manually visualize the samples to verify that it is working.
-#        ptc = PointCloud(points = samples[:,0:3].T,
-#                         colors = samples[:,3:6].T)
-#        ptc.write_ply(os.path.join(TEST_PATH, "bed.ply"))
+    def test_min_samples(self):
+        """
+        Test to ensure that with low sampling density, the algorithm
+        still produces at least one sample per face. 
+        """
+        input_path = os.path.join(TEST_PATH, "bed.glb")
+        model = GltfModel.load_from_glb(input_path)
+        sampler = ModelSampler(sampling_density = 1)
+        samples = sampler.run(model)
+
+        self.assertEqual(samples.shape[1], 6)
+        self.assertTrue(samples.shape[0] > 0)
+        
+        # This code will manually visualize the samples to verify that it is working.
+        # ptc = PointCloud(points = samples[:,0:3].T,
+        #                  colors = samples[:,3:6].T)
+        # ptc.write_ply(os.path.join(TEST_PATH, "bed.ply"))

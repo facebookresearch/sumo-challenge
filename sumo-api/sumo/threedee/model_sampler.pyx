@@ -71,7 +71,7 @@ class ModelSampler(object):
     
 def _sample_mesh(faces, density=625):
     """ 
-    Sample points from a mesh surface using barycentric coordinates.
+    Sample points from a mesh surface.
     
     Inputs:
     faces (np array - 3*N x D) -  matrix representing vertices and faces with
@@ -82,14 +82,23 @@ def _sample_mesh(faces, density=625):
 
     Return:
     samples (np array - N X D matrix of sampled points
+
+    Algorithm: 
+    1. Compute number of samples per face (N_i) based on individual triangle
+    areas and target density (points/unit-area).  Small faces are
+    guaranteed to contain at least one sample, which may lead to
+    higher than the target density for meshes with many small faces.
+    2. Randomly sample N_i points from face i using random values in
+    barycentric coordinates.
     """
+
+    # Compute triangle areas
     A, B, C = faces[0::3, :], faces[1::3, :], faces[2::3, :]
     cross = np.cross(A[:, 0:3] - C[:, 0:3] , B[:, 0:3] - C[:, 0:3])
     areas = 0.5 * (np.sqrt(np.sum(cross**2, axis=1)))
 
-    # ::: set minimum of 1 sample?  ::: this will fail if all faces
-    # are small enough
-    Nsamples_per_face = (density*areas).astype(int)
+    # Compute # of samples per face (at least 1 sample per face)
+    Nsamples_per_face = np.maximum(1, (density*areas)).astype(int)
     N = np.sum(Nsamples_per_face)  # N = total # of samples
 
     if N == 0:
