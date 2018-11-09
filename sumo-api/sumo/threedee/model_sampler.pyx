@@ -39,7 +39,7 @@ class ModelSampler(object):
 
         for i, mesh in enumerate(model.primitive_meshes()):
             # replicate verts based on face ids
-            # temp[:,i] = vertex for face_id i
+            # Note: temp[:,i] = vertex for face_id i
             temp = mesh.vertices()[:, mesh.indices()]  # 3 x N_indices
             faces[start:start+counts[i],0:3] = temp.T  # faces[i,:] = vertex
 
