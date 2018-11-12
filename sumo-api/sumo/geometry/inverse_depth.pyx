@@ -59,7 +59,9 @@ cpdef Uint8 uint8_inverse_depth_of_depth(Float32 depth, Float32 near=DEFAULT_NEA
        Does not check for 0!
     '''
     cdef Uint8 result;
-    if depth <= near:
+    if depth == 0:  # 0 depth means unknown.  map to infinity.
+        return 0
+    elif depth <= near:
         return 255
     else:
         return <Uint8>(0.5 + near * 255 / depth)
@@ -69,7 +71,9 @@ cpdef Uint16 inverse_depth_of_depth(Float32 depth, Float32 near=DEFAULT_NEAR):
        Does not check for 0!
     '''
     cdef Uint16 result;
-    if depth <= near:
+    if depth == 0:  # 0 depth means unknown.  map to infinity.
+        return 0
+    elif depth <= near:
         return PIXEL_MAX
     else:
         return <Uint16>(0.5 + near * PIXEL_MAX / depth)
