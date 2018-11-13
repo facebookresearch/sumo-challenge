@@ -14,7 +14,7 @@ from sumo.semantic.project_object_dict import ProjectObjectDict
 
 DEFAULT_SETTINGS = {
     "version": "2.0",
-    "categories_id": "fb_categories_v1.0",
+    "categories_id": "fb_categories_v1_0",
     "categories_url": "https://sumochallenge.org/en/categories-1_0.json",
 }
 
@@ -143,11 +143,14 @@ class ProjectScene(object):
             if element.tag == "categories":
                 for child_element in element:
                     if child_element.tag == "id":
-                        settings["category_id"] = child_element.text
+                        settings["categories_id"] = child_element.text
                     elif child_element.tag == "url":
-                        settings["url"] = child_element.text
+                        settings["categories_url"] = child_element.text
             elif element.tag == "project_type":
                 project_type = element.text
+            elif element.tag == "version":
+                settings["version"] = element.text
+
             # Skip elements tag for now.
             # Any other tags are silently ignored
 

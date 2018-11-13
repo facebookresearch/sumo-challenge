@@ -14,7 +14,7 @@ import shutil
 import tempfile
 import unittest
 
-from libfb.py import parutil
+import numpy as np
 from sumo.images.rgbdci_360 import Rgbdci360
 
 
@@ -39,7 +39,7 @@ class TestRgbdci360(unittest.TestCase):
     def test_rgbdci_tiff(self):
         """We can write and read a tiff file"""
         tiff_path = os.path.join(self.temp_directory, "test.tif")
-        rgb = np.random.randint(0, 255, size=(100, 100, 3)).astype(np.uint8)
+        rgb = np.random.randint(0, 255, size=(5, 5, 3)).astype(np.uint8)
         # Note near plane is 0.3, which is minimum representable range
         range = np.random.uniform(0.3, 10.0, size=(100, 100)).astype(np.float32)
         category = np.random.randint(0, 32000, size=(100, 100)).astype(np.uint16)

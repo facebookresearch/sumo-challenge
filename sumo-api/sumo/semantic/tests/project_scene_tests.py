@@ -64,6 +64,14 @@ class TestProjectScene(unittest.TestCase):
         self.assertTrue(po.bounds.almost_equal(bounds, atol=0.01))
         self.assertEqual(po.category, "chair")
 
+        # Check settings
+        self.assertTrue("version" in project_scene.settings)
+        self.assertTrue("categories_id" in project_scene.settings)
+        self.assertTrue("categories_url" in project_scene.settings)
+        # Finally save again - NOTE: This is what originially exposed the bug
+        # in settings
+        project_scene.save(path=self.temp_directory, project_name="second_test")
+
     def test_nonexistent(self):
         """test invalid load"""
         self.assertRaises(

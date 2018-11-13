@@ -61,6 +61,9 @@ class TestInverseDepth(unittest.TestCase):
             inverse_depth_of_depth(3.0, near=0.1), 2185)
         self.assertEqual(inverse_depth_of_depth(float('inf')), 0)
 
+        self.assertEqual(
+            inverse_depth_of_depth(0), 0)
+
         self.assertAlmostEqual(
             depth_of_inverse_depth(PIXEL_MAX, near=0.1), 0.1)
         self.assertAlmostEqual(
