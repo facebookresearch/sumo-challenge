@@ -69,7 +69,8 @@ class BBEvaluator(Evaluator):
                 scores respectively and s1m, s2m, s3m are the maximum possible
                 scores for layout, furniture, and clutter respectively.
         """
-        raise NotImplementedError('Instantiate a child class')
+        print("Warning: perceptual_score not implemented yet")
+        return 0
 
 #------------------------
 # End of public interface
