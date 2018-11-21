@@ -56,7 +56,6 @@ class BBEvaluator(Evaluator):
 
         return metrics
 
-
 #------------------------
 # End of public interface
 #------------------------
