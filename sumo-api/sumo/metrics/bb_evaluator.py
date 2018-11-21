@@ -56,20 +56,6 @@ class BBEvaluator(Evaluator):
 
         return metrics
 
-    
-    def evaluate_perceptual(self, ground_truth, submission):
-        """
-            Computes perceptual score for a participant's submission
-            Args:
-                ground_truth: Ground-truth - list of ProjectObject instances
-                submission: Submission - list of ProjectObject instances
-            Returns:
-                perceptual_score: a list of 3 tuples [(s1, s1m), (s2, s2m),
-                (s3, s3m)] where s1, s2, s3 are layout, furniture and clutter
-                scores respectively and s1m, s2m, s3m are the maximum possible
-                scores for layout, furniture, and clutter respectively.
-        """
-        raise NotImplementedError('Instantiate a child class')
 
 #------------------------
 # End of public interface
