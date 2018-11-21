@@ -394,7 +394,7 @@ class Evaluator():
         """
         Computes perceptual score for a participant's submission
         Returns:
-        perceptual_score (float) - mean perceptual score
+        perceptual_score (float) - mean perceptual score across all thresholds
         """
 
         perceptual_scores = []
@@ -622,18 +622,20 @@ class Evaluator():
 
     def _perceptual_score_1(self, matched, missed, extra, normalized=True):
         """
-        Compute perceptual score for a given association (a single similarity threshold)
+        Compute perceptual score for a given data association at a
+        single similarity threshold. 
 
         Inputs:
-        matched (dict of Corrs): dictionary of values gt_id:sub_id representing a
-        match between a ground-truth instance and a submitted instance
-        missed: list of ids of non-matched ground-truth instances
-        extra: list of ids of non-matched detected instances
-        normalized: a Boolean value indicating whether to normalize the score (from 0-1)
-        or to return the raw score
+        matched (dict of Corrs) - dictionary of correspondences (from
+          data association) between submitted elements and
+          ground-truth elements. 
+        missed (set of object_ids) - ids of non-matched ground-truth instances
+        extra (set of object_ids) - ids of non-matched detected instances
+        normalized (Bool) - if True, normalize the score (from 0-1),
+          else return the raw score
 
         Return:
-        perceptual_score
+        perceptual_score (float) - larger score is better
         """
         perceptual_score = 0
         max_score = 0
