@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-'''
+"""
 Copyright (c) Facebook, Inc. and its affiliates.
 
 This source code is licensed under the MIT license found in the
@@ -7,7 +7,7 @@ LICENSE file in the root directory of this source tree.
 
 
 Rot3 unit tests.
-'''
+"""
 
 import unittest
 import numpy as np
@@ -74,9 +74,9 @@ class TestRot3(unittest.TestCase):
         )
 
     def test_to_xml(self):
-        '''
+        """
         Test conversion to xml.
-        '''
+        """
         rot = Rot3(R=np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
         rot_xml = rot.to_xml()
         expected_xml = '<rotation><c1>1, 4, 7</c1><c2>2, 5, 8</c2><c3>3, 6, 9</c3>\
@@ -85,7 +85,7 @@ class TestRot3(unittest.TestCase):
         self.assertEqual(ET.tostring(rot_xml, encoding='unicode'), expected_xml)
 
     def test_from_xml(self):
-        '''Conversion from xml'''
+        """Conversion from xml"""
 
         # test common case
         s = '<rotation><c1>1, 4, 7</c1><c2>2, 5, 8</c2><c3>3, 6, 9</c3></rotation>'
@@ -105,7 +105,7 @@ class TestRot3(unittest.TestCase):
         self.assertRaises(ValueError, Rot3.from_xml, ET.fromstring(s))
 
     def test_json(self):
-        '''Test conversion to/from json dict.'''
+        """Test conversion to/from json dict."""
         json_dict = self.rot.to_json()
         decoded_rot = Rot3.from_json(json_dict)
         decoded_rot.assert_almost_equal(self.rot)

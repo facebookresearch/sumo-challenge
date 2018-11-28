@@ -13,7 +13,6 @@ LICENSE file in the root directory of this source tree.
 
 #include "Mesh.h"
 
-#include <iostream>
 #include <math.h>
 
 namespace sumo {
@@ -173,7 +172,7 @@ void Mesh::replaceGeometry(const Mesh& mesh2) {
   merge(mesh2, 0);
 
 }
-  
+
   /// Operator == for Parameter
   // ::: TODO: This function is not correct.  It does not check all aspects
   // of the parameter struct.  Furthermore, some aspects of the Parameter
@@ -183,7 +182,7 @@ void Mesh::replaceGeometry(const Mesh& mesh2) {
 static bool parametersEqual(
     const tinygltf::Parameter& a,
     const tinygltf::Parameter& b) {
-  return 
+  return
     a.has_number_value == b.has_number_value &&
     a.string_value == b.string_value &&
     a.json_double_value == b.json_double_value;
@@ -212,7 +211,7 @@ bool operator==(const tinygltf::Material& a, const tinygltf::Material& b) {
       a.name == b.name;
 }
 
-  
+
 bool Mesh::hasSameMaterial(const Mesh& other) const {
   return material_ == other.material_;
 }

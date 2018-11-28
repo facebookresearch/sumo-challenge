@@ -14,7 +14,6 @@ import shutil
 import tempfile
 import unittest
 
-import numpy as np
 from sumo.images.rgbdci_360 import Rgbdci360
 
 
@@ -54,7 +53,6 @@ class TestRgbdci360(unittest.TestCase):
         np.testing.assert_array_equal(rgbdci_360_read.category, rgbdci_360.category)
         np.testing.assert_array_equal(rgbdci_360_read.instance, rgbdci_360.instance)
 
-
     def test_create_point_cloud(self):
         "Create point cloud from random data and check the number of points."
 
@@ -68,6 +66,6 @@ class TestRgbdci360(unittest.TestCase):
         point_cloud = rgbdci_360.create_point_cloud()
         self.assertEqual(point_cloud.num_points(), 10000)
 
-        
+
 if __name__ == "__main__":
     unittest.main()

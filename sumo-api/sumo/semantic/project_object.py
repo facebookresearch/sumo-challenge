@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Copyright (c) Facebook, Inc. and its affiliates.
 
@@ -113,8 +114,8 @@ class ProjectObject(object):
             pose=pose, category=category, symmetry=symmetry, score=score)
 
     @classmethod
-    def gen_voxels_object(cls, id, bounds=None, voxels=None, pose=None, category="unknown",
-    symmetry=None, score=-1):
+    def gen_voxels_object(cls, id, bounds=None, voxels=None,
+          pose=None, category="unknown", symmetry=None, score=-1):
         """
         Factory method for making a ProjectObject that holds a voxel grid.
 
@@ -128,8 +129,8 @@ class ProjectObject(object):
             pose=pose, category=category, symmetry=symmetry, score=score)
 
     @classmethod
-    def gen_meshes_object(cls, id, bounds=None, meshes=None, pose=None, category="unknown",
-    symmetry=None, score=-1):
+    def gen_meshes_object(cls, id, bounds=None, meshes=None,
+          pose=None, category="unknown", symmetry=None, score=-1):
         """
         Factory method for making a ProjectObject that holds a mesh model.
 
@@ -326,7 +327,7 @@ class ProjectObject(object):
         pose = proxy.pose
         symmetry = proxy.symmetry
         score = proxy.score
-        
+
         for elem in base_elem:
             if elem.tag == "id":
                 id = elem.text

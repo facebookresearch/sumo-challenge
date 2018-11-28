@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Copyright (c) Facebook, Inc. and its affiliates.
 
@@ -6,37 +7,29 @@ LICENSE file in the root directory of this source tree.
 """
 
 import math
-import unittest
-
 import matplotlib
-matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
-from sumo.semantic.project_scene import ProjectScene
-import os
 import numpy as np
-import pymesh
-from sympy import intersection
-from sympy.geometry import Point, Point3D, Segment
-import transforms3d
-import math
-from pymesh.meshutils import remove_duplicated_vertices_raw
-from sumo.metrics.utils import to_surface, visualize_mesh
-
-
+import os
+import unittest
 
 from sumo.geometry.rot3 import Rot3
 import sumo.metrics.utils as utils
+from sumo.semantic.project_scene import ProjectScene
+
+
+matplotlib.use("TkAgg")
 
 """
     Test Evaluator utils functions
 """
+
 
 class TestUtils(unittest.TestCase):
 
     def test_quat_matrix(self):
         rx = 10  # degrees
         ry = 20
-        rz = 30  
+        rz = 30
         Rx = Rot3.Rx(math.radians(rx))
         Ry = Rot3.Ry(math.radians(ry))
         Rz = Rot3.Rz(math.radians(rz))
@@ -44,7 +37,8 @@ class TestUtils(unittest.TestCase):
         # matrix -> quat
         R = Rz * Ry * Rx
         q = utils.matrix_to_quat(R.R)
-        expected_q = np.array([0.9515485, 0.0381346, 0.1893079, 0.2392983])  # computed manually
+        expected_q = np.array([
+            0.9515485, 0.0381346, 0.1893079, 0.2392983])  # computed manually
         np.testing.assert_array_almost_equal(q, expected_q, 4)
 
         # quat -> matrix
@@ -56,7 +50,7 @@ class TestUtils(unittest.TestCase):
         np.testing.assert_array_almost_equal(R.R, R2, 4)
 
     def test_quat_euler(self):
-        q = np.array([0.9515485, 0.0381346, 0.1893079, 0.2392983])  
+        q = np.array([0.9515485, 0.0381346, 0.1893079, 0.2392983])
 
         expected_rx = 10  # degrees
         expected_ry = 20
@@ -80,14 +74,12 @@ class TestUtils(unittest.TestCase):
         euler2 = utils.matrix_to_euler(m)
 
         for i in range(3):
-            self.assertAlmostEqual(euler[i], euler2[i]) 
-
+            self.assertAlmostEqual(euler[i], euler2[i])
 
     def test_visualize_mesh(self):
-         visualize = False
-         self.data_path = os.path.join(os.getcwd(), 'sumo/metrics/test_data')
-         self.ground_truth = ProjectScene.load(self.data_path, 'meshes_sample')
-         project_object = next(iter(self.ground_truth.elements.values()))
-         mesh = next(iter(project_object.meshes.primitive_meshes()))
-         visualize_mesh(mesh, visualize)
-
+        visualize = False
+        self.data_path = os.path.join(os.getcwd(), 'sumo/metrics/test_data')
+        self.ground_truth = ProjectScene.load(self.data_path, 'meshes_sample')
+        project_object = next(iter(self.ground_truth.elements.values()))
+        mesh = next(iter(project_object.meshes.primitive_meshes()))
+        utils.visualize_mesh(mesh, visualize)

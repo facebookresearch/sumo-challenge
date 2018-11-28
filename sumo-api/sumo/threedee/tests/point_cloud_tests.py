@@ -61,13 +61,12 @@ class TestPointCloud(unittest.TestCase):
             cloud_output.points(), cloud_input.points()
         )
         os.remove(file_path)
-        
+
     def test_write_ply_with_colors(self):
         n = 100  # number of colors in original cloud
         cloud_input = PointCloud(np.zeros((3, n)), np.zeros((3, n), np.uint8))
 
         # Write test signal into a file
-        folder_path = parutil.get_file_path('sumo/threedee/test_data')
         temp_dir = tempfile.mkdtemp()
 
         file_path = os.path.join(temp_dir, 'example_write.ply')
@@ -80,9 +79,9 @@ class TestPointCloud(unittest.TestCase):
         # self.assertTrue(cloud_output.colored())
         # self.assertEqual(cloud_output.colors().shape, [3, n])
         os.remove(file_path)
-        
+
     def test_sum(self):
-        ''' Test overloads of add for merging point clouds. '''
+        """ Test overloads of add for merging point clouds. """
         cloud = PointCloud(np.zeros((3, 10)), np.zeros((3, 10), np.uint8))
         twice = cloud + cloud
         self.assertTrue(isinstance(twice, PointCloud))
@@ -94,14 +93,14 @@ class TestPointCloud(unittest.TestCase):
         self.assertEquals(five.colors().shape, (3, 50))
 
     def test_append(self):
-        ''' Test (imperative!) append method.'''
+        """ Test (imperative!) append method."""
         cloud = PointCloud(np.zeros((3, 10)), np.zeros((3, 10), np.uint8))
         cloud.append(cloud)
         self.assertEquals(cloud.num_points(), 20)
         self.assertEquals(cloud.colors().shape, (3, 20))
 
     def test_transform_from(self):
-        '''Test transform_from.'''
+        """Test transform_from."""
         t = Vector3(1, 1, 1)
         R = Rot3()
         T = Pose3(R, t).inverse()
@@ -112,7 +111,7 @@ class TestPointCloud(unittest.TestCase):
         )
 
     def test_register(self):
-        ''' Test registering point clouds in different frames. '''
+        """ Test registering point clouds in different frames. """
         t = Vector3(1, 1, 1)
         R = Rot3()
         T = Pose3(R, t).inverse()

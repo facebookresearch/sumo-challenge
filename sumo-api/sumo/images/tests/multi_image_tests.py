@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-'''
+"""
 Copyright (c) Facebook, Inc. and its affiliates.
 
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 
 Multi Image Tiff unit tests.
-'''
+"""
 
 import numpy as np
 import os
@@ -24,11 +24,11 @@ PATH = parutil.get_file_path('sumo/images/test_data')
 
 class TestMultiImageTiff(unittest.TestCase):
     def setUp(self):
-        '''Create temporary outout directory.'''
+        """Create temporary outout directory."""
         self.temp_directory = tempfile.mkdtemp()
 
     def tearDown(self):
-        '''Clean up: remove temporary outout directory.'''
+        """Clean up: remove temporary outout directory."""
         shutil.rmtree(self.temp_directory)
 
     def test_constructor(self):
@@ -68,7 +68,7 @@ class TestMultiImageTiff(unittest.TestCase):
             MultiImageTiff.load("dummy")
 
     def test_tiff_io(self):
-        '''Round-trip TIFF test that checks both dimensions and contents.'''
+        """Round-trip TIFF test that checks both dimensions and contents."""
         w, h = 1000, 600
         rgb = np.zeros((h, w, 3), np.uint8)
         range = np.full((int(h / 2), int(w / 2)), 2.0, np.float32)

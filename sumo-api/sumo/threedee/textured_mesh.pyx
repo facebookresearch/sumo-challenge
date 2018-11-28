@@ -147,7 +147,7 @@ cdef class TexturedMesh:
                                 self.metallic_roughness())
 
     def transform(self, T):
-            '''Return transformed textured mesh, given Pose3 instance <T>.'''
+            """Return transformed textured mesh, given Pose3 instance <T>."""
             return TexturedMesh(self.indices(),
                                 (T * self.vertices()).astype(np.float32),
 			        (T.R * self.normals()).astype(np.float32),

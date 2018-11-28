@@ -1,4 +1,4 @@
-'''
+"""
 Copyright (c) Facebook, Inc. and its affiliates.
 
 This source code is licensed under the MIT license found in the
@@ -10,34 +10,34 @@ Some utilities for small vectors.
     to give them constructor-like creation functions, as if they were classes.
 
     Below that we also define the conversion functions to/from Eigen.
-'''
+"""
 
 import numpy as np
 cimport numpy as np
 from libc.string cimport memcpy
 
 cpdef np.ndarray Vector2(double x, double y):
-    '''Constructor-like creation of a float 2-vector.'''
+    """Constructor-like creation of a float 2-vector."""
     return np.array([x, y], dtype=np.float64)
 
 cpdef np.ndarray Vector2f(double x, double y):
-    '''Constructor-like creation of a float32 2-vector.'''
+    """Constructor-like creation of a float32 2-vector."""
     return np.array([x, y], dtype=np.float32)
 
 cpdef np.ndarray Vector3(double x, double y, double z):
-    '''Constructor-like creation of a float 3-vector.'''
+    """Constructor-like creation of a float 3-vector."""
     return np.array([x, y, z], dtype=np.float64)
 
 cpdef np.ndarray Vector3f(double x, double y, double z):
-    '''Constructor-like creation of a float32 3-vector.'''
+    """Constructor-like creation of a float32 3-vector."""
     return np.array([x, y, z], dtype=np.float32)
 
 cpdef np.ndarray Vector4(double x, double y, double z, double w):
-    '''Constructor-like creation of a float 4-vector.'''
+    """Constructor-like creation of a float 4-vector."""
     return np.array([x, y, z, w], dtype=np.float64)
 
 cpdef np.ndarray Matrix3(x, y, z):
-    '''Constructor-like creation of  3*3-matrix.'''
+    """Constructor-like creation of  3*3-matrix."""
     return np.array([x, y, z], dtype=np.float64)
 
 
@@ -141,7 +141,7 @@ def unitize(v):
         return v
 
 def on_left(N, p, a, b):
-    '''
+    """
     Returns true iff point <p> is on left side of line b-a
     as seen looking along the -N axis
 
@@ -152,7 +152,7 @@ def on_left(N, p, a, b):
 
     Return:
     Boolean
-    '''
+    """
     return np.dot(N, np.cross(b-a, p-a)) >= 0
 
 cdef array_from_matrix3(CMatrix3 mat):

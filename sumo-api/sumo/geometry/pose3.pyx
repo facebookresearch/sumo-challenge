@@ -1,11 +1,11 @@
-'''
+"""
 Copyright (c) Facebook, Inc. and its affiliates.
 
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 
 Pose3: Rigid 3D transform modeled after GTSAM Pose3.
-'''
+"""
 
 cimport numpy as np
 import json
@@ -24,7 +24,7 @@ class Pose3:
 
     def __init__(self, R=np.identity(3, dtype=float),
                        np.ndarray t=Vector3(0, 0, 0)):
-        '''Create a Pose3 instance.'''
+        """Create a Pose3 instance."""
         if isinstance(R, Rot3):
             self.R = R
         else:
@@ -48,16 +48,16 @@ class Pose3:
         return Pose3(Rt, - (Rt * self.t))
 
     def transform_from(self, np.ndarray p):
-        '''Transform point from coordinate frame.'''
+        """Transform point from coordinate frame."""
         return self.R * p + self.t
 
     def transform_all_from(self, np.ndarray p):
-        '''Version of transform_to that supports 2-D arrays.'''
+        """Version of transform_to that supports 2-D arrays."""
         assert p.shape[0] == 3
         return np.transpose(np.transpose(self.R * p) + self.t)
 
     def __mul__(self, other):
-        '''Overload * operator to do either compose or transform_from.'''
+        """Overload * operator to do either compose or transform_from."""
         if isinstance(other, Pose3):
             return self.compose(other)
         else:
@@ -69,11 +69,11 @@ class Pose3:
                 return self.transform_all_from(other)
 
     def transform_to(self, np.ndarray q):
-        '''Transform point to coordinate frame.'''
+        """Transform point to coordinate frame."""
         return self.R.unrotate(q - self.t)
 
     def transform_all_to(self, np.ndarray q):
-        '''Version of transform_to that supports 2-D arrays.'''
+        """Version of transform_to that supports 2-D arrays."""
         assert q.shape[0] == 3
         return self.R.unrotate(np.transpose(np.transpose(q) - self.t))
 
@@ -94,7 +94,7 @@ class Pose3:
 
     @staticmethod
     def draw_poses(poses, ax, length=0.01):
-        '''Draw poses in 3D matplotlib axes using quiver.'''
+        """Draw poses in 3D matplotlib axes using quiver."""
         for c,color in zip(range(3),'rgb'):
             list = [np.hstack([gTc.t[:], gTc.R.matrix()[:,c]]) for gTc in poses]
             X, Y, Z, U, V, W = zip(*list)
@@ -109,20 +109,20 @@ class Pose3:
     @classmethod
     def ENU_camera(cls, float roll=0, float pitch=0, float yaw=0,
                    np.ndarray position=Vector3(0, 0, 0)):
-        '''Create ENU_T_camera where default is upright, level, facing north.
+        """Create ENU_T_camera where default is upright, level, facing north.
            The transform is from camera coordinates (Z depth, Y down) to a local
            ENU frame, i.e., X=East, Y=North, Z=Up. Optionally, perturb via:
             roll  = around Z-axis, positive is fly right
             pitch = around X-axis, positive is up
             yaw   = around Y-axis, positive is fly right
             position = 3-vector in ENU frame
-        '''
+        """
         return cls(R=Rot3.ENU_camera(roll, pitch, yaw), t=position)
 
     @classmethod
     def Maya_camera(cls, float roll=0, float pitch=0, float yaw=0,
                    np.ndarray position=Vector3(0, 0, 0)):
-        '''Create Maya_T_camera where default is upright, level, facing -z.
+        """Create Maya_T_camera where default is upright, level, facing -z.
            The transform is from camera coordinates (Z depth, Y down) to the
            Maya frame, i.e., right-handed coordinate frame with Y=up.
            Optionally, perturb via:
@@ -130,19 +130,19 @@ class Pose3:
             pitch = around X-axis, positive is up in radians
             yaw   = around Y-axis, positive is fly right in radians
             position = 3-vector in ENU frame
-        '''
+        """
         return cls(R=Rot3.Maya_camera(roll, pitch, yaw), t=position)
 
     @classmethod
     def from_surreal(cls, json_dict):
-        ''' Create Pose3 from json-style dictionary.  The format is:
+        """ Create Pose3 from json-style dictionary.  The format is:
               {
                 "QuaternionXYZW": [0,0,0,1],
                 "Translation": [0,0,0]
               }
             Return:
               Pose3 instance
-        '''
+        """
         q_vec = np.array(json_dict['QuaternionXYZW'])
         q_vec = np.roll(q_vec, 1)  # it has to be W, X, Y, Z
         t_vec = np.array(json_dict['Translation'])
@@ -151,10 +151,10 @@ class Pose3:
         return Pose3(rot, t_vec)
 
     def to_surreal(self):
-        ''' Convert Pose3 to surreal-style json.  See above for format.
+        """ Convert Pose3 to surreal-style json.  See above for format.
             Returns:
               dictionary that can be 'json.dumped'
-        '''
+        """
         q = Quaternion(self.rotation().matrix())
         q_vec = q.as_vector()
         q_vec = np.roll(q_vec, -1)  # it has to be X, Y, Z, W
@@ -162,7 +162,7 @@ class Pose3:
 
     @classmethod
     def from_xml(cls, node):
-        '''
+        """
         Create Pose3 from xml tree (ElementTree).  The format is:
         <pose>
         <!-- Camera pose. World from Camera point transfer. 3x4 matrix, in the RDF frame convention defined above -->
@@ -174,7 +174,7 @@ class Pose3:
 
         Exceptions:
           RuntimeError - if xml is not in expected format
-        '''
+        """
 
         if (node.tag != 'pose'):
             raise RuntimeError("Expected 'pose' tag but got {}".format(node.tag))
@@ -200,12 +200,12 @@ class Pose3:
 
 
     def to_xml(self):
-        '''
+        """
         Convert Pose3 to xml (see above for format).
 
         Return:
           Element containing pose tag
-        '''
+        """
 
         pose_elem = ET.Element('pose')
 
@@ -220,7 +220,7 @@ class Pose3:
 
     @classmethod
     def from_json(cls, json_dict):
-        ''' Create Pose3 from json-style dictionary <json_dict>.
+        """ Create Pose3 from json-style dictionary <json_dict>.
             The format is:
               {'Rotation':<Rot3 json>, 'Translation':[1,2,3]}
             where <Rot3 json> is the json dict for Rot3.
@@ -230,13 +230,13 @@ class Pose3:
 
             Exceptions:
               ValueError - if json dictionary is not in expected format
-        '''
+        """
         return cls(R=Rot3.from_json(json_dict['Rotation']),
                    t=Vector3(*json_dict['Translation']))
 
     def to_json(self):
-        ''' Convert Pose3 to json.  See above for format.
+        """ Convert Pose3 to json.  See above for format.
             Returns:
               dictionary that can be 'json.dumped'
-        '''
+        """
         return {'Rotation':self.R.to_json(), 'Translation':list(self.t)}

@@ -29,7 +29,7 @@ cdef np.ndarray array_of_uint32s(vector[unsigned int] indices):
 
 # This is the python wrapper class which dispatches to the C++ class
 cdef class Mesh:
-  '''A simple mesh class.'''
+  """A simple mesh class."""
   def __init__(self, np.ndarray[np.uint32_t, ndim=1] indices = np.ndarray(shape=(0), dtype=np.uint32),
                np.ndarray[np.float32_t, ndim=2] vertices = np.ndarray(shape=(3,0), dtype=np.float32),
                np.ndarray[np.float32_t, ndim=2] normals = np.ndarray(shape=(3,0), dtype=np.float32)):
@@ -69,23 +69,23 @@ cdef class Mesh:
 
   @classmethod
   def example(cls, const double length = 2, bool inward = False):
-      ''' Create a Mesh example of a axis-aligned cube.
+      """ Create a Mesh example of a axis-aligned cube.
       Inputs:
           length -- side length of the cube
           inward -- true if the cube has inward surface normal vectors
       Return:
           Mesh instance
-      '''
+      """
       return Mesh_copy(CMesh.Example(length, inward))
 
   def rotate(self, R):
-      '''Return rotated mesh, given Rot3 instance <R>.'''
+      """Return rotated mesh, given Rot3 instance <R>."""
       return Mesh(self.indices(),
                   (R * self.vertices()).astype(np.float32),
                   (R * self.normals()).astype(np.float32))
 
   def transform(self, T):
-      '''Return transformed mesh, given Pose3 instance <T>.'''
+      """Return transformed mesh, given Pose3 instance <T>."""
       return Mesh(self.indices(),
                   (T * self.vertices()).astype(np.float32),
                   (T.R * self.normals()).astype(np.float32))
@@ -98,12 +98,12 @@ cdef class Mesh:
 
   @classmethod
   def from_open3d_mesh(cls, open3d_mesh):
-      ''' Create a Mesh from a Open3D Mesh having the OpenGL coordinate system
+      """ Create a Mesh from a Open3D Mesh having the OpenGL coordinate system
       Inputs:
           mesh (Open3D Mesh)
       Return:
           Mesh
-      '''
+      """
       # Extract indices, vertices, normal
       indices = np.asarray(open3d_mesh.triangles).astype(np.uint32).flatten()
       vertices = np.asarray(open3d_mesh.vertices).astype(np.float32).T
@@ -114,11 +114,11 @@ cdef class Mesh:
 
   @classmethod
   def cube(cls):
-      ''' Create a 3D mesh of 12 triangles.
+      """ Create a 3D mesh of 12 triangles.
           The textures is assumed to be laid out in cube-map format, i.e.,
           a 1:6 aspect ratio with BACK, LEFT, FRONT, RIGHT, UP, DOWN order.
           # TODO: make general to have m triangle strips of 2*n triangles
-      '''
+      """
       # Create 2D mesh
       cdef size_t j = 0
       indices = np.empty((36,), dtype=np.uint32)

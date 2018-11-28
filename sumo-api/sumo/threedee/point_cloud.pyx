@@ -1,5 +1,5 @@
 # Copyright 2004-present Facebook. All Rights Reserved.
-'''Point Cloud in 3D Space.'''
+"""Point Cloud in 3D Space."""
 
 import numpy as np
 import numpy.matlib
@@ -64,14 +64,14 @@ cdef class PointCloud:
 
   @classmethod
   def load_ply(cls, filename):
-      ''' Load a ply file with the given filename '''
+      """ Load a ply file with the given filename """
       points, num_of_points = read_points(filename)
       assert num_of_points != 0, "Reading Failed !! no points"
       return cls(points)
 
   @classmethod
   def merge(cls, first, second):
-      ''' Return a new instance that merges the two point clouds.'''
+      """ Return a new instance that merges the two point clouds."""
       if first.colored() and not second.colored():
           raise ValueError("Can't merge colored point cloud with non-colored point cloud.")
       result = cls()
@@ -81,10 +81,10 @@ cdef class PointCloud:
 
   @classmethod
   def register(cls, iterator):
-      ''' Given an iterator that (Pose3, PointCloud) pairs, where each Pose3 is a
+      """ Given an iterator that (Pose3, PointCloud) pairs, where each Pose3 is a
           transform from cloud to the world frame, create a merged point cloud in
           the world coordinate frame.
-      '''
+      """
       cdef PointCloud w_point_cloud
       cdef const CPointCloud* cloud_ptr
       cdef vector[const CPointCloud*] clouds
@@ -99,7 +99,7 @@ cdef class PointCloud:
       return wrapper # python objects will now be destroyed
 
   def __add__(self, other):
-      ''' Return a new instance that merges the two point clouds.'''
+      """ Return a new instance that merges the two point clouds."""
       if isinstance(other, int):
           return self # this only happens when we call sum
       elif isinstance(self, int):
@@ -112,7 +112,7 @@ cdef class PointCloud:
       return self.__add__(other)
 
   def append(self, PointCloud other):
-      ''' Append the points (and colors) of the other instance. Imperative.'''
+      """ Append the points (and colors) of the other instance. Imperative."""
       self._c_ptr.append(other._c_ptr[0])
 
   def point(self, size_t i):
@@ -134,36 +134,36 @@ cdef class PointCloud:
     return self._c_ptr.colored()
 
   def thin(self, num_to_keep):
-      '''Randomly select <num_to_keep> points to keep.'''
+      """Randomly select <num_to_keep> points to keep."""
       idx = np.random.randint(self.num_points(), size=num_to_keep)
       points = self.points()[:, idx]
       colors = self.colors()[:, idx] if self.colored() else None
       return PointCloud(points, colors)
 
   def transform_from(self, aTb):
-      ''' Transforms all points from B to A frame.
+      """ Transforms all points from B to A frame.
           Keyword arguments:
               aTb -- pose of frame B in frame A
           Returns new point cloud.
-      '''
+      """
       if self.colored():
           return PointCloud(aTb.transform_all_from(self.points()), self.colors())
       else:
           return PointCloud(aTb.transform_all_from(self.points()))
 
   def transform_to(self, aTb):
-      ''' Transforms all points from A to B frame.
+      """ Transforms all points from A to B frame.
           Keyword arguments:
               aTb -- pose of frame B in frame A
           Returns new point cloud.
-      '''
+      """
       if self.colored():
           return PointCloud(aTb.transform_all_to(self.points()), self.colors())
       else:
           return PointCloud(aTb.transform_all_to(self.points()))
 
   def show(self, figsize=(12, 6), colored=False, **options):
-      '''Show using matplotlib; does not call plt.show().'''
+      """Show using matplotlib; does not call plt.show()."""
       fig = plt.figure(figsize=figsize)
       P = self.points()
 
@@ -196,14 +196,14 @@ cdef class PointCloud:
 
   # TODO: Write faceTexcoords, norms
   def write_ply(self, filename):
-      ''' Write object info into a ply file with the given filename. '''
+      """ Write object info into a ply file with the given filename. """
       if self.colored():
           write_points_and_colors(self.points(), self.colors(), filename)
       else:
           write_points(self.points(), filename)
 
   def save(self, path, color=np.array([255, 255, 255]), keep=None):
-      ''' Save to a text file <path>, with given <color>.'''
+      """ Save to a text file <path>, with given <color>."""
       points_as_rows = np.transpose(self.points())
       colors_as_rows = np.matlib.repmat(color, points_as_rows.shape[0], 1)
       stacked_rows = np.hstack([points_as_rows, colors_as_rows])
