@@ -1,4 +1,4 @@
-'''
+"""
 Copyright (c) Facebook, Inc. and its affiliates.
 
 This source code is licensed under the MIT license found in the
@@ -6,7 +6,7 @@ LICENSE file in the root directory of this source tree.
 
 
 Rot3: Rigid 3D transform modeled after GTSAM Rot3.
-'''
+"""
 
 import math
 import numpy as np
@@ -28,35 +28,35 @@ MAYA_R_CAMERA = np.transpose(
 
 class Rot3:
     def __init__(self, np.ndarray R=np.identity(3, dtype=float)):
-        '''Create a Rot3 instance.'''
+        """Create a Rot3 instance."""
         self.R = R
 
     def matrix(self):
-        '''Return 3*3 matrix.'''
+        """Return 3*3 matrix."""
         return self.R
 
     def __call__(self, size_t j):
-        '''Return 3*1 column.'''
+        """Return 3*1 column."""
         return self.R[:,j]
 
     def inverse(self):
-        '''Return R^t.'''
+        """Return R^t."""
         return Rot3(np.transpose(self.R))
 
     def rotate(self, np.ndarray p):
-        '''Return R*p.'''
+        """Return R*p."""
         return self.R.dot(p)
 
     def unrotate(self, np.ndarray q):
-        '''Return R^T*p.'''
+        """Return R^T*p."""
         return np.transpose(self.R).dot(q)
 
     def __str__(self):
-        '''String representation is matrix.'''
+        """String representation is matrix."""
         return str(self.R)
 
     def __mul__(self, other):
-        '''Overload * operator so we don't need np.dot all over.'''
+        """Overload * operator so we don't need np.dot all over."""
         if isinstance(other, Rot3):
             return Rot3(np.dot(self.R, other.R))  # returns Rot3
         else:
@@ -92,11 +92,11 @@ class Rot3:
 
     @classmethod
     def AxisAngle(cls, np.ndarray d, double a):
-        ''' Create rotation matrix R = dd^T + cos(a) (I - dd^T) + sin(a) skew(d)
+        """ Create rotation matrix R = dd^T + cos(a) (I - dd^T) + sin(a) skew(d)
             Keyword arguments:
               d -- a unit vector specifying the axis of rotation
               a -- angle around the rotation axis, in radians
-        '''
+        """
         # inspired by from CameraGen/symmetry.py, which is not in buck yet
         eye = np.eye(3)
         ddt = np.outer(d, d)
@@ -110,45 +110,45 @@ class Rot3:
         return np.allclose(self.matrix(), other.matrix(), *args, **kwargs)
 
     def assert_almost_equal(self, other, *args, **kwargs):
-        '''
+        """
         Raises an AssertionError if two Rot3 instances (<self> and <other>)
         are not equal to desired precision.  See numpy.testing docs for details.
-        '''
+        """
         np.testing.assert_array_almost_equal(self.matrix(), other.matrix(), *args, **kwargs)
 
     def assert_equal(self, other):
-        '''
+        """
         Raises an AssertionError if two Rot3 instances (<self> and <other>)
         are not equal.
-        '''
+        """
         np.testing.assert_array_equal(self.matrix(), other.matrix())
 
     @classmethod
     def ENU_camera(cls, roll=0, pitch=0, yaw=0):
-        '''Create ENU_R_camera where default is upright, level, facing north.
+        """Create ENU_R_camera where default is upright, level, facing north.
            The rotation is from camera coordinates (Z depth, Y down) to a local
            ENU frame, i.e., X=East, Y=North, Z=Up. Optionally, perturb via:
             roll  = around Z-axis, positive is fly right
             pitch = around X-axis, positive is up
             yaw   = around Y-axis, positive is fly right
-        '''
+        """
         return cls(ENU_R_CAMERA) * Rot3.Ry(yaw) * Rot3.Rx(pitch) * Rot3.Rz(roll)
 
     @classmethod
     def Maya_camera(cls, roll=0, pitch=0, yaw=0):
-        '''Create maya_R_camera. The Maya frame is a right-handed coordinate
+        """Create maya_R_camera. The Maya frame is a right-handed coordinate
            frame where Y is up.
            The default returns a camera which is pointing in the -z direction.
            Optionally, perturb via roll/pitch/yaw in the camera frame:
             roll  = around Z-axis, positive is fly right in radians
             pitch = around X-axis, positive is up in radians
             yaw   = around Y-axis, positive is fly right in radians
-        '''
+        """
         return cls(MAYA_R_CAMERA) * Rot3.Ry(yaw) * Rot3.Rx(pitch) * Rot3.Rz(roll)
 
     @classmethod
     def from_xml(cls, base_elem):
-        '''
+        """
         Create Rot3 from xml tree (ElementTree Element) <base_elem>.
         The format is:
         <rotation>
@@ -162,7 +162,7 @@ class Rot3:
 
         Exceptions:
           ValueError - if xml is not in expected format
-        '''
+        """
 
         if (base_elem.tag != 'rotation'):
             raise ValueError("Expected 'rotation' tag but got {}".format(base_elem.tag))
@@ -181,12 +181,12 @@ class Rot3:
         return cls(R = R)
 
     def to_xml(self):
-        '''
+        """
         Convert Rot3 to xml.  See above for format.
 
         Return:
           ElementTree Element containing pose tag
-        '''
+        """
 
         base_elem = ET.Element('rotation')
 
@@ -198,7 +198,7 @@ class Rot3:
 
     @classmethod
     def from_json(cls, json_dict):
-        ''' Create Rot3 from json-style dictionary <json_dict>.
+        """ Create Rot3 from json-style dictionary <json_dict>.
             The format is a dict with the three *columns* of the 3*3 matrix:
               {
                 'X': [1.0, 0, 0]
@@ -211,13 +211,13 @@ class Rot3:
 
             Exceptions:
               ValueError - if json dictionary is not in expected format
-        '''
+        """
         return cls.FromColumns(json_dict['X'],json_dict['Y'],json_dict['Z'])
 
     def to_json(self):
-        ''' Convert Rot3 to json.  See above for format.
+        """ Convert Rot3 to json.  See above for format.
             Returns:
               dictionary that can be 'json.dumped'
-        '''
+        """
         R = self.matrix()
         return {field: list(R[:,i]) for i, field in enumerate(['X','Y','Z'])}

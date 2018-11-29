@@ -250,7 +250,8 @@ class GltfAccessor {
  private:
   // Calculate pointer_, assumes tinyAccessor_ is initialized correctly
   void calculatePointer(const GltfModel& object) {
-    if (tinyAccessor_.bufferView >= static_cast<int>(object.bufferViews.size())) {
+    if (tinyAccessor_.bufferView >=
+        static_cast<int>(object.bufferViews.size())) {
       throw std::invalid_argument("GltfAccessor: invalid bufferView index");
     }
     const tinygltf::BufferView& view =

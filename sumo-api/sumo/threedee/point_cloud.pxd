@@ -1,5 +1,5 @@
 # Copyright 2004-present Facebook. All Rights Reserved.
-'''Cython header for interfacing with PointCloud C++.'''
+"""Cython header for interfacing with PointCloud C++."""
 
 cimport numpy as np
 from sumo.base.vector cimport CVector3
