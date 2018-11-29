@@ -13,6 +13,7 @@ import math
 import numpy as np
 from scipy.linalg import logm
 
+from sumo.base.vector import Vector2
 from sumo.geometry.rot3 import Rot3
 import sumo.metrics.utils as utils
 from sumo.semantic.project_object_dict import ProjectObjectDict
@@ -89,13 +90,44 @@ class Evaluator():
         mesh_overlap_thresh = 0.1  # meters
         voxel_overlap_thresh = 0.1  # meters
 
+        perceptual_settings = {
+            "room_scale": {
+                "weight": 100,
+                "mean": 1.0,
+                "std_dev": 0.15 
+            },
+            "true_obj_scale": {
+                "weight": 5,
+                "mean": 1.0,
+                "std_dev": 0.18  
+            },
+            "relative_obj_scale": {
+                "weight": 5,
+                "mean": 1.0,
+                "std_dev": 0.18 
+            },
+            "translation": {
+                "weight": 5,
+                "mean": 0.0,
+                "std_dev": 0.5  
+            },
+            "elevation": {
+                "weight": 5,
+                "mean": 0.0,
+                "std_dev": 0.005
+            },
+            "missed_weight": 25,
+            "extra_weight": 25
+        }
+            
         return {
             "thresholds": thresholds,
             "recall_samples": recall_samples,
             "categories": categories,
             "density": density,
             "mesh_overlap_thresh": mesh_overlap_thresh,
-            "voxel_overlap_thresh": voxel_overlap_thresh, }
+            "voxel_overlap_thresh": voxel_overlap_thresh, 
+            "perceptual" : perceptual_settings,}
 
     def evaluate_all(self):
         """
@@ -349,16 +381,24 @@ class Evaluator():
 
     def perceptual_score(self):
         """
-        ::: need to fix
-            Computes perceptual score for a participant's submission
-            Returns:
-                perceptual_score: a list of 3 tuples [(s1, s1m), (s2, s2m),
-                (s3, s3m)] where s1, s2, s3 are layout, furniture and clutter
-                scores respectively and s1m, s2m, s3m are the maximum possible
-                scores for layout, furniture, and clutter respectively.
+        Computes perceptual score for a participant's submission
+        Returns:
+        perceptual_score (float) - mean perceptual score across all thresholds
         """
-        raise NotImplementedError('Instantiate a child class')
+        perceptual_scores = []
+        all_det_ids = set(self._submission.elements.keys())
+        all_gt_ids = set(self._ground_truth.elements.keys())
+        normalized = True  # ::: TODO: What should this default be and should it be controlled in settings?
+        for t in self._settings["thresholds"]:
+            matched_det_ids = set([x.det_id for x in self._agnostic_data_assoc[t].values()])
+            matched_gt_ids = set([x.gt_id for x in self._agnostic_data_assoc[t].values()])
+            missed = all_gt_ids.difference(matched_gt_ids)  
+            extra = all_det_ids.difference(matched_det_ids)
 
+            perceptual_score = self._perceptual_score_1(self._agnostic_data_assoc[t], missed, extra, normalized)
+            perceptual_scores.append(perceptual_score)
+            
+        return np.mean(perceptual_scores)
 
 #------------------------
 # End of public interface
@@ -567,7 +607,151 @@ class Evaluator():
                 print("Det: {} | GT: {} | sim: {} | score: {}".format(
                     det_id, gt_id, corr.similarity, corr.det_score))
 
+    def _perceptual_score_1(self, matched, missed, extra, normalized=True):
+        """
+        Compute perceptual score for a given data association at a
+        single similarity threshold. 
 
+        Inputs:
+        matched (dict of Corrs) - dictionary of correspondences (from
+          data association) between submitted elements and
+          ground-truth elements. 
+        missed (set of object_ids) - ids of non-matched ground-truth instances
+        extra (set of object_ids) - ids of non-matched detected instances
+        normalized (Bool) - if True, normalize the score (from 0-1),
+          else return the raw score
+
+        Return:
+        perceptual_score (float) - larger score is better
+        """
+        perceptual_score = 0
+        max_score = 0
+
+        params = self._settings["perceptual"]
+        
+        g_room_scale = _gaussian_function(params['room_scale'])
+        g_true_obj_scale = _gaussian_function(params['true_obj_scale'])
+        g_relative_obj_scale = _gaussian_function(params['relative_obj_scale'])
+        g_translation = _gaussian_function(params['translation'])
+        g_elevation = _gaussian_function(params['elevation'])
+        missed_weight = params['missed_weight']
+        extra_weight = params['extra_weight']
+
+        # Compute (and score) room scale, which is based on the combined area of "floor" objects
+        gt_floor_area = 0
+        sub_floor_area = 0
+
+        # ::: TODO: Should apply pose to objects before computing bounds.  Also, should
+        # consider other types of structural objects, such as walls and ceilings.
+        # ::: TODO: A better way to do this would be to pose all the structural objects
+        # and then take the bounding box of the union of all of them.
+        for element in self._ground_truth.elements.values():
+            if element.category == 'floor':
+                x_size = element.bounds.max_corner[0] - element.bounds.min_corner[0]
+                z_size = element.bounds.max_corner[2] - element.bounds.min_corner[2]
+                gt_floor_area += (x_size * z_size)
+
+        for element in self._submission.elements.values():
+            if element.category == 'floor':
+                x_size = element.bounds.max_corner[0] - element.bounds.min_corner[0]
+                z_size = element.bounds.max_corner[2] - element.bounds.min_corner[2]
+                sub_floor_area += (x_size * z_size)
+
+        if gt_floor_area > 0:
+            room_scale = sub_floor_area / gt_floor_area
+        else:
+            room_scale = 0
+
+        perceptual_score += g_room_scale(room_scale)
+        max_score += params['room_scale']['weight']
+
+        for corr in matched.values():
+            gt_element = self._ground_truth.elements[corr.gt_id]
+            det_element = self._submission.elements[corr.det_id]
+            
+            # absolute and relative (to room size) scale perceptual score
+            # scale 
+            # ::: TODO: Consider an alternative method of defining scale.
+            # E.g., relative
+            gt_volume = gt_element.bounds.volume()
+            gt_roomscale_volume = gt_volume * room_scale
+            det_volume = det_element.bounds.volume()
+            if gt_volume > 0:
+                # avoid divide by 0.  This should not happen in normal cases.
+                # If this does happen, just ignore this object.  It is not
+                # clear what would be the scale.
+                perceptual_score += g_true_obj_scale(det_volume / gt_volume)
+                max_score += params['true_obj_scale']['weight']
+            if gt_roomscale_volume > 0:
+                # avoid divide by 0.  This should not happen in normal cases.
+                # If this does happen, just ignore this object.  It is not
+                # clear what would be the scale.
+                perceptual_score += g_relative_obj_scale(det_volume / gt_roomscale_volume)
+                max_score += params['relative_obj_scale']['weight']
+
+            # translation perceptual score
+            gt_trans = Vector2(gt_element.pose.t[0], gt_element.pose.t[2])
+            det_trans = Vector2(det_element.pose.t[0], det_element.pose.t[2])
+            translation_diff = np.linalg.norm(det_trans - gt_trans)
+            perceptual_score += g_translation(translation_diff)
+            max_score += params['translation']['weight']
+            
+            # elevation perceptual score
+            elevation_diff = det_element.pose.t[1] - gt_element.pose.t[1]
+            perceptual_score += g_elevation(elevation_diff)
+            max_score += params['elevation']['weight']
+
+        # penalty for missed detections
+        for gt_id in missed:
+            gt_element = self._ground_truth.elements[gt_id]
+            perceptual_score -= missed_weight * gt_element.bounds.volume()
+
+        # penalty for false alarms
+        for det_id in extra:
+            det_element = self._submission.elements[det_id]
+            perceptual_score -= extra_weight * det_element.bounds.volume()
+
+        # optionally normalize the results
+        if normalized:
+            if perceptual_score <= 0:
+                perceptual_score = 0.0
+            else:
+                perceptual_score /= max_score
+
+        return perceptual_score
+
+    
+#-----------------------------
+# Helper functions and classes
+#-----------------------------
+
+def _gaussian_function(settings):
+    """
+    Make a weighted 1D Gaussian function object.
+    
+    Inputs:
+    settings (dict) - Parameters for configuring the Gaussian.  Keys/values are:
+    weight (float) - The maximum height of the Gaussian
+    mean (float) - The mean (peak) of the Gaussian
+    std_dev (float) - The standard deviation (width) of the Gaussian
+
+    Return:
+    gaussian (function) - A function that takes a single numeric value and returns
+    the value of the Gaussian for that point.
+    """
+    def gaussian(x):
+        """
+        Gaussian function.
+        
+        Input:
+        x (float)
+
+        Return:
+        gaussian(x) - the value of the Gaussian
+        """
+        return settings['weight'] * math.exp(-0.5 * (x - settings['mean'])**2 / settings['std_dev']**2)
+    return gaussian
+  
 class Corr():
     """
     Helper class for storing a correspondence.

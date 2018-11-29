@@ -95,19 +95,7 @@ class VoxelEvaluator(Evaluator):
         """
         return utils.color_rmsssd(self, self._submission, self._ground_truth,
                                   self._settings["voxel_overlap_thresh"], voxels=True)
-
-    def perceptual_score(self):
-        """
-            Computes perceptual score for a participant's submission
-            Returns:
-                perceptual_score: a list of 3 tuples [(s1, s1m), (s2, s2m),
-                (s3, s3m)] where s1, s2, s3 are layout, furniture and clutter
-                scores respectively and s1m, s2m, s3m are the maximum possible
-                scores for layout, furniture, and clutter respectively.
-        """
-        print("Warning: perceptual_score not implemented yet")
-        return 0
-
+    
 #------------------------
 # End of public interface
 #------------------------
