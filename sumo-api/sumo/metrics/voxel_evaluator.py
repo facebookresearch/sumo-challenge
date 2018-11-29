@@ -94,7 +94,7 @@ class VoxelEvaluator(Evaluator):
         https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
         """
         return utils.color_rmsssd(self, self._submission, self._ground_truth,
-                                  self._settings.voxel_overlap_thresh, voxels=True)
+                                  self._settings["voxel_overlap_thresh"], voxels=True)
     
 #------------------------
 # End of public interface

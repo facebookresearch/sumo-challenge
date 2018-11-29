@@ -389,7 +389,7 @@ class Evaluator():
         all_det_ids = set(self._submission.elements.keys())
         all_gt_ids = set(self._ground_truth.elements.keys())
         normalized = True  # ::: TODO: What should this default be and should it be controlled in settings?
-        for t in self._settings.thresholds:
+        for t in self._settings["thresholds"]:
             matched_det_ids = set([x.det_id for x in self._agnostic_data_assoc[t].values()])
             matched_gt_ids = set([x.gt_id for x in self._agnostic_data_assoc[t].values()])
             missed = all_gt_ids.difference(matched_gt_ids)  
@@ -627,7 +627,7 @@ class Evaluator():
         perceptual_score = 0
         max_score = 0
 
-        params = self._settings.perceptual
+        params = self._settings["perceptual"]
         
         g_room_scale = _gaussian_function(params['room_scale'])
         g_true_obj_scale = _gaussian_function(params['true_obj_scale'])
