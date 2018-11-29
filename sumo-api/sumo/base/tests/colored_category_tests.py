@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-'''
+"""
 Copyright (c) Facebook, Inc. and its affiliates.
 
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 
 ColoredCategory class tests.
-'''
+"""
 
 import numpy as np
 import unittest
@@ -23,7 +23,7 @@ class TestColoredCategory(unittest.TestCase):
         self.colored_categoty = ColoredCategory(CSV_PATH)
 
     def test_conversion(self):
-        '''Tests creation of object'''
+        """Tests creation of object"""
         self.assertEqual(
             self.colored_categoty.category_id_to_rgb(133), (205, 145, 158)
         )
@@ -32,7 +32,7 @@ class TestColoredCategory(unittest.TestCase):
         )
 
     def test_lut(self):
-        '''Tests LUT property.'''
+        """Tests LUT property."""
         lut = self.colored_categoty.LUT
         self.assertIsInstance(lut, np.ndarray)
         self.assertGreater(lut.shape[0], 0)
@@ -40,7 +40,7 @@ class TestColoredCategory(unittest.TestCase):
         np.testing.assert_array_equal(lut[1], np.array([30, 144, 255]))
 
     def test_image_conversion(self):
-        '''Tests conversion of index to rgb based on category mapping.'''
+        """Tests conversion of index to rgb based on category mapping."""
         indexed_im = np.array([[1, 2], [3, 4]]).astype(np.uint16)
         color_im = self.colored_categoty.convert_to_rgb_im(indexed_im)
         gt_color_im = np.zeros((2, 2, 3), dtype=np.uint8)

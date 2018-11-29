@@ -1,11 +1,11 @@
-'''
+"""
 Copyright (c) Facebook, Inc. and its affiliates.
 
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 
 Imports opencv types and declares conversion functions to/from numpy.
-'''
+"""
 
 import numpy as np
 cimport numpy as np

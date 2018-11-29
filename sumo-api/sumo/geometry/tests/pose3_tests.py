@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-'''
+"""
 Copyright (c) Facebook, Inc. and its affiliates.
 
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 
 Pose3 unit tests.
-'''
+"""
 
 import json
 import numpy as np
@@ -77,10 +77,10 @@ class TestPose3(unittest.TestCase):
         np.testing.assert_array_equal(self.pose.matrix(), expected)
 
     def test_xml(self):
-        '''
+        """
         Test conversion to and from xml.  This is just a basic functionality
         test of a round trip from Pose3 to xml and back.
-        '''
+        """
         pose = Pose3(
             t=Vector3(1.5, 2.6, 3.7),
             R=np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
@@ -91,19 +91,19 @@ class TestPose3(unittest.TestCase):
         pose.assert_almost_equal(pose_rt)
 
     def test_json(self):
-        '''Test conversion to/from json dict.'''
+        """Test conversion to/from json dict."""
         json_dict = self.pose.to_json()
         decoded_pose = Pose3.from_json(json_dict)
         decoded_pose.assert_almost_equal(self.pose)
 
     def test_surreal_coding(self):
-        '''Test conversion to/from surreal-style json dict.'''
+        """Test conversion to/from surreal-style json dict."""
         json_dict = self.pose.to_surreal()
         decoded_pose = Pose3.from_surreal(json_dict)
         decoded_pose.assert_almost_equal(self.pose)
 
     def test_surreal(self):
-        '''Read from a Surreal json file.'''
+        """Read from a Surreal json file."""
 
         # Expected pose.
         expected_pose = Pose3(t=Vector3(1, 2, 3))

@@ -46,10 +46,10 @@ class Box3d(object):
         return self._max_corner
 
     def point_in_box(self, point):
-        '''
+        """
         Checks whether the given point (np.ndarray) is inside this box
         Note: check is not inclusive of the boundary
-        '''
+        """
         return np.all(point > self.min_corner) and \
             np.all(point < self.max_corner)
 

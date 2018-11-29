@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Copyright (c) Facebook, Inc. and its affiliates.
 
@@ -8,8 +9,8 @@ Algorithm class: Evaluate a voxel track submission
 """
 
 from sumo.metrics.evaluator import Evaluator
-from sumo.metrics.mesh_evaluator import sample_element
 import sumo.metrics.utils as utils
+
 
 class VoxelEvaluator(Evaluator):
     """
@@ -19,26 +20,17 @@ class VoxelEvaluator(Evaluator):
     def __init__(self, submission, ground_truth, settings=None):
         """
         Constructor.  Computes similarity between all elements in the
-        submission and ground_truth and also computes 
-        data association caches. 
+        submission and ground_truth and also computes
+        data association caches.
 
         Inputs:
         submission (ProjectScene) - Submitted scene to be evaluated
         ground_truth (ProjectScene) - The ground truth scene
-        settings (EasyDict) - configuration for the evaluator.  See
-        Evaluator.py for recognized keys and values.   
+        settings (dict) - configuration for the evaluator.  See
+        Evaluator.py for recognized keys and values.
         """
 
-
-        # TODO: not needed anymore.  Use this as a template for converter
         # TODO: Add check that scene type is voxels
-        
-        # # sample GT, voxelize, and store in voxels field
-        # for e in ground_truth.elements:
-        #     points = sample_element(e, settings.density)
-        #     bbox = ComputeBbox.from_point_cloud(points[0:3].T)
-        #     e.voxels = VoxelGrid(voxel_size, bbox.min_corner, points)
-
         # extract voxel centers
         for e in submission.elements.values():
             centers = e.voxels.voxel_centers()
@@ -48,9 +40,8 @@ class VoxelEvaluator(Evaluator):
             centers = e.voxels.voxel_centers()
             centers_posed = e.pose.transform_all_from(centers.T).T
             e.voxel_centers = centers_posed
-            
-        super(VoxelEvaluator, self).__init__(ground_truth, submission, settings)
 
+        super(VoxelEvaluator, self).__init__(ground_truth, submission, settings)
 
     def evaluate_all(self):
         """
@@ -77,36 +68,33 @@ class VoxelEvaluator(Evaluator):
 
         return metrics
 
-
     def rms_points_error(self):
         """
         Compute RMS symmetric surface distance (RMSSSD).
           Equation 11 in SUMO white paper.
 
         Return:
-        float - RMSSSD 
+        float - RMSSSD
 
         Reference:
-        https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf   
+        https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
         """
         return utils.points_rmsssd(self, self._submission, self._ground_truth,
-                                   self._settings.voxel_overlap_thresh, voxels=True)
-        
-        
+                                   self._settings["voxel_overlap_thresh"], voxels=True)
+
     def rms_color_error(self):
         """
         Compute RMS symmetric surface color distance (RMSSSCD).
           Equation 13 in SUMO white paper.
 
         Return:
-        float - RMSSSCD 
-        
+        float - RMSSSCD
+
         Reference:
         https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
         """
         return utils.color_rmsssd(self, self._submission, self._ground_truth,
-                                  self._settings.voxel_overlap_thresh, voxels=True)
-    
+                                  self._settings["voxel_overlap_thresh"], voxels=True)
 
     def perceptual_score(self):
         """
@@ -119,7 +107,7 @@ class VoxelEvaluator(Evaluator):
         """
         print("Warning: perceptual_score not implemented yet")
         return 0
-    
+
 #------------------------
 # End of public interface
 #------------------------
@@ -131,11 +119,11 @@ class VoxelEvaluator(Evaluator):
 
         Inputs:
         element1 (ProjectObject)
-        element2 (ProjectObject) 
+        element2 (ProjectObject)
 
         Return:
         float - voxel IoU (Equation 2 in SUMO white paper)
         """
         sim = utils.points_iou(element1.voxel_centers, element2.voxel_centers,
-                               self._settings.voxel_overlap_thresh)
+                               self._settings["voxel_overlap_thresh"])
         return sim

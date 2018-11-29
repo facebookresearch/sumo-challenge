@@ -9,7 +9,6 @@ LICENSE file in the root directory of this source tree.
 ProjectConverter class unit tests.
 """
 
-import os
 import unittest
 
 from libfb.py import parutil
@@ -17,6 +16,7 @@ from sumo.semantic.project_converter import ProjectConverter
 from sumo.semantic.project_scene import ProjectScene
 
 TEST_PATH = parutil.get_file_path("sumo/metrics/test_data")
+
 
 class TestProjectConverter(unittest.TestCase):
     def test_meshes_to_voxels(self):
@@ -48,13 +48,13 @@ class TestProjectConverter(unittest.TestCase):
                          len(meshes_model.elements))
         for element in bbox_model.elements.values():
             self.assertTrue(hasattr(element, "bounds"))
-        
+
     def test_voxel_to_bbox(self):
         """
         Conversion from voxel to bbox.  Test number of elements
         and project_type.  Does not test contents for accuracy.
         """
-        
+
         voxels_model = ProjectScene.load(TEST_PATH, "voxels_sample")
         bbox_model = ProjectConverter().run(voxels_model, "bounding_box")
 
@@ -70,11 +70,9 @@ class TestProjectConverter(unittest.TestCase):
         """
         bbox_model = ProjectScene.load(TEST_PATH, "bounding_box_sample")
         self.assertRaises(ValueError, ProjectConverter().run,
-                          project = bbox_model,
-                          target_type = "voxels"
-        )
+                          project=bbox_model,
+                          target_type="voxels")
 
         self.assertRaises(ValueError, ProjectConverter().run,
-                          project = bbox_model,
-                          target_type = "meshes"
-        )
+                          project=bbox_model,
+                          target_type="meshes")

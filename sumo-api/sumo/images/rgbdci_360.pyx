@@ -67,13 +67,13 @@ class Rgbdci360(object):
 
     @classmethod
     def load(cls, path, **options):
-        '''
+        """
         Read from multi-page TIFF file.
 
         Inputs:
             path (string) - input file path
             **options - kwargs for tiff reader
-        '''
+        """
         page_map = rgbd_tiff.load(path, **options)
         rgb = page_map[MultiImagePageType.RGB]
         range = page_map[MultiImagePageType.Depth]
@@ -122,7 +122,7 @@ class Rgbdci360(object):
 
 
     def create_point_cloud(self, bool all_points=False):
-        '''Creates point cloud in camera frame.'''
+        """Creates point cloud in camera frame."""
         if self.rgb.shape[0:2] != self.range.shape[0:2]:
             raise ValueError("create_point_cloud needs rgb and range sizes to agree.")
 
@@ -135,13 +135,13 @@ class Rgbdci360(object):
 cdef create_point_cloud_(np.ndarray[Uint8, ndim=3] rgb,
                          np.ndarray[Float32, ndim=2] range,
                          bool all_points):
-    ''' Wrapper for C++ version.
+    """ Wrapper for C++ version.
         Keyword arguments:
             rgb -- h*w*3 numpy array with 3-channel uint8 RGB image
             range -- h*w numpy array with 1-channel float32 range image
             all_points -- return a cloud with all points, invalid points are
                           0,0,0
-    '''
+    """
     cdef Mat3b* rgb_cv = mat3b_from_array(rgb)
     cdef Mat1f* range_cv = mat1f_from_array(range)
 

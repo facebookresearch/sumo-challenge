@@ -1,11 +1,11 @@
-'''
+"""
 Copyright (c) Facebook, Inc. and its affiliates.
 
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 
 Read and write color and depth pairs from/to a single tiff file.
-'''
+"""
 
 cimport numpy as np
 import numpy as np
@@ -64,12 +64,12 @@ kMultiImageToTiffPageType = {
 
 
 def load(unicode path):
-  '''Read from a single multi-page tiff with color and inverse depth.  Note that
+  """Read from a single multi-page tiff with color and inverse depth.  Note that
      while images are always serialized as inverse depth, it is always converted
      to depth when loading
      Inputs:
          path (unicode) - tiff file path to read
-     Returns map of MultiImagePageType to np.ndarray'''
+     Returns map of MultiImagePageType to np.ndarray"""
   cdef TiffPageMap page_map_cv
   cdef TiffMetadata meta
   for page_type in TiffPageType:
@@ -125,12 +125,12 @@ def _validate(page_map_np):
           raise ValueError("rgbd_tiff.save expects uint16 h*w inv depth image")
 
 def save(page_map_np, unicode path, near=id.DEFAULT_NEAR):
-  '''Write to single multi-page tiff with color and inverse depth.
+  """Write to single multi-page tiff with color and inverse depth.
      Inputs:
         page_map_np - maps MultiImagePageType -> numpy array, contains all
             images to be written
         path (unicode) - output tiff file path
-        near (float) - see sumo.geometry.inverse_depth'''
+        near (float) - see sumo.geometry.inverse_depth"""
   _validate(page_map_np)
 
   cdef np.ndarray inv_depth

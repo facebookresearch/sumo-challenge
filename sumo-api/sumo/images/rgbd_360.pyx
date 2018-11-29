@@ -50,13 +50,13 @@ class Rgbd360(object):
 
     @classmethod
     def load(cls, path, **options):
-        '''
+        """
         Read from multi-page TIFF file.
 
         Inputs:
             path (string) - input file path
             **options - kwargs for tiff reader
-        '''
+        """
         page_map = rgbd_tiff.load(path, **options)
         rgb = page_map[MultiImagePageType.RGB]
         range = page_map[MultiImagePageType.Depth]

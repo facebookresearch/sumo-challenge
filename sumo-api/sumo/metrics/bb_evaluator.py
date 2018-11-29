@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Copyright (c) Facebook, Inc. and its affiliates.
 
@@ -13,6 +14,7 @@ from pymesh.meshutils import remove_duplicated_vertices_raw
 
 from sumo.metrics.evaluator import Evaluator
 
+
 class BBEvaluator(Evaluator):
     """
     Algorithm to evaluate a submission for the bounding box track.
@@ -22,16 +24,15 @@ class BBEvaluator(Evaluator):
         """
         Constructor.  Computes similarity between all elements in the
         submission and ground_truth and also computes
-        data association caches. 
+        data association caches.
 
         Inputs:
         submission (ProjectScene) - Submitted scene to be evaluated
         ground_truth (ProjectScene) - The ground truth scene
-        settings (EasyDict) - configuration for the evaluator.  See
-        Evaluator.py for recognized keys and values.   
+        settings (dict) - configuration for the evaluator.  See
+        Evaluator.py for recognized keys and values.
         """
         super(BBEvaluator, self).__init__(submission, ground_truth, settings)
-
 
     def evaluate_all(self):
         """
@@ -56,7 +57,6 @@ class BBEvaluator(Evaluator):
 
         return metrics
 
-    
     def evaluate_perceptual(self, ground_truth, submission):
         """
             Computes perceptual score for a participant's submission
@@ -75,7 +75,7 @@ class BBEvaluator(Evaluator):
 #------------------------
 # End of public interface
 #------------------------
-        
+
     def _shape_similarity(self, element1, element2):
         """
         Similarity function that compares the bounding boxes of
@@ -83,7 +83,7 @@ class BBEvaluator(Evaluator):
 
         Inputs:
         element1 (ProjectObject)
-        element2 (ProjectObject) 
+        element2 (ProjectObject)
 
         Return:
         float - bounding box IoU (Equation 1 in SUMO white paper)
@@ -93,14 +93,14 @@ class BBEvaluator(Evaluator):
         inter = pymesh.boolean(box1, box2, operation='intersection', engine='cgal')
         ivert, ifaces, _ = remove_duplicated_vertices_raw(inter.vertices, inter.faces)
         inter_mesh = pymesh.form_mesh(ivert, ifaces)
-        
+
         # Note: pymesh may give -volume depending on surface normals
-        # or maybe vertex ordering 
-        intersection = abs(inter_mesh.volume)  
+        # or maybe vertex ordering
+        intersection = abs(inter_mesh.volume)
         union = abs(box1.volume) + abs(box2.volume) - intersection
         return intersection / union
 
-    
+
 def _bbox2pymesh(element):
     """
     Convert the bounding box of <element> into a pymesh Mesh in world coordinates.
@@ -113,7 +113,7 @@ def _bbox2pymesh(element):
       world coordinates.
     """
     vertices = (element.pose * element.bounds.corners())
-    
+
     i1, i2, i3, i4, i5, i6, i7, i8 = range(8)
     faces = [[i1, i2, i3], [i1, i3, i4], [i4, i3, i8], [i4, i8, i5],
              [i5, i8, i7], [i5, i7, i6], [i6, i7, i2], [i6, i2, i1],

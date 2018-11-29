@@ -1,9 +1,9 @@
-'''
+"""
 Copyright (c) Facebook, Inc. and its affiliates.
 
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
-'''
+"""
 
 import cv2
 import numpy as np
@@ -13,12 +13,12 @@ from libc.stdint cimport uint16_t
 
 
 cdef Mat* mat_from_array(np.ndarray array):
-  ''' Convert numpy array to generic OpenCV Mat.
+  """ Convert numpy array to generic OpenCV Mat.
       Keyword arguments:
           array -- numpy array, 3-channel uint8 or 1-channel uint8 or float32
       We do not handle 1-D arrays, just images.
       Returns a pointer to a C++ Mat object, owned by OpenCV.
-  '''
+  """
   assert <unsigned char*>array.data != <unsigned char*>0
   cdef Mat* mat
   if array.ndim == 2:
@@ -70,11 +70,11 @@ cdef Mat3b* mat3b_from_array(np.ndarray[np.uint8_t, ndim=3, mode='c'] array):
   return mat
 
 cdef array_from_mat(Mat mat):
-  ''' Convert generic OpenCV Mat to numpy array.
+  """ Convert generic OpenCV Mat to numpy array.
       Keyword arguments:
           mat -- pointer to a C++ Mat object, type CV_8UC1, CV_8UC1 or CV_32FC1
       Returns a numpy array.
-  '''
+  """
   cdef np.ndarray a
   cdef size_t r = mat.rows, c = mat.cols # image size
   cdef size_t n = mat.channels(), d = 1 # channels and depth (in bytes)

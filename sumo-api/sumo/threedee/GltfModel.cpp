@@ -416,7 +416,8 @@ void GltfModel::extractPrimitiveMesh(const size_t meshIndex, Mesh* mesh) const {
 
   // Get material
   int materialId = primitive.material;
-  if (materialId < 0 || materialId >= static_cast<int>(this->materials.size())) {
+  if (materialId < 0 ||
+      materialId >= static_cast<int>(this->materials.size())) {
     throw runtime_error(
         "GltfModel::extractTexturedMesh: invalid material index.");
   }
@@ -445,7 +446,8 @@ void GltfModel::extractTexturedPrimitiveMesh(
 
   // Get material
   int materialId = primitive.material;
-  if (materialId < 0 || materialId >= static_cast<int>(this->materials.size())) {
+  if (materialId < 0 ||
+      materialId >= static_cast<int>(this->materials.size())) {
     throw runtime_error(
         "GltfModel::extractTexturedMesh: invalid material index.");
   }
@@ -653,5 +655,4 @@ int getAccessorType(const GltfModel& object, size_t i) {
   return object.accessors[i].componentType;
 }
 
-  
 } // namespace sumo

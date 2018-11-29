@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include "sumo/threedee/gltf.h"
+#include "sumo/threedee/GltfModel.h"
 #include "sumo/threedee/TexturedMesh.h"
 
 namespace sumo {
