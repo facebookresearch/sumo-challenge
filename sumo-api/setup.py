@@ -12,6 +12,8 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
 from Cython.Distutils import build_ext
+from setuptools import find_packages, setup
+
 import numpy
 import os
 import sys
@@ -140,5 +142,17 @@ extensions = [
 
 setup(
     cmdclass={'build_ext': build_ext},
-    ext_modules = cythonize(extensions)
+    ext_modules = cythonize(extensions),
+    name='sumo',
+    version='1.0',
+    description='Sumo challenge python package',
+    install_requires=[
+      'cython',
+      'easydict',
+      'matplotlib',
+      'numpy',
+      'scipy'
+    ],
+    packages=find_packages(),
+    include_package_data=True
 )
