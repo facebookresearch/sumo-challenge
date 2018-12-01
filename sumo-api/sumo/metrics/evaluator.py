@@ -84,7 +84,7 @@ class Evaluator():
         """
 
         thresholds = np.linspace(0.5, 0.95, 10)
-        recall_samples = np.linspace(0, 1, 101)
+        recall_samples = np.linspace(0, 1, 11)
         categories = ["wall", "chair"]
         density = 625
         mesh_overlap_thresh = 0.1  # meters
