@@ -8,11 +8,11 @@ LICENSE file in the root directory of this source tree.
 Build and Installation Script (see README.md) for usage
 """
 
+from setuptools import find_packages, setup
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
 from Cython.Distutils import build_ext
-from setuptools import find_packages, setup
 
 import numpy
 import os
