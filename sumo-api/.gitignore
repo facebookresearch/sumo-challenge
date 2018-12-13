@@ -9,6 +9,7 @@ sumo/algorithm/layout_bbox_xml.cpp
 sumo/algorithm/ransac.cpp
 sumo/algorithm/union_find.cpp
 sumo/base/vector.cpp
+sumo/base/colored_category.cpp
 sumo/geometry/axis_bounding_box.cpp
 sumo/geometry/bounding_box.cpp
 sumo/geometry/box_3d.cpp
@@ -23,6 +24,10 @@ sumo/geometry/ray.cpp
 sumo/geometry/rot3.cpp
 sumo/gltf/glb_converter.cpp
 sumo/gltf/gltf_cy.cpp
+sumo/images/multi_image_tiff.cpp
+sumo/images/rgbd_360.cpp
+sumo/images/rgbd_tiff.cpp
+sumo/images/rgbdci_360.cpp
 sumo/opencv/wrap.cpp
 sumo/semantic/box_object.cpp
 sumo/semantic/mesh_object.cpp
@@ -36,6 +41,16 @@ sumo/semantic/scene_layout.cpp
 sumo/semantic/scene_object.cpp
 sumo/threedee/mesh_cy.cpp
 sumo/threedee/textured_mesh.cpp
+sumo/threedee/box_3d.cpp
+sumo/threedee/compute_bbox.cpp
+sumo/threedee/glb_converter.cpp
+sumo/threedee/gltf.cpp
+sumo/threedee/gltf_model.cpp
+sumo/threedee/mesh.cpp
+sumo/threedee/model_sampler.cpp
+sumo/threedee/point_cloud.cpp
+sumo/threedee/point_cloud_ply.cpp
+sumo/threedee/voxelizer.cpp
 
 # Rope
 .ropeproject
