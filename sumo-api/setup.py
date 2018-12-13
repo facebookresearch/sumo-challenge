@@ -8,10 +8,12 @@ LICENSE file in the root directory of this source tree.
 Build and Installation Script (see README.md) for usage
 """
 
+from setuptools import find_packages, setup
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
 from Cython.Distutils import build_ext
+
 import numpy
 import os
 import sys
@@ -138,7 +140,58 @@ extensions = [
     #           extra_link_args=["-std=c++14"]),
 ]
 
+requirements = [
+
+  'astroid==1.6.2',
+  'cycler==0.10.0',
+  'decorator==4.2.1',
+  'easydict==1.8',
+  'greenlet==0.4.13',
+  'h5py>=2.7.1',
+  'ipdb==0.10.2',
+  'ipython==6.2.1',
+  'ipython-genutils==0.2.0',
+  'isort==4.3.4',
+  'jedi==0.11.1',
+  'kiwisolver==1.0.1',
+  'lazy-object-proxy==1.3.1',
+  'matplotlib==2.2.0',
+  'mccabe==0.6.1',
+  'mpmath==1.0.0',
+  'msgpack==0.5.6',
+  'neovim==0.2.4',
+  'opencv-python>=3.4.0.12',
+  'parso==0.1.1',
+  'pexpect==4.4.0',
+  'pickleshare==0.7.4',
+  'prompt-toolkit==1.0.15',
+  'ptyprocess==0.5.2',
+  'Pygments==2.2.0',
+  'pymesh2==0.1.14',
+  'pyny3d>=0.2',
+  'pyparsing==2.2.0',
+  'python-dateutil==2.7.0',
+  'pytz==2018.3',
+  'scipy>=1.0.0',
+  'Shapely>=1.6.4.post1',
+  'sklearn>=0.0',
+  'simplegeneric==0.8.1',
+  'six==1.11.0',
+  'sympy==1.1.1',
+  'traitlets==4.3.2',
+  'transforms3d==0.3.1',
+  'typing==3.6.4',
+  'wcwidth==0.1.7',
+  'wrapt==1.10.11',
+]
+
 setup(
     cmdclass={'build_ext': build_ext},
-    ext_modules = cythonize(extensions)
+    ext_modules = cythonize(extensions),
+    name='sumo',
+    version='1.0',
+    description='Sumo challenge python package',
+    install_requires=requirements,
+    packages=find_packages(),
+    include_package_data=True
 )
