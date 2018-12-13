@@ -369,14 +369,15 @@ class Evaluator():
                     det_scores[cat].append(element.score)
 
             # compute PR curve per category
-            for c in self._settings["categories"]:
-                (precision, _) = utils.compute_pr(
-                    det_matches=np.array(det_matches[c]),
-                    det_scores=np.array(det_scores[c]),
-                    n_gt=n_gt[c],
-                    recall_samples=self._settings["recall_samples"],
-                    interp=True)
-                aps.append(np.mean(precision))  # Equation 15
+            for cat in self._settings["categories"]:
+                if n_gt[cat] > 0:  # only consider categories in the actual scene
+                    (precision, _) = utils.compute_pr(
+                        det_matches=np.array(det_matches[cat]),
+                        det_scores=np.array(det_scores[cat]),
+                        n_gt=n_gt[cat],
+                        recall_samples=self._settings["recall_samples"],
+                        interp=True)
+                    aps.append(np.mean(precision))  # Equation 15
         return np.mean(aps)  # Equation 16
 
     def perceptual_score(self):

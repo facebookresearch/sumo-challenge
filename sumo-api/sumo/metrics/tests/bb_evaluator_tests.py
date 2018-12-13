@@ -28,7 +28,7 @@ class TestBBEvaluator(unittest.TestCase):
         self.submission = ProjectScene.load(self.data_path, 'bounding_box_sample')
         self.settings = Evaluator.default_settings()
         self.settings["categories"] = [
-            'wall', 'floor', 'ceiling', 'sofa', 'coffee_table']
+            'wall', 'floor', 'ceiling', 'sofa', 'coffee_table', 'beam']
 
     def test_shape_similarity(self):
         """
