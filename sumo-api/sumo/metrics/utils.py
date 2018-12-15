@@ -292,7 +292,10 @@ def points_iou(points1, points2, thresh):
         points1[:, 0:3], points2[:, 0:3])
     intersection = np.sum(dist1to2 <= thresh) + np.sum(dist2to1 <= thresh)
     union = points1.shape[0] + points2.shape[0]
-    return intersection / union
+    if union == 0:
+        return 0
+    else:
+        return intersection / union
 
 
 def nearest_neighbors(points1, points2):
@@ -320,10 +323,10 @@ def nearest_neighbors(points1, points2):
     # Note: There is a bug/limitation in sklearn that it cannot handle a query
     # with no points.  This is the workaround...
     if points1.shape[0] == 0 or points2.shape[0] == 0:
-        ind1to2 = np.empty(shape=(0,))
-        ind2to1 = np.empty(shape=(0,))
-        dist1to2 = np.empty(shape=(0,))
-        dist2to1 = np.empty(shape=(0,))
+        ind1to2 = np.empty(shape=(0,), dtype=np.int64)
+        ind2to1 = np.empty(shape=(0,), dtype=np.int64)
+        dist1to2 = np.empty(shape=(0,), dtype=np.int64)
+        dist2to1 = np.empty(shape=(0,), dtype=np.int64)
     else: 
         tree1 = BallTree(points1)
         tree2 = BallTree(points2) 
@@ -387,7 +390,7 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
                 if n_matched > 0: 
                     # SUMO white paper Eq 12
                     rmsssd = np.sqrt(
-                        (np.sum(np.square(dist1to2[np.where(dist1to2.flatten() <=
+                        (np.sum(np.square(dist2to1[np.where(dist1to2.flatten() <=
                            overlap_thresh)])) +
                         np.sum(np.square(dist1to2[np.where(dist2to1.flatten() <=
                            overlap_thresh)]))) / n_matched)

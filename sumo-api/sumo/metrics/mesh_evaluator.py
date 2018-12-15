@@ -86,19 +86,25 @@ def sample_mesh(faces, density=625):
     Return:
     samples (np array - N X D matrix of sampled points
     """
+    D = faces.shape[1]  # normally will be 3 (plain mesh) or 6 (colored mesh)
     A, B, C = faces[0::3, :], faces[1::3, :], faces[2::3, :]
     cross = np.cross(A[:, 0:3] - C[:, 0:3] , B[:, 0:3] - C[:, 0:3])
     areas = 0.5 * (np.sqrt(np.sum(cross**2, axis=1)))
 
-    # ::: set minimum of 1 sample?  ::: this will fail if all faces
-    # are small enough
     Nsamples_per_face = (density * areas).astype(int)
+    # Set minimum of 1 sample, otherwise for meshes with small
+    # faces, there will be no samples.  The downside is that
+    # for meshes with small faces, the density will be higher than
+    # requested.
+    # TODO: Implement probabilistic face sampling weighted by
+    # normalized face area.
+    Nsamples_per_face = np.clip(Nsamples_per_face, a_min=1, a_max=None)
     N = np.sum(Nsamples_per_face)  # N = total # of samples
 
     if N == 0:
-        return np.empty((0, 3))
+        return np.empty((0, D), dtype=np.int64)
 
-    face_ids = np.zeros((N,), dtype=int)  # reserve space for result
+    face_ids = np.zeros((N,), dtype=np.int64)  # reserve space for result
 
     # store indices for each sample (replicating if there are more
     # than 1 sample in a face

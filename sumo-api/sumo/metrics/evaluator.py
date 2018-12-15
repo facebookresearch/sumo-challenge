@@ -294,8 +294,8 @@ class Evaluator():
         det_euler = utils.matrix_to_euler(det_rot.R)
         gt_euler = utils.matrix_to_euler(gt_rot.R)
         # note e[0] is z
-        det_euler[2 - axis] = gt_euler[2 - axis]
-        return Rot3(utils.euler_to_matrix(det_euler))
+        gt_euler[2 - axis] = det_euler[2 - axis]
+        return Rot3(utils.euler_to_matrix(gt_euler))
 
     def rms_points_error(self):
         """

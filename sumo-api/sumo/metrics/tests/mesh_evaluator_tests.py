@@ -83,7 +83,7 @@ class TestMeshEvaluator(unittest.TestCase):
     def test_rms_points_error_empty_point_cloud(self):
         
         evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
-        self.submission.elements["57"].points = np.zeros((0, 0))
+        self.submission.elements["57"].points = np.zeros((0, 0), dtype=np.int64)
 
         rms_points_error = evaluator.rms_points_error()
         self.assertTrue(rms_points_error < 0.07)
