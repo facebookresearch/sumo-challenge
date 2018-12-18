@@ -188,7 +188,7 @@ class Evaluator():
         translation_error (float) - Equation 9 in sumo paper
 
         Note: If submission has no correspondences with any ground truth objects,
-        return value is (None, None) and the error is not defined.
+        return value is (math.inf, math.inf) and the error is not defined.
         """
 
         rot_errors = []
@@ -212,7 +212,7 @@ class Evaluator():
 
         # Eqs. 7 and 9
         if len(rot_errors) == 0:
-            return (None, None)
+            return (math.inf, math.inf)
         else:
             return np.mean(rot_errors), np.mean(trans_errors)
 
