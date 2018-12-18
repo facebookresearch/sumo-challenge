@@ -297,8 +297,33 @@
                 <!-- Heading -->
                 <h1 class="text-center"><b>Submission</b></h1>
                 <br>
-                <p> Upload your results to our EvalAI submission page (under construction).
+                <p> Upload your results to the <a href="https://evalai.cloudcv.org/">EvalAI submission page</a>.</p>
+		
             </div>
+	    <b>Detailed submission instructions</b>
+	    <ol>
+	      <li> Download the SUMO test data from AWS (<a href="https://s3-us-west-1.amazonaws.com/sumochallenge/sumo_test_data.zip">https://s3-us-west-1.amazonaws.com/sumochallenge/sumo_test_data.zip</a>)
+	      <li> Choose your performance track (bounding boxes, voxels, or meshes) and choose which test set to use for evaluation.
+		<ul>
+		  <li> Quick test set - 2 scenes - Useful as an initial test for verifying your data format.
+		  <li> Dev test set - 360 scenes - Has provided ground truth - Useful for evaluating your algorithm prior to final submission.
+		  <li> Contest test set - 360 scenes - No provided ground truth - The data set on which the contest performance will be evaluated.  This should be submitted for the final contest submission.
+		</ul>
+	      <li> Run your algorithm on the selected test set to generate a project scene for each test scene.  Each project scene should be in a separate directory with the scene_id as its directory name.  See the <a href="https://sumochallenge.org/docs/assets/sumo-white-paper.pdf">SUMO white paper</a> for details.  Compress the directory containing the output project scenes into a zip file and upload it to a publicly visible web location.
+	      <li> Create a json submission file with the following format: <code>{
+		  "result": "https://<your-url-here>.zip"
+		    }
+		</code>
+	      <li> Go to the <a href="https://evalai.cloudcv.org">EvalAI web site</a>.
+	      <li> Log in if you already have an account, or sign up for a new account if you don't.
+	      <li> Click on "All Challenges" in the left menu, and then click on "2018 SUMO Challenge" in the list of ongoing challenges.
+	      <li> Click the "Participate" menu item.
+	      <li> If you do not already have a participation team, create one in the "Create a New Team" dialog box on the right.
+	      <li> Once you have a participation team, it will show up in the list on the left.  Select your team from the list by clicking on the circle.  Then click "Participate".
+	      <li> Select the evaluation phase that corresponds to the performance track and data set you chose above.  In the "Upload File" box, upload the json file you created above.  Enter any of the other optional information you would like to include.  Press "Submit".
+	      <li> Be patient. Evaluation can take a minute per scene due to the complexity of 3D metrics.
+	      <li> Once the evaluation is complete, the results can be seen on the leaderboard page of the SUMO Challenge on EvalAI.  Note that you must select the appropriate challenge phase to see the results.
+	    </ol>
         </div>
     </section>
 
