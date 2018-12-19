@@ -349,7 +349,7 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
       correspondence between sampled points
 
     Return:
-        RMSSSD (float or NaN if there are no corresponding points
+        RMSSSD (float or math.inf if there are no corresponding points
         within the threshold)
 
     References:
@@ -402,7 +402,7 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
     if len(rmsssd1) > 0:
         return np.mean(rmsssd1)
     else:
-        return math.nan  # no corrs found
+        return math.inf  # no corrs found
 
 
 def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=False):
@@ -417,7 +417,7 @@ def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fal
       correspondence between sampled points
 
     Return:
-        RMSSSCD (float or NaN if there are no corresponding points
+        RMSSSCD (float or math.inf if there are no corresponding points
         within the threshold)
 
     References:
@@ -479,7 +479,7 @@ def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fal
     if len(rmssscd1) > 0:
         return np.mean(rmssscd1)
     else:
-        return math.nan  # no corrs found
+        return math.inf  # no corrs found
 
 #---------------------
 # Visualization
