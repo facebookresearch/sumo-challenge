@@ -390,9 +390,9 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
                 if n_matched > 0: 
                     # SUMO white paper Eq 12
                     rmsssd = np.sqrt(
-                        (np.sum(np.square(dist2to1[np.where(dist1to2.flatten() <=
+                        (np.sum(np.square(dist1to2[np.where(dist1to2.flatten() <=
                            overlap_thresh)])) +
-                        np.sum(np.square(dist1to2[np.where(dist2to1.flatten() <=
+                        np.sum(np.square(dist2to1[np.where(dist2to1.flatten() <=
                            overlap_thresh)]))) / n_matched)
                 else:
                     rmsssd = 0
