@@ -292,7 +292,10 @@ def points_iou(points1, points2, thresh):
         points1[:, 0:3], points2[:, 0:3])
     intersection = np.sum(dist1to2 <= thresh) + np.sum(dist2to1 <= thresh)
     union = points1.shape[0] + points2.shape[0]
-    return intersection / union
+    if union == 0:
+        return 0
+    else:
+        return intersection / union
 
 
 def nearest_neighbors(points1, points2):
@@ -316,12 +319,21 @@ def nearest_neighbors(points1, points2):
       points in points1 (dist2to1[i] = distance between points2[i,:] and
       points1[ind2to1[i],:])
     """
-    tree1 = BallTree(points1)
-    tree2 = BallTree(points2)
-    dist1to2, ind1to2 = tree1.query(points2)
-    dist2to1, ind2to1 = tree2.query(points1)
-    ind1to2 = ind1to2.flatten()
-    ind2to1 = ind2to1.flatten()
+
+    # Note: There is a bug/limitation in sklearn that it cannot handle a query
+    # with no points.  This is the workaround...
+    if points1.shape[0] == 0 or points2.shape[0] == 0:
+        ind1to2 = np.empty(shape=(0,), dtype=np.int64)
+        ind2to1 = np.empty(shape=(0,), dtype=np.int64)
+        dist1to2 = np.empty(shape=(0,), dtype=np.int64)
+        dist2to1 = np.empty(shape=(0,), dtype=np.int64)
+    else: 
+        tree1 = BallTree(points1)
+        tree2 = BallTree(points2) 
+        dist1to2, ind1to2 = tree2.query(points1)
+        dist2to1, ind2to1 = tree1.query(points2)
+        ind1to2 = ind1to2.flatten()
+        ind2to1 = ind2to1.flatten()
     return ind1to2, ind2to1, dist1to2, dist2to1
 
 
@@ -337,7 +349,7 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
       correspondence between sampled points
 
     Return:
-        RMSSSD (float or NaN if there are no corresponding points
+        RMSSSD (float or math.inf if there are no corresponding points
         within the threshold)
 
     References:
@@ -373,20 +385,24 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
                     points2 = evaluator._ground_truth.elements[gt_id].points
                 ind1to2, ind2to1, dist1to2, dist2to1 = nearest_neighbors(
                     points1[:, 0:3], points2[:, 0:3])
-                # SUMO white paper Eq 12
-                rmsssd = np.sqrt(
-                    (np.sum(np.square(dist1to2[np.where(dist1to2.flatten() <=
-                        overlap_thresh)])) +
-                     np.sum(np.square(dist1to2[np.where(dist2to1.flatten() <=
-                        overlap_thresh)]))) /
-                    (dist1to2.shape[0] + dist2to1.shape[0]))
+
+                n_matched = dist1to2.shape[0] + dist2to1.shape[0]
+                if n_matched > 0: 
+                    # SUMO white paper Eq 12
+                    rmsssd = np.sqrt(
+                        (np.sum(np.square(dist1to2[np.where(dist1to2.flatten() <=
+                           overlap_thresh)])) +
+                        np.sum(np.square(dist2to1[np.where(dist2to1.flatten() <=
+                           overlap_thresh)]))) / n_matched)
+                else:
+                    rmsssd = 0
                 rmsssd_cache[det_id][gt_id] = rmsssd
                 rmsssd1.append(rmsssd)
 
     if len(rmsssd1) > 0:
         return np.mean(rmsssd1)
     else:
-        return math.nan  # no corrs found
+        return math.inf  # no corrs found
 
 
 def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=False):
@@ -401,7 +417,7 @@ def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fal
       correspondence between sampled points
 
     Return:
-        RMSSSCD (float or NaN if there are no corresponding points
+        RMSSSCD (float or math.inf if there are no corresponding points
         within the threshold)
 
     References:
@@ -447,18 +463,23 @@ def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fal
                 color_diff2to1 = gt_points[idx_gt, 3:6] - \
                     sub_points[idx2to1[idx_gt], 3:6]
 
-                # SUMO white paper Eq 13
-                rmssscd = np.sqrt(
-                    (np.sum(color_diff1to2 * color_diff1to2) +
-                     np.sum(color_diff2to1 * color_diff2to1)) /
-                    (color_diff1to2.shape[0] + color_diff2to1.shape[0]))
+                n_matched = color_diff1to2.shape[0] + color_diff2to1.shape[0]
+
+                if n_matched > 0:
+                    # SUMO white paper Eq 13
+                    rmssscd = np.sqrt(
+                        (np.sum(color_diff1to2 * color_diff1to2) +
+                         np.sum(color_diff2to1 * color_diff2to1)) / n_matched)
+                else:
+                    rmssscd = 0
                 rmssscd_cache[det_id][gt_id] = rmssscd
+                
                 rmssscd1.append(rmssscd)
 
     if len(rmssscd1) > 0:
         return np.mean(rmssscd1)
     else:
-        return math.nan  # no corrs found
+        return math.inf  # no corrs found
 
 #---------------------
 # Visualization

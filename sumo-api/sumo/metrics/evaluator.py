@@ -188,7 +188,7 @@ class Evaluator():
         translation_error (float) - Equation 9 in sumo paper
 
         Note: If submission has no correspondences with any ground truth objects,
-        return value is (None, None) and the error is not defined.
+        return value is (math.inf, math.inf) and the error is not defined.
         """
 
         rot_errors = []
@@ -212,7 +212,7 @@ class Evaluator():
 
         # Eqs. 7 and 9
         if len(rot_errors) == 0:
-            return (None, None)
+            return (math.inf, math.inf)
         else:
             return np.mean(rot_errors), np.mean(trans_errors)
 
@@ -294,8 +294,8 @@ class Evaluator():
         det_euler = utils.matrix_to_euler(det_rot.R)
         gt_euler = utils.matrix_to_euler(gt_rot.R)
         # note e[0] is z
-        det_euler[2 - axis] = gt_euler[2 - axis]
-        return Rot3(utils.euler_to_matrix(det_euler))
+        gt_euler[2 - axis] = det_euler[2 - axis]
+        return Rot3(utils.euler_to_matrix(gt_euler))
 
     def rms_points_error(self):
         """
@@ -369,14 +369,15 @@ class Evaluator():
                     det_scores[cat].append(element.score)
 
             # compute PR curve per category
-            for c in self._settings["categories"]:
-                (precision, _) = utils.compute_pr(
-                    det_matches=np.array(det_matches[c]),
-                    det_scores=np.array(det_scores[c]),
-                    n_gt=n_gt[c],
-                    recall_samples=self._settings["recall_samples"],
-                    interp=True)
-                aps.append(np.mean(precision))  # Equation 15
+            for cat in self._settings["categories"]:
+                if n_gt[cat] > 0:  # only consider categories in the actual scene
+                    (precision, _) = utils.compute_pr(
+                        det_matches=np.array(det_matches[cat]),
+                        det_scores=np.array(det_scores[cat]),
+                        n_gt=n_gt[cat],
+                        recall_samples=self._settings["recall_samples"],
+                        interp=True)
+                    aps.append(np.mean(precision))  # Equation 15
         return np.mean(aps)  # Equation 16
 
     def perceptual_score(self):

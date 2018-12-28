@@ -75,7 +75,7 @@ class BBEvaluator(Evaluator):
         """
         box1 = _bbox2pymesh(element1)
         box2 = _bbox2pymesh(element2)
-        inter = pymesh.boolean(box1, box2, operation='intersection', engine='cgal')
+        inter = pymesh.boolean(box1, box2, operation='intersection')
         ivert, ifaces, _ = remove_duplicated_vertices_raw(inter.vertices, inter.faces)
         inter_mesh = pymesh.form_mesh(ivert, ifaces)
 
