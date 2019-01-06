@@ -337,7 +337,7 @@ def nearest_neighbors(points1, points2):
     return ind1to2, ind2to1, dist1to2, dist2to1
 
 
-def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=False):
+def points_rmsssd(evaluator, submission, ground_truth, voxels=False):
     """
     Compute average root mean squared symmetric surface distance
     (RMSSSD). Equation 11 in SUMO white paper.
@@ -345,8 +345,6 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
     Inputs:
     submission (ProjectScene) - Submitted scene to be evaluated
     ground_truth (ProjectScene) - The ground truth scene
-    overlap_thresh (float) - max distance (meters) for establishing a
-      correspondence between sampled points
 
     Return:
         RMSSSD (float or math.inf if there are no corresponding points
@@ -389,11 +387,8 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
                 n_matched = dist1to2.shape[0] + dist2to1.shape[0]
                 if n_matched > 0: 
                     # SUMO white paper Eq 12
-                    rmsssd = np.sqrt(
-                        (np.sum(np.square(dist1to2[np.where(dist1to2.flatten() <=
-                           overlap_thresh)])) +
-                        np.sum(np.square(dist2to1[np.where(dist2to1.flatten() <=
-                           overlap_thresh)]))) / n_matched)
+                    rmsssd = np.sqrt((np.sum(np.square(dist1to2)) +
+                                      np.sum(np.square(dist2to1))) / n_matched)
                 else:
                     rmsssd = 0
                 rmsssd_cache[det_id][gt_id] = rmsssd
@@ -405,7 +400,7 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
         return math.inf  # no corrs found
 
 
-def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=False):
+def color_rmsssd(evaluator, submission, ground_truth, voxels=False):
     """
     Compute average root mean squared symmetric surface color distance
     (RMSSSCD). Equation 13 in SUMO white paper.
@@ -413,8 +408,6 @@ def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fal
     Inputs:
     submission (ProjectScene) - Submitted scene to be evaluated
     ground_truth (ProjectScene) - The ground truth scene
-    overlap_thresh (float) - max distance (meters) for establishing a
-      correspondence between sampled points
 
     Return:
         RMSSSCD (float or math.inf if there are no corresponding points
@@ -453,15 +446,9 @@ def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fal
 
                 idx1to2, idx2to1, dist1to2, dist2to1 = nearest_neighbors(
                     sub_points[:, 0:3], gt_points[:, 0:3])
-                idx_sub = np.argwhere((dist1to2 <=
-                    overlap_thresh).flatten()).flatten()  # vector
-                idx_gt = np.argwhere((dist2to1 <=
-                    overlap_thresh).flatten()).flatten()   # vector
 
-                color_diff1to2 = sub_points[idx_sub, 3:6] - \
-                    gt_points[idx1to2[idx_sub], 3:6]
-                color_diff2to1 = gt_points[idx_gt, 3:6] - \
-                    sub_points[idx2to1[idx_gt], 3:6]
+                color_diff1to2 = sub_points[:, 3:6] - gt_points[idx1to2, 3:6]
+                color_diff2to1 = gt_points[:, 3:6] - sub_points[idx2to1, 3:6]
 
                 n_matched = color_diff1to2.shape[0] + color_diff2to1.shape[0]
 

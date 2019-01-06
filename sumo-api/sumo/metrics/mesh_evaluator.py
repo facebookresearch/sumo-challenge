@@ -80,8 +80,8 @@ def sample_mesh(faces, density=625):
     faces (np array - 3*N x D) -  matrix representing vertices and faces with
     [X, Y, Z, ...].  faces[0:3, :] is the first face. N is the
     number of faces.  D >=3 (columns beyond 3 are interpolated, too)
-    density (float) - Number of points per square meter to sample.
-    Default 625 gives one point every 4 cm on average.
+    density (float) - Number of points per unit square surface to sample.
+    Default 625 gives one point every 4 cm on average in metric units.
 
     Return:
     samples (np array - N X D matrix of sampled points
@@ -100,9 +100,6 @@ def sample_mesh(faces, density=625):
     # normalized face area.
     Nsamples_per_face = np.clip(Nsamples_per_face, a_min=1, a_max=None)
     N = np.sum(Nsamples_per_face)  # N = total # of samples
-
-    if N == 0:
-        return np.empty((0, D), dtype=np.int64)
 
     face_ids = np.zeros((N,), dtype=np.int64)  # reserve space for result
 
@@ -185,8 +182,7 @@ class MeshEvaluator(Evaluator):
         Reference:
         https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
         """
-        return utils.points_rmsssd(self, self._submission, self._ground_truth,
-                                   self._settings["mesh_overlap_thresh"])
+        return utils.points_rmsssd(self, self._submission, self._ground_truth)
 
     def rms_color_error(self):
         """
@@ -199,8 +195,7 @@ class MeshEvaluator(Evaluator):
         Reference:
         https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
         """
-        return utils.color_rmsssd(self, self._submission, self._ground_truth,
-                                  self._settings["voxel_overlap_thresh"])
+        return utils.color_rmsssd(self, self._submission, self._ground_truth)
 
 #------------------------
 # End of public interface
