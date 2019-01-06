@@ -10,6 +10,7 @@ Test BBEvaluator functions
 import math
 import os
 import unittest
+import time
 
 from sumo.geometry.pose3 import Pose3
 from sumo.geometry.rot3 import Rot3
@@ -29,6 +30,11 @@ class TestBBEvaluator(unittest.TestCase):
         self.settings = Evaluator.default_settings()
         self.settings["categories"] = [
             'wall', 'floor', 'ceiling', 'sofa', 'coffee_table', 'beam']
+        self._started_at = time.time()
+
+    def tearDown(self):
+        elapsed = time.time() - self._started_at
+        print('{} ({}s)'.format(self.id(), round(elapsed, 2)))
 
     def test_shape_similarity(self):
         """
@@ -135,8 +141,8 @@ class TestBBEvaluator(unittest.TestCase):
         self.submission.elements["1069"].pose = new_pose
         evaluator = BBEvaluator(self.submission, self.ground_truth, self.settings)
         rotation_error, translation_error = evaluator.pose_error()
-        self.assertEqual(rotation_error, None)
-        self.assertEqual(translation_error, None)
+        self.assertEqual(rotation_error, math.inf)
+        self.assertEqual(translation_error, math.inf)
 
     def test_semantic_score(self):
         # We cannot test Evaluator directly.  This creates the similarity cache and
