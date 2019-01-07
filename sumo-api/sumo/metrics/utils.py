@@ -242,6 +242,47 @@ def compute_pr(det_matches, det_scores, n_gt, recall_samples=None, interp=False)
 
     return (precision, recall)
 
+def compute_ap(det_matches, det_scores, n_gt):
+    """
+    Compute average precision as area under the precision-recall curve.
+
+    Inputs:
+    det_matches (numpy vector of N ints) - Each non-zero entry is a
+      correct detection.  Zeroes are false positives.
+      det_scores (numpy vector of N floats) - The detection scores for
+      the corresponding matches.  Higher is better.
+    n_gt (int) - The number of ground truth entities in the task.
+    Return:
+        average_precision: area under the PR curve
+    """
+    # sort input based on score
+    indices = np.argsort(-det_scores)
+    sorted_matches = det_matches[indices]
+
+    # split out true positives and false positives
+    tps = np.not_equal(sorted_matches, 0)
+    fps = np.equal(sorted_matches, 0)
+
+    # compute basic PR curve
+    tp_sum = np.cumsum(tps)
+    fp_sum = np.cumsum(fps)
+
+    # use epsilon to prevent divide by 0 special case
+    epsilon = np.spacing(1)
+
+    precision = tp_sum / (tp_sum + fp_sum + epsilon)
+    recall = tp_sum / n_gt
+
+    ap = 0
+    # compute interpolated PR curve and average precision
+    if len(precision) > 0:
+        for i in range(len(precision) - 1, 0, -1):
+            if precision[i] > precision[i - 1]:
+                precision[i - 1] = precision[i]
+            ap += precision[i]*(recall[i] - recall[i-1])
+        ap += precision[0]*recall[0]
+
+    return ap
 
 def plot_pr(precision, recall):
     """
