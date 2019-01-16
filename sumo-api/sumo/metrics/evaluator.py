@@ -164,10 +164,12 @@ class Evaluator():
                     det_matches.append(0)  # false positive
                 det_scores.append(element.score)
 
-            ap = utils.compute_ap(
+            ap, precision, recall = utils.compute_ap(
                 det_matches=np.array(det_matches),
                 det_scores=np.array(det_scores),
-                n_gt=n_gt) # Equation 4
+                n_gt=n_gt,
+                recall_samples=self._settings["recall_samples"],
+                interp=True) # Equation 4
 
             aps.append(ap)
         return np.mean(aps)   # Equation 6

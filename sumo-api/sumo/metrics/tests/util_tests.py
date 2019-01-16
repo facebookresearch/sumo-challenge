@@ -84,12 +84,12 @@ class TestUtils(unittest.TestCase):
         mesh = next(iter(project_object.meshes.primitive_meshes()))
         utils.visualize_mesh(mesh, visualize)
 
-    def test_compute_ap(self):
+    def test_compute_auc_ap(self):
         det_matches = np.array([0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
                        1, 0, 1, 0, 0, 0, 0, 1, 0])
         det_scores = np.array([0.01*k for k in [88, 70, 80, 71, 54, 74, 18, 67, 38, 91, 44, 35, 78, 45, 14, 62, 44, 95, 23, 45, 84, 43, 48, 95]])
         n_gt = 15
-        ap = utils.compute_ap(det_matches, det_scores, n_gt)
+        ap, _, _ = utils.compute_auc_ap(det_matches, det_scores, n_gt)
         self.assertAlmostEqual(ap, 0.22346, 4)
 
     def test_compute_pr(self):

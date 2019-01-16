@@ -173,6 +173,20 @@ def matrix_to_euler(matrix):
 # Precision recall curves
 #-------------------------------------
 
+def compute_ap(det_matches, det_scores, n_gt, recall_samples=None, interp=False, area_under_curve=True):
+    """
+    Compute average precision and precision-recall curve
+
+    Inputs:
+        area_under_curve: If true, compute average precision as area under the curve
+    """
+    if area_under_curve:
+        ap, precision, recall = compute_auc_ap(det_matches, det_scores, n_gt)
+    else:
+        precision, recall = compute_pr(det_matches, det_scores, n_gt, recall_samples, interp)
+        ap = np.mean(precision)
+
+    return ap, precision, recall
 
 def compute_pr(det_matches, det_scores, n_gt, recall_samples=None, interp=False):
     """
@@ -242,7 +256,7 @@ def compute_pr(det_matches, det_scores, n_gt, recall_samples=None, interp=False)
 
     return (precision, recall)
 
-def compute_ap(det_matches, det_scores, n_gt):
+def compute_auc_ap(det_matches, det_scores, n_gt):
     """
     Compute average precision as area under the precision-recall curve.
 
@@ -282,7 +296,7 @@ def compute_ap(det_matches, det_scores, n_gt):
             ap += precision[i]*(recall[i] - recall[i-1])
         ap += precision[0]*recall[0]
 
-    return ap
+    return ap, precision, recall
 
 def plot_pr(precision, recall):
     """
