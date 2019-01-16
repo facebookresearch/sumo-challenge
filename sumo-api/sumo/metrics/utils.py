@@ -178,7 +178,21 @@ def compute_ap(det_matches, det_scores, n_gt, recall_samples=None, interp=False,
     Compute average precision and precision-recall curve
 
     Inputs:
-        area_under_curve: If true, compute average precision as area under the curve
+        det_matches (numpy vector of N ints) - Each non-zero entry is a
+        correct detection.  Zeroes are false positives.
+        det_scores (numpy vector of N floats) - The detection scores for
+        the corresponding matches.  Higher is better.
+        n_gt (int) - The number of ground truth entities in the task.
+        recall_samples (numpy vector of float) - If set, compute precision at
+        these sample locations.  Values must be between 0 and 1
+        inclusive.
+        interp (Boolean) - If true, the interpolated PR curve will be
+        generated (as described in :::cite pascal voc paper)
+        area_under_curve (Boolean): If True, compute average precision as area under the curve
+    Return:
+        average_precision(float) - average precision
+        precision (numpy vector of float) - precision values at corresponding <recall> points
+        recall (numpy vector of float) - recall values.
     """
     if area_under_curve:
         ap, precision, recall = compute_auc_ap(det_matches, det_scores, n_gt)
@@ -267,7 +281,9 @@ def compute_auc_ap(det_matches, det_scores, n_gt):
       the corresponding matches.  Higher is better.
     n_gt (int) - The number of ground truth entities in the task.
     Return:
-        average_precision: area under the PR curve
+        average_precision(float) - area under the PR curve
+        precision (numpy vector of float) - precision values at corresponding <recall> points
+        recall (numpy vector of float) - recall values.
     """
     # sort input based on score
     indices = np.argsort(-det_scores)
