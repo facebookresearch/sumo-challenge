@@ -23,6 +23,7 @@ correct.
 import numpy as np
 import os
 import unittest
+import time
 
 from sumo.semantic.project_scene import ProjectScene
 from sumo.metrics.evaluator import Evaluator
@@ -41,6 +42,11 @@ class TestMeshEvaluator(unittest.TestCase):
         self.settings["categories"] = [
             'wall', 'floor', 'ceiling', 'sofa', 'coffee_table']
         self.settings["density"] = 100
+        self._started_at = time.time()
+
+    def tearDown(self):
+        elapsed = time.time() - self._started_at
+        print('{} ({}s)'.format(self.id(), round(elapsed, 2)))
 
     def test_shape_similarity(self):
         """
@@ -81,14 +87,14 @@ class TestMeshEvaluator(unittest.TestCase):
         self.assertTrue(rms_points_error < 0.07)
 
     def test_rms_points_error_empty_point_cloud(self):
-        
+
         evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
         self.submission.elements["57"].points = np.zeros((0, 0), dtype=np.int64)
 
         rms_points_error = evaluator.rms_points_error()
         self.assertTrue(rms_points_error < 0.07)
 
-        
+
     def test_rms_color_error(self):
         evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
 
@@ -107,7 +113,7 @@ class TestMeshEvaluator(unittest.TestCase):
         evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
         perceptual_score = evaluator.perceptual_score()
         self.assertAlmostEqual(perceptual_score, 1, places=4)
-        
+
     def test_evaluate_all(self):
         """
         Test the evaluate_all function by running it and checking the

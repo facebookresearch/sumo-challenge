@@ -173,6 +173,34 @@ def matrix_to_euler(matrix):
 # Precision recall curves
 #-------------------------------------
 
+def compute_ap(det_matches, det_scores, n_gt, recall_samples=None, interp=False, area_under_curve=True):
+    """
+    Compute average precision and precision-recall curve
+
+    Inputs:
+        det_matches (numpy vector of N ints) - Each non-zero entry is a
+        correct detection.  Zeroes are false positives.
+        det_scores (numpy vector of N floats) - The detection scores for
+        the corresponding matches.  Higher is better.
+        n_gt (int) - The number of ground truth entities in the task.
+        recall_samples (numpy vector of float) - If set, compute precision at
+        these sample locations.  Values must be between 0 and 1
+        inclusive.
+        interp (Boolean) - If true, the interpolated PR curve will be
+        generated (as described in :::cite pascal voc paper)
+        area_under_curve (Boolean): If True, compute average precision as area under the curve
+    Return:
+        average_precision(float) - average precision
+        precision (numpy vector of float) - precision values at corresponding <recall> points
+        recall (numpy vector of float) - recall values.
+    """
+    if area_under_curve:
+        ap, precision, recall = compute_auc_ap(det_matches, det_scores, n_gt)
+    else:
+        precision, recall = compute_pr(det_matches, det_scores, n_gt, recall_samples, interp)
+        ap = np.mean(precision)
+
+    return ap, precision, recall
 
 def compute_pr(det_matches, det_scores, n_gt, recall_samples=None, interp=False):
     """
@@ -242,6 +270,49 @@ def compute_pr(det_matches, det_scores, n_gt, recall_samples=None, interp=False)
 
     return (precision, recall)
 
+def compute_auc_ap(det_matches, det_scores, n_gt):
+    """
+    Compute average precision as area under the precision-recall curve.
+
+    Inputs:
+    det_matches (numpy vector of N ints) - Each non-zero entry is a
+      correct detection.  Zeroes are false positives.
+      det_scores (numpy vector of N floats) - The detection scores for
+      the corresponding matches.  Higher is better.
+    n_gt (int) - The number of ground truth entities in the task.
+    Return:
+        average_precision(float) - area under the PR curve
+        precision (numpy vector of float) - precision values at corresponding <recall> points
+        recall (numpy vector of float) - recall values.
+    """
+    # sort input based on score
+    indices = np.argsort(-det_scores)
+    sorted_matches = det_matches[indices]
+
+    # split out true positives and false positives
+    tps = np.not_equal(sorted_matches, 0)
+    fps = np.equal(sorted_matches, 0)
+
+    # compute basic PR curve
+    tp_sum = np.cumsum(tps)
+    fp_sum = np.cumsum(fps)
+
+    # use epsilon to prevent divide by 0 special case
+    epsilon = np.spacing(1)
+
+    precision = tp_sum / (tp_sum + fp_sum + epsilon)
+    recall = tp_sum / n_gt
+
+    ap = 0
+    # compute interpolated PR curve and average precision
+    if len(precision) > 0:
+        for i in range(len(precision) - 1, 0, -1):
+            if precision[i] > precision[i - 1]:
+                precision[i - 1] = precision[i]
+            ap += precision[i]*(recall[i] - recall[i-1])
+        ap += precision[0]*recall[0]
+
+    return ap, precision, recall
 
 def plot_pr(precision, recall):
     """
@@ -337,7 +408,7 @@ def nearest_neighbors(points1, points2):
     return ind1to2, ind2to1, dist1to2, dist2to1
 
 
-def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=False):
+def points_rmsssd(evaluator, submission, ground_truth, voxels=False):
     """
     Compute average root mean squared symmetric surface distance
     (RMSSSD). Equation 11 in SUMO white paper.
@@ -345,8 +416,6 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
     Inputs:
     submission (ProjectScene) - Submitted scene to be evaluated
     ground_truth (ProjectScene) - The ground truth scene
-    overlap_thresh (float) - max distance (meters) for establishing a
-      correspondence between sampled points
 
     Return:
         RMSSSD (float or math.inf if there are no corresponding points
@@ -389,11 +458,8 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
                 n_matched = dist1to2.shape[0] + dist2to1.shape[0]
                 if n_matched > 0: 
                     # SUMO white paper Eq 12
-                    rmsssd = np.sqrt(
-                        (np.sum(np.square(dist1to2[np.where(dist1to2.flatten() <=
-                           overlap_thresh)])) +
-                        np.sum(np.square(dist2to1[np.where(dist2to1.flatten() <=
-                           overlap_thresh)]))) / n_matched)
+                    rmsssd = np.sqrt((np.sum(np.square(dist1to2)) +
+                                      np.sum(np.square(dist2to1))) / n_matched)
                 else:
                     rmsssd = 0
                 rmsssd_cache[det_id][gt_id] = rmsssd
@@ -405,7 +471,7 @@ def points_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fa
         return math.inf  # no corrs found
 
 
-def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=False):
+def color_rmsssd(evaluator, submission, ground_truth, voxels=False):
     """
     Compute average root mean squared symmetric surface color distance
     (RMSSSCD). Equation 13 in SUMO white paper.
@@ -413,8 +479,6 @@ def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fal
     Inputs:
     submission (ProjectScene) - Submitted scene to be evaluated
     ground_truth (ProjectScene) - The ground truth scene
-    overlap_thresh (float) - max distance (meters) for establishing a
-      correspondence between sampled points
 
     Return:
         RMSSSCD (float or math.inf if there are no corresponding points
@@ -453,15 +517,9 @@ def color_rmsssd(evaluator, submission, ground_truth, overlap_thresh, voxels=Fal
 
                 idx1to2, idx2to1, dist1to2, dist2to1 = nearest_neighbors(
                     sub_points[:, 0:3], gt_points[:, 0:3])
-                idx_sub = np.argwhere((dist1to2 <=
-                    overlap_thresh).flatten()).flatten()  # vector
-                idx_gt = np.argwhere((dist2to1 <=
-                    overlap_thresh).flatten()).flatten()   # vector
 
-                color_diff1to2 = sub_points[idx_sub, 3:6] - \
-                    gt_points[idx1to2[idx_sub], 3:6]
-                color_diff2to1 = gt_points[idx_gt, 3:6] - \
-                    sub_points[idx2to1[idx_gt], 3:6]
+                color_diff1to2 = sub_points[:, 3:6] - gt_points[idx1to2, 3:6]
+                color_diff2to1 = gt_points[:, 3:6] - sub_points[idx2to1, 3:6]
 
                 n_matched = color_diff1to2.shape[0] + color_diff2to1.shape[0]
 

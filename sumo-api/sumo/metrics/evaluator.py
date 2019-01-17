@@ -65,7 +65,8 @@ class Evaluator():
         # compute similarity between all detections and gt elements
         self._similarity_cache = self._make_similarity_cache(submission, ground_truth)
 
-        # compute-agnostic and category-aware association (for all thresholds)
+        # compute category-agnostic and category-aware association (for all
+        # similarity thresholds)
         self._agnostic_data_assoc = self._compute_agnostic_data_assoc(
             submission.elements, ground_truth.elements,
             self._settings["thresholds"], self._similarity_cache
@@ -163,14 +164,14 @@ class Evaluator():
                     det_matches.append(0)  # false positive
                 det_scores.append(element.score)
 
-            (precision, _) = utils.compute_pr(
+            ap, precision, recall = utils.compute_ap(
                 det_matches=np.array(det_matches),
                 det_scores=np.array(det_scores),
                 n_gt=n_gt,
                 recall_samples=self._settings["recall_samples"],
-                interp=True)
+                interp=True) # Equation 4
 
-            aps.append(np.mean(precision))  # Equation 4
+            aps.append(ap)
         return np.mean(aps)   # Equation 6
 
     def pose_error(self):
@@ -371,13 +372,11 @@ class Evaluator():
             # compute PR curve per category
             for cat in self._settings["categories"]:
                 if n_gt[cat] > 0:  # only consider categories in the actual scene
-                    (precision, _) = utils.compute_pr(
+                    ap = utils.compute_ap(
                         det_matches=np.array(det_matches[cat]),
                         det_scores=np.array(det_scores[cat]),
-                        n_gt=n_gt[cat],
-                        recall_samples=self._settings["recall_samples"],
-                        interp=True)
-                    aps.append(np.mean(precision))  # Equation 15
+                        n_gt=n_gt[cat]) # Equation 15
+                    aps.append(ap)
         return np.mean(aps)  # Equation 16
 
     def perceptual_score(self):

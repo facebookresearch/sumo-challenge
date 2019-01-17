@@ -21,6 +21,7 @@ correct.
 import numpy as np
 import os
 import unittest
+import time
 
 from sumo.metrics.evaluator import Evaluator
 from sumo.metrics.voxel_evaluator import VoxelEvaluator
@@ -39,6 +40,11 @@ class TestVoxelEvaluator(unittest.TestCase):
         self.settings["categories"] = [
             'wall', 'floor', 'ceiling', 'sofa', 'coffee_table']
         self.settings["density"] = 100
+        self._started_at = time.time()
+
+    def tearDown(self):
+        elapsed = time.time() - self._started_at
+        print('{} ({}s)'.format(self.id(), round(elapsed, 2)))
 
     @unittest.skip
     def test_shape_similarity(self):
