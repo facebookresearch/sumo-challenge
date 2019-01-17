@@ -3,6 +3,8 @@
     Metrics helper functions
 """
 
+from functools import wraps
+import gc
 import math
 import matplotlib
 import matplotlib.pyplot as plt
@@ -11,8 +13,39 @@ import numpy as np
 import pymesh
 import pyny3d.geoms as pyny
 from sklearn.neighbors import BallTree  # for nearest neighbors
+import timeit
 
 from sumo.geometry.rot3 import Rot3
+
+# Timing utility
+#
+def measure_time(f):
+    """
+    Decorator that measures the time for a given function.
+
+    To time a function, use this form:
+
+    from sumo.metrics.utils import measure_time
+    @measure_time
+    def function_foo(bar):
+        pass
+
+    Source: https://stackoverflow.com/questions/7370801/measure-time-elapsed-in-python
+    """
+    @wraps(f)
+    def _wrapper(*args, **kwargs):
+        gcold = gc.isenabled()
+        gc.disable()
+        start_time = timeit.default_timer()
+        try:
+            result = f(*args, **kwargs)
+        finally:
+            elapsed = timeit.default_timer() - start_time
+            if gcold:
+                gc.enable()
+            print('Function "{}": {}s'.format(f.__name__, elapsed))
+        return result
+    return _wrapper
 
 
 #-------------------------------------------------
@@ -341,7 +374,7 @@ def plot_pr(precision, recall):
 # Surface and voxel similarity support
 #----------------------------------------
 
-def points_iou(points1, points2, thresh):
+def points_iou(points1, bbox1, points2, bbox2, thresh):
     """
     Compute the IoU metric for two point sets.  Equations 2 and 3 in
     SUMO white paper.  The metric is the ratio of overlapping points
@@ -351,7 +384,9 @@ def points_iou(points1, points2, thresh):
 
     Inputs:
     points1 (np array N x 3 of float) - points in set 1. N points by 3 coordinates.
+    bbox1 (Box3d) - bounding box for points1
     points2 (np array N x 3 of float) - points in set 2. N points by 3 coordinates.
+    bbox2 (Box3d) - bounding box for points2
     thresh (float) - threshold for a pair of corresponding points to
       be considered overlapping.
 
@@ -359,6 +394,15 @@ def points_iou(points1, points2, thresh):
     IoU (float) - intersection over union as defined in Eq. 2 and 3 in
     the SUMO white paper.
     """
+
+    # quick intersection test.  If bounding boxes don't overlap on any single axis,
+    # then the enclosed object cannot overlap
+    for axis in range(3):
+        if (bbox1.min_corner[axis] > bbox2.max_corner[axis] + thresh) or \
+           (bbox2.min_corner[axis] > bbox1.max_corner[axis] + thresh):
+           return 0
+
+
     ind1to2, ind2to1, dist1to2, dist2to1 = nearest_neighbors(
         points1[:, 0:3], points2[:, 0:3])
     intersection = np.sum(dist1to2 <= thresh) + np.sum(dist2to1 <= thresh)
@@ -398,9 +442,9 @@ def nearest_neighbors(points1, points2):
         ind2to1 = np.empty(shape=(0,), dtype=np.int64)
         dist1to2 = np.empty(shape=(0,), dtype=np.int64)
         dist2to1 = np.empty(shape=(0,), dtype=np.int64)
-    else: 
+    else:
         tree1 = BallTree(points1)
-        tree2 = BallTree(points2) 
+        tree2 = BallTree(points2)
         dist1to2, ind1to2 = tree2.query(points1)
         dist2to1, ind2to1 = tree1.query(points2)
         ind1to2 = ind1to2.flatten()
@@ -446,17 +490,14 @@ def points_rmsssd(evaluator, submission, ground_truth, voxels=False):
                 # this computation once, but it will require a
                 # fair amount of refactoring
 
-                if voxels:
-                    points1 = evaluator._submission.elements[det_id].voxel_centers
-                    points2 = evaluator._ground_truth.elements[gt_id].voxel_centers
-                else:
-                    points1 = evaluator._submission.elements[det_id].points
-                    points2 = evaluator._ground_truth.elements[gt_id].points
+                points1 = evaluator._submission.elements[det_id].posed_points
+                points2 = evaluator._ground_truth.elements[gt_id].posed_points
+
                 ind1to2, ind2to1, dist1to2, dist2to1 = nearest_neighbors(
                     points1[:, 0:3], points2[:, 0:3])
 
                 n_matched = dist1to2.shape[0] + dist2to1.shape[0]
-                if n_matched > 0: 
+                if n_matched > 0:
                     # SUMO white paper Eq 12
                     rmsssd = np.sqrt((np.sum(np.square(dist1to2)) +
                                       np.sum(np.square(dist2to1))) / n_matched)
@@ -508,13 +549,8 @@ def color_rmsssd(evaluator, submission, ground_truth, voxels=False):
                 # this computation once, but it will require a
                 # fair amount of refactoring
 
-                if voxels:
-                    sub_points = evaluator._submission.elements[det_id].voxel_centers
-                    gt_points = evaluator._ground_truth.elements[gt_id].voxel_centers
-                else:
-                    sub_points = evaluator._submission.elements[det_id].points
-                    gt_points = evaluator._ground_truth.elements[gt_id].points
-
+                sub_points = evaluator._submission.elements[det_id].posed_points
+                gt_points = evaluator._ground_truth.elements[gt_id].posed_points
                 idx1to2, idx2to1, dist1to2, dist2to1 = nearest_neighbors(
                     sub_points[:, 0:3], gt_points[:, 0:3])
 
@@ -531,7 +567,7 @@ def color_rmsssd(evaluator, submission, ground_truth, voxels=False):
                 else:
                     rmssscd = 0
                 rmssscd_cache[det_id][gt_id] = rmssscd
-                
+
                 rmssscd1.append(rmssscd)
 
     if len(rmssscd1) > 0:

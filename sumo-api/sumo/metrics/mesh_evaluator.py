@@ -7,10 +7,10 @@ LICENSE file in the root directory of this source tree.
 
 Algorithm class: Evaluate a mesh track submission
 """
-
 import numpy as np
 
 from sumo.metrics.evaluator import Evaluator
+from sumo.threedee.compute_bbox import ComputeBbox
 import sumo.metrics.utils as utils
 
 # ------------------------------------
@@ -21,7 +21,7 @@ import sumo.metrics.utils as utils
 def sample_element(element, density=625):
     """
     Sample the faces of <element> at given density.  Uses uniform
-    random sampling.  The resulting points are in room coordinates.
+    random sampling.  ***Note***: The resulting points are in room coordinates.
 
     Inputs:
     element (ProjectObject) - target element
@@ -139,10 +139,13 @@ class MeshEvaluator(Evaluator):
         """
 
         # sample submission and GT and store in points field
+        # also compute bounding box of each posed object
         for e in submission.elements.values():
-            e.points = sample_element(e, settings["density"])
+            e.posed_points = sample_element(e, settings["density"])
+            e.posed_bbox = ComputeBbox().from_point_cloud(e.posed_points[:,0:3].T)
         for e in ground_truth.elements.values():
-            e.points = sample_element(e, settings["density"])
+            e.posed_points = sample_element(e, settings["density"])
+            e.posed_bbox = ComputeBbox().from_point_cloud(e.posed_points[:,0:3].T)
 
         super(MeshEvaluator, self).__init__(submission, ground_truth, settings)
 
@@ -213,6 +216,7 @@ class MeshEvaluator(Evaluator):
         Return:
         float - mesh IoU (Equation 3 in SUMO white paper)
         """
-        sim = utils.points_iou(element1.points, element2.points,
-            self._settings["mesh_overlap_thresh"])
+        sim = utils.points_iou(element1.posed_points, element1.posed_bbox,
+                               element2.posed_points, element2.posed_bbox,
+                               self._settings["mesh_overlap_thresh"])
         return sim

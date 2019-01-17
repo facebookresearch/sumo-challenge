@@ -13,13 +13,14 @@ import pymesh
 from pymesh.meshutils import remove_duplicated_vertices_raw
 
 from sumo.metrics.evaluator import Evaluator
+from sumo.metrics.utils import measure_time
+from sumo.threedee.compute_bbox import ComputeBbox
 
 
 class BBEvaluator(Evaluator):
     """
     Algorithm to evaluate a submission for the bounding box track.
     """
-
     def __init__(self, submission, ground_truth, settings=None):
         """
         Constructor.  Computes similarity between all elements in the
@@ -32,6 +33,17 @@ class BBEvaluator(Evaluator):
         settings (dict) - configuration for the evaluator.  See
         Evaluator.py for recognized keys and values.
         """
+
+        # extract posed bounds and save
+        # (used for IoU calcs)
+        for e in submission.elements.values():
+            posed_corners = e.pose.transform_all_from(e.bounds.corners()) 
+            e.posed_bbox = ComputeBbox().from_point_cloud(posed_corners)
+
+        for e in ground_truth.elements.values():
+            posed_corners = e.pose.transform_all_from(e.bounds.corners()) 
+            e.posed_bbox = ComputeBbox().from_point_cloud(posed_corners)
+
         super(BBEvaluator, self).__init__(submission, ground_truth, settings)
 
     def evaluate_all(self):
@@ -73,6 +85,16 @@ class BBEvaluator(Evaluator):
         Return:
         float - bounding box IoU (Equation 1 in SUMO white paper)
         """
+
+        # quick intersection test.  If bounding boxes don't overlap on any single axis,
+        # then the enclosed object cannot overlap
+        bbox1 = element1.posed_bbox
+        bbox2 = element2.posed_bbox
+        for axis in range(3):
+            if (bbox1.min_corner[axis] > bbox2.max_corner[axis]) or \
+               (bbox2.min_corner[axis] > bbox1.max_corner[axis]):
+                return 0
+
         box1 = _bbox2pymesh(element1)
         box2 = _bbox2pymesh(element2)
         inter = pymesh.boolean(box1, box2, operation='intersection')

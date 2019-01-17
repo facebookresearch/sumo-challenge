@@ -87,9 +87,9 @@ class Evaluator():
         thresholds = np.linspace(0.5, 0.95, 10)
         recall_samples = np.linspace(0, 1, 11)
         categories = ["wall", "chair"]
-        density = 625
-        mesh_overlap_thresh = 0.1  # meters
-        voxel_overlap_thresh = 0.1  # meters
+        density = 150  # gives 1 point about every 7.5 cm 
+        mesh_overlap_thresh = 0.15  # meters
+        voxel_overlap_thresh = 0.15  # meters
 
         perceptual_settings = {
             "room_scale": {
@@ -206,7 +206,7 @@ class Evaluator():
                 # Eq. 10
                 trans_errors1.append(np.linalg.norm(
                     gt_element.pose.t - det_element.pose.t))
-
+                
             if len(rot_errors1) > 0:
                 rot_errors.append(np.mean(rot_errors1))
                 trans_errors.append(np.mean(trans_errors1))

@@ -10,6 +10,7 @@ Algorithm class: Evaluate a voxel track submission
 
 from sumo.metrics.evaluator import Evaluator
 import sumo.metrics.utils as utils
+from sumo.threedee.compute_bbox import ComputeBbox
 
 
 class VoxelEvaluator(Evaluator):
@@ -31,15 +32,21 @@ class VoxelEvaluator(Evaluator):
         """
 
         # TODO: Add check that scene type is voxels
-        # extract voxel centers
+
+        # extract posed voxel centers and bounds and save
+        # (used for IoU calcs)
         for e in submission.elements.values():
             centers = e.voxels.voxel_centers()
-            centers_posed = e.pose.transform_all_from(centers.T).T
-            e.voxel_centers = centers_posed
+            e.posed_points = e.pose.transform_all_from(centers.T).T
+            bbox_corners = e.voxels.bounds().corners()
+            posed_corners = e.pose.transform_all_from(bbox_corners)
+            e.posed_bbox = ComputeBbox().from_point_cloud(posed_corners)
         for e in ground_truth.elements.values():
             centers = e.voxels.voxel_centers()
-            centers_posed = e.pose.transform_all_from(centers.T).T
-            e.voxel_centers = centers_posed
+            e.posed_points = e.pose.transform_all_from(centers.T).T
+            bbox_corners = e.voxels.bounds().corners()
+            posed_corners = e.pose.transform_all_from(bbox_corners)
+            e.posed_bbox = ComputeBbox().from_point_cloud(posed_corners)
 
         super(VoxelEvaluator, self).__init__(ground_truth, submission, settings)
 
@@ -110,6 +117,7 @@ class VoxelEvaluator(Evaluator):
         Return:
         float - voxel IoU (Equation 2 in SUMO white paper)
         """
-        sim = utils.points_iou(element1.voxel_centers, element2.voxel_centers,
+        sim = utils.points_iou(element1.posed_points, element1.posed_bbox,
+                               element2.posed_points, element2.posed_bbox,
                                self._settings["voxel_overlap_thresh"])
         return sim
