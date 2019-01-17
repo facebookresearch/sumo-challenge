@@ -2,8 +2,12 @@
 
 For additional details, please see the [SUMO challenge website](http://sumochallenge.org)
 
-This API is written using a combination of C++, Python, and Cython.  The user-facing interface is
-Python only.
+This API is written using a combination of C++, Python, and Cython.
+The user-facing interface is Python only.  
+
+## License
+
+This API is licensed under the MIT license.  See LICENSE for details.
 
 ## Requirements
 
