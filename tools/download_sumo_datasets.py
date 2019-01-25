@@ -285,11 +285,8 @@ def calculate_disk_space_needed(args):
     # on average 6.5G per zip file + 10 GB for extraction
     required_space = len(remaining_zips) * 6 + 10
     if free < required_space:
-        raise RuntimeError(
-            "Your destination folder needs to have at least {:,}GB of free space.".format(
-                required_space
-            )
-        )
+        raise RuntimeError("Your destination folder needs to have at least \
+            {:,}GB of free space.".format(required_space))
 
 
 def get_args():
