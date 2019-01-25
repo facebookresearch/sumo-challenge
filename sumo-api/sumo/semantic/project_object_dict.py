@@ -106,8 +106,7 @@ class ProjectObjectDict(dict):
         pose3 = Pose3(t=Vector3(4, 2, 0))
 
         # Be explicit about unicode literal in case this code is called from python 2
-        data_path = parutil.get_dir_path(
-            u"sumo/threedee/test_data")
+        data_path = parutil.get_dir_path(u"sumo/threedee/test_data")
 
         model1 = GltfModel.load_from_glb(os.path.join(data_path, "bed.glb"))
         model2 = GltfModel.load_from_glb(os.path.join(data_path, "bed.glb"))

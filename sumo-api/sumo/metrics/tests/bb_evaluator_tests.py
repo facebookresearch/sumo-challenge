@@ -24,8 +24,7 @@ class TestBBEvaluator(unittest.TestCase):
         """
         Common setup for test cases
         """
-        self.data_path = os.path.join(os.getcwd(),
-            'sumo/metrics/test_data')
+        self.data_path = os.path.join(os.getcwd(), 'sumo/metrics/test_data')
         self.ground_truth = ProjectScene.load(self.data_path, 'bounding_box_sample')
         self.submission = ProjectScene.load(self.data_path, 'bounding_box_sample')
         self.settings = Evaluator.default_settings()

@@ -14,5 +14,3 @@ website/node_modules
 website/i18n/*
 website/yarn-error.log
 
-TARGETS
-.git

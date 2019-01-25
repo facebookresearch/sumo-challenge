@@ -86,8 +86,7 @@ class VoxelEvaluator(Evaluator):
         Reference:
         https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
         """
-        return utils.points_rmsssd(self, self._submission, self._ground_truth,
-            voxels=True)
+        return utils.points_rmsssd(self, self._submission, self._ground_truth, voxels=True)
 
     def rms_color_error(self):
         """
@@ -100,8 +99,7 @@ class VoxelEvaluator(Evaluator):
         Reference:
         https://www.cs.ox.ac.uk/files/7732/CS-RR-15-08.pdf
         """
-        return utils.color_rmsssd(self, self._submission, self._ground_truth,
-            voxels=True)
+        return utils.color_rmsssd(self, self._submission, self._ground_truth, voxels=True)
 
 #------------------------
 # End of public interface

@@ -45,8 +45,7 @@ class TestPointCloud(unittest.TestCase):
 
     def test_write_ply(self):
         # Prepare input test signal
-        folder_path = parutil.get_file_path(
-            'sumo/threedee/test_data')
+        folder_path = parutil.get_file_path('sumo/threedee/test_data')
         file_path = os.path.join(folder_path, 'example_tetrahedron.ply')
         cloud_input = PointCloud.load_ply(file_path)
 

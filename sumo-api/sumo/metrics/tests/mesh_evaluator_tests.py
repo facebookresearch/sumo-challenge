@@ -35,8 +35,7 @@ class TestMeshEvaluator(unittest.TestCase):
         """
         Common setup for test cases
         """
-        self.data_path = os.path.join(os.getcwd(),
-            'sumo/metrics/test_data')
+        self.data_path = os.path.join(os.getcwd(), 'sumo/metrics/test_data')
         self.ground_truth = ProjectScene.load(self.data_path, 'meshes_sample')
         self.submission = ProjectScene.load(self.data_path, 'meshes_sample')
         self.settings = Evaluator.default_settings()
@@ -94,6 +93,7 @@ class TestMeshEvaluator(unittest.TestCase):
 
         rms_points_error = evaluator.rms_points_error()
         self.assertTrue(rms_points_error < 0.07)
+
 
     def test_rms_color_error(self):
         evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
