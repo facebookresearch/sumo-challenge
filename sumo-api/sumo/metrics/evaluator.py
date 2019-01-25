@@ -87,7 +87,7 @@ class Evaluator():
         thresholds = np.linspace(0.5, 0.95, 10)
         recall_samples = np.linspace(0, 1, 11)
         categories = ["wall", "chair"]
-        density = 150  # gives 1 point about every 7.5 cm 
+        density = 150  # gives 1 point about every 7.5 cm
         mesh_overlap_thresh = 0.15  # meters
         voxel_overlap_thresh = 0.15  # meters
 
@@ -95,22 +95,22 @@ class Evaluator():
             "room_scale": {
                 "weight": 100,
                 "mean": 1.0,
-                "std_dev": 0.15 
+                "std_dev": 0.15
             },
             "true_obj_scale": {
                 "weight": 5,
                 "mean": 1.0,
-                "std_dev": 0.18  
+                "std_dev": 0.18
             },
             "relative_obj_scale": {
                 "weight": 5,
                 "mean": 1.0,
-                "std_dev": 0.18 
+                "std_dev": 0.18
             },
             "translation": {
                 "weight": 5,
                 "mean": 0.0,
-                "std_dev": 0.5  
+                "std_dev": 0.5
             },
             "elevation": {
                 "weight": 5,
@@ -120,15 +120,16 @@ class Evaluator():
             "missed_weight": 25,
             "extra_weight": 25
         }
-            
+
         return {
             "thresholds": thresholds,
             "recall_samples": recall_samples,
             "categories": categories,
             "density": density,
             "mesh_overlap_thresh": mesh_overlap_thresh,
-            "voxel_overlap_thresh": voxel_overlap_thresh, 
-            "perceptual" : perceptual_settings,}
+            "voxel_overlap_thresh": voxel_overlap_thresh,
+            "perceptual" : perceptual_settings,
+        }
 
     def evaluate_all(self):
         """
@@ -169,7 +170,7 @@ class Evaluator():
                 det_scores=np.array(det_scores),
                 n_gt=n_gt,
                 recall_samples=self._settings["recall_samples"],
-                interp=True) # Equation 4
+                interp=True)  # Equation 4
 
             aps.append(ap)
         return np.mean(aps)   # Equation 6
@@ -206,7 +207,7 @@ class Evaluator():
                 # Eq. 10
                 trans_errors1.append(np.linalg.norm(
                     gt_element.pose.t - det_element.pose.t))
-                
+
             if len(rot_errors1) > 0:
                 rot_errors.append(np.mean(rot_errors1))
                 trans_errors.append(np.mean(trans_errors1))
@@ -375,7 +376,7 @@ class Evaluator():
                     ap = utils.compute_ap(
                         det_matches=np.array(det_matches[cat]),
                         det_scores=np.array(det_scores[cat]),
-                        n_gt=n_gt[cat]) # Equation 15
+                        n_gt=n_gt[cat])  # Equation 15
                     aps.append(ap)
         return np.mean(aps)  # Equation 16
 
@@ -388,16 +389,20 @@ class Evaluator():
         perceptual_scores = []
         all_det_ids = set(self._submission.elements.keys())
         all_gt_ids = set(self._ground_truth.elements.keys())
-        normalized = True  # ::: TODO: What should this default be and should it be controlled in settings?
+        normalized = True  # ::: TODO: What should this default be
+        # and should it be controlled in settings?
         for t in self._settings["thresholds"]:
-            matched_det_ids = set([x.det_id for x in self._agnostic_data_assoc[t].values()])
-            matched_gt_ids = set([x.gt_id for x in self._agnostic_data_assoc[t].values()])
-            missed = all_gt_ids.difference(matched_gt_ids)  
+            matched_det_ids = {x.det_id for x in
+                self._agnostic_data_assoc[t].values()}
+            matched_gt_ids = {x.gt_id for x in
+                self._agnostic_data_assoc[t].values()}
+            missed = all_gt_ids.difference(matched_gt_ids)
             extra = all_det_ids.difference(matched_det_ids)
 
-            perceptual_score = self._perceptual_score_1(self._agnostic_data_assoc[t], missed, extra, normalized)
+            perceptual_score = self._perceptual_score_1(
+                self._agnostic_data_assoc[t], missed, extra, normalized)
             perceptual_scores.append(perceptual_score)
-            
+
         return np.mean(perceptual_scores)
 
 #------------------------
@@ -610,12 +615,12 @@ class Evaluator():
     def _perceptual_score_1(self, matched, missed, extra, normalized=True):
         """
         Compute perceptual score for a given data association at a
-        single similarity threshold. 
+        single similarity threshold.
 
         Inputs:
         matched (dict of Corrs) - dictionary of correspondences (from
           data association) between submitted elements and
-          ground-truth elements. 
+          ground-truth elements.
         missed (set of object_ids) - ids of non-matched ground-truth instances
         extra (set of object_ids) - ids of non-matched detected instances
         normalized (Bool) - if True, normalize the score (from 0-1),
@@ -628,7 +633,7 @@ class Evaluator():
         max_score = 0
 
         params = self._settings["perceptual"]
-        
+
         g_room_scale = _gaussian_function(params['room_scale'])
         g_true_obj_scale = _gaussian_function(params['true_obj_scale'])
         g_relative_obj_scale = _gaussian_function(params['relative_obj_scale'])
@@ -637,7 +642,8 @@ class Evaluator():
         missed_weight = params['missed_weight']
         extra_weight = params['extra_weight']
 
-        # Compute (and score) room scale, which is based on the combined area of "floor" objects
+        # Compute (and score) room scale, which is based on the combined area
+        # of "floor" objects
         gt_floor_area = 0
         sub_floor_area = 0
 
@@ -668,9 +674,9 @@ class Evaluator():
         for corr in matched.values():
             gt_element = self._ground_truth.elements[corr.gt_id]
             det_element = self._submission.elements[corr.det_id]
-            
+
             # absolute and relative (to room size) scale perceptual score
-            # scale 
+            # scale
             # ::: TODO: Consider an alternative method of defining scale.
             # E.g., relative
             gt_volume = gt_element.bounds.volume()
@@ -686,7 +692,8 @@ class Evaluator():
                 # avoid divide by 0.  This should not happen in normal cases.
                 # If this does happen, just ignore this object.  It is not
                 # clear what would be the scale.
-                perceptual_score += g_relative_obj_scale(det_volume / gt_roomscale_volume)
+                perceptual_score += g_relative_obj_scale(
+                    det_volume / gt_roomscale_volume)
                 max_score += params['relative_obj_scale']['weight']
 
             # translation perceptual score
@@ -695,7 +702,7 @@ class Evaluator():
             translation_diff = np.linalg.norm(det_trans - gt_trans)
             perceptual_score += g_translation(translation_diff)
             max_score += params['translation']['weight']
-            
+
             # elevation perceptual score
             elevation_diff = det_element.pose.t[1] - gt_element.pose.t[1]
             perceptual_score += g_elevation(elevation_diff)
@@ -720,7 +727,7 @@ class Evaluator():
 
         return perceptual_score
 
-    
+
 #-----------------------------
 # Helper functions and classes
 #-----------------------------
@@ -728,7 +735,7 @@ class Evaluator():
 def _gaussian_function(settings):
     """
     Make a weighted 1D Gaussian function object.
-    
+
     Inputs:
     settings (dict) - Parameters for configuring the Gaussian.  Keys/values are:
     weight (float) - The maximum height of the Gaussian
@@ -742,16 +749,18 @@ def _gaussian_function(settings):
     def gaussian(x):
         """
         Gaussian function.
-        
+
         Input:
         x (float)
 
         Return:
         gaussian(x) - the value of the Gaussian
         """
-        return settings['weight'] * math.exp(-0.5 * (x - settings['mean'])**2 / settings['std_dev']**2)
+        return settings['weight'] * math.exp(
+            -0.5 * (x - settings['mean'])**2 / settings['std_dev']**2)
     return gaussian
-  
+
+
 class Corr():
     """
     Helper class for storing a correspondence.
