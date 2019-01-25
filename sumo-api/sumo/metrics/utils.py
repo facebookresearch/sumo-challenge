@@ -223,9 +223,10 @@ def compute_ap(det_matches, det_scores, n_gt, recall_samples=None, interp=False,
         generated (as described in :::cite pascal voc paper)
         area_under_curve (Boolean): If True, compute average precision as area under the curve
     Return:
-        average_precision(float) - average precision
-        precision (numpy vector of float) - precision values at corresponding <recall> points
-        recall (numpy vector of float) - recall values.
+        (ap, precision, recall) where
+          ap (float) - average precision
+          precision (numpy vector of float) - precision values at corresponding <recall> points
+          recall (numpy vector of float) - recall values.
     """
     if area_under_curve:
         ap, precision, recall = compute_auc_ap(det_matches, det_scores, n_gt)
