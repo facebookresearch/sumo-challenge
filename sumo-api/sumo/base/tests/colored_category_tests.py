@@ -15,7 +15,8 @@ from libfb.py import parutil
 
 from sumo.base.colored_category import ColoredCategory
 
-CSV_PATH = parutil.get_file_path('sumo/base/test_data/categories.csv')
+CSV_PATH = parutil.get_file_path(
+    'sumo/base/test_data/categories.csv')
 
 
 class TestColoredCategory(unittest.TestCase):
