@@ -373,7 +373,7 @@ class Evaluator():
             # compute PR curve per category
             for cat in self._settings["categories"]:
                 if n_gt[cat] > 0:  # only consider categories in the actual scene
-                    ap = utils.compute_ap(
+                    ap, _, _ = utils.compute_ap(
                         det_matches=np.array(det_matches[cat]),
                         det_scores=np.array(det_scores[cat]),
                         n_gt=n_gt[cat])  # Equation 15
