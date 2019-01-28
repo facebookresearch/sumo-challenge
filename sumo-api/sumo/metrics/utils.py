@@ -17,6 +17,7 @@ import timeit
 
 from sumo.geometry.rot3 import Rot3
 
+
 # Timing utility
 #
 def measure_time(f):
@@ -206,7 +207,9 @@ def matrix_to_euler(matrix):
 # Precision recall curves
 #-------------------------------------
 
-def compute_ap(det_matches, det_scores, n_gt, recall_samples=None, interp=False, area_under_curve=True):
+
+def compute_ap(det_matches, det_scores, n_gt, recall_samples=None,
+               interp=False, area_under_curve=True):
     """
     Compute average precision and precision-recall curve
 
@@ -221,7 +224,8 @@ def compute_ap(det_matches, det_scores, n_gt, recall_samples=None, interp=False,
         inclusive.
         interp (Boolean) - If true, the interpolated PR curve will be
         generated (as described in :::cite pascal voc paper)
-        area_under_curve (Boolean): If True, compute average precision as area under the curve
+        area_under_curve (Boolean): If True, compute average precision as area
+        under the curve
     Return:
         (ap, precision, recall) where
           ap (float) - average precision
@@ -231,10 +235,12 @@ def compute_ap(det_matches, det_scores, n_gt, recall_samples=None, interp=False,
     if area_under_curve:
         ap, precision, recall = compute_auc_ap(det_matches, det_scores, n_gt)
     else:
-        precision, recall = compute_pr(det_matches, det_scores, n_gt, recall_samples, interp)
+        precision, recall = compute_pr(
+            det_matches, det_scores, n_gt, recall_samples, interp)
         ap = np.mean(precision)
 
     return ap, precision, recall
+
 
 def compute_pr(det_matches, det_scores, n_gt, recall_samples=None, interp=False):
     """
@@ -304,6 +310,7 @@ def compute_pr(det_matches, det_scores, n_gt, recall_samples=None, interp=False)
 
     return (precision, recall)
 
+
 def compute_auc_ap(det_matches, det_scores, n_gt):
     """
     Compute average precision as area under the precision-recall curve.
@@ -316,7 +323,8 @@ def compute_auc_ap(det_matches, det_scores, n_gt):
     n_gt (int) - The number of ground truth entities in the task.
     Return:
         average_precision(float) - area under the PR curve
-        precision (numpy vector of float) - precision values at corresponding <recall> points
+        precision (numpy vector of float) - precision values at corresponding
+          <recall> points
         recall (numpy vector of float) - recall values.
     """
     # sort input based on score
@@ -343,10 +351,11 @@ def compute_auc_ap(det_matches, det_scores, n_gt):
         for i in range(len(precision) - 1, 0, -1):
             if precision[i] > precision[i - 1]:
                 precision[i - 1] = precision[i]
-            ap += precision[i]*(recall[i] - recall[i-1])
-        ap += precision[0]*recall[0]
+            ap += precision[i] * (recall[i] - recall[i - 1])
+        ap += precision[0] * recall[0]
 
     return ap, precision, recall
+
 
 def plot_pr(precision, recall):
     """
@@ -401,8 +410,7 @@ def points_iou(points1, bbox1, points2, bbox2, thresh):
     for axis in range(3):
         if (bbox1.min_corner[axis] > bbox2.max_corner[axis] + thresh) or \
            (bbox2.min_corner[axis] > bbox1.max_corner[axis] + thresh):
-           return 0
-
+            return 0
 
     ind1to2, ind2to1, dist1to2, dist2to1 = nearest_neighbors(
         points1[:, 0:3], points2[:, 0:3])

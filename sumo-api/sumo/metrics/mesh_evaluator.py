@@ -86,7 +86,6 @@ def sample_mesh(faces, density=625):
     Return:
     samples (np array - N X D matrix of sampled points
     """
-    D = faces.shape[1]  # normally will be 3 (plain mesh) or 6 (colored mesh)
     A, B, C = faces[0::3, :], faces[1::3, :], faces[2::3, :]
     cross = np.cross(A[:, 0:3] - C[:, 0:3] , B[:, 0:3] - C[:, 0:3])
     areas = 0.5 * (np.sqrt(np.sum(cross**2, axis=1)))
@@ -142,10 +141,10 @@ class MeshEvaluator(Evaluator):
         # also compute bounding box of each posed object
         for e in submission.elements.values():
             e.posed_points = sample_element(e, settings["density"])
-            e.posed_bbox = ComputeBbox().from_point_cloud(e.posed_points[:,0:3].T)
+            e.posed_bbox = ComputeBbox().from_point_cloud(e.posed_points[:, 0:3].T)
         for e in ground_truth.elements.values():
             e.posed_points = sample_element(e, settings["density"])
-            e.posed_bbox = ComputeBbox().from_point_cloud(e.posed_points[:,0:3].T)
+            e.posed_bbox = ComputeBbox().from_point_cloud(e.posed_points[:, 0:3].T)
 
         super(MeshEvaluator, self).__init__(submission, ground_truth, settings)
 

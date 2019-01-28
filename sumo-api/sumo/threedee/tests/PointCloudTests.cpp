@@ -1,4 +1,4 @@
-#include <sumo/threedee/PointCloud.h>
+#include "sumo/threedee/PointCloud.h"
 
 #include <gtest/gtest.h>
 

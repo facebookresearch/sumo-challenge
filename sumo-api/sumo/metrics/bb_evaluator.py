@@ -13,7 +13,6 @@ import pymesh
 from pymesh.meshutils import remove_duplicated_vertices_raw
 
 from sumo.metrics.evaluator import Evaluator
-from sumo.metrics.utils import measure_time
 from sumo.threedee.compute_bbox import ComputeBbox
 
 
@@ -37,11 +36,11 @@ class BBEvaluator(Evaluator):
         # extract posed bounds and save
         # (used for IoU calcs)
         for e in submission.elements.values():
-            posed_corners = e.pose.transform_all_from(e.bounds.corners()) 
+            posed_corners = e.pose.transform_all_from(e.bounds.corners())
             e.posed_bbox = ComputeBbox().from_point_cloud(posed_corners)
 
         for e in ground_truth.elements.values():
-            posed_corners = e.pose.transform_all_from(e.bounds.corners()) 
+            posed_corners = e.pose.transform_all_from(e.bounds.corners())
             e.posed_bbox = ComputeBbox().from_point_cloud(posed_corners)
 
         super(BBEvaluator, self).__init__(submission, ground_truth, settings)
