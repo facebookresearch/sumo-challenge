@@ -45,11 +45,15 @@ class ProjectObject(object):
         symmetry (ObjectSymmetry) - Object symmetry description
         score (float) - If object is generated from a detector,
           this is the score.  Higher is better.  Value is -1 if not used.
+        evaluated (Boolean) - If object is part of ground truth, this indicates
+          whether the object is going to be used as part of the evaluation
+          metric for the scene it is part of.  Otherwise, this attribute's meaning
+          is undefined.
     """
 
     def __init__(
         self, id, project_type="bounding_box", bounds=None, voxels=None, meshes=None,
-        pose=None, category="unknown", symmetry=None, score=-1
+        pose=None, category="unknown", symmetry=None, score=-1, evaluated=True
     ):
         """
         Constructor.  Preferred method of creation is one of the factory methods:
@@ -71,6 +75,8 @@ class ProjectObject(object):
         category (string) - Object category (e.g., chair, bookcase, etc.)
         symmetry (ObjectSymmetry) - Object symmetry description
         score (float) - Detection score
+        evaluated (Boolean) - Indicates whether this object will be used in
+            evaluation metric.  Only relevant for ground truth scenes.
 
         Exceptions:
             ValueError - if project_type is not one of the allowed values.
@@ -82,6 +88,7 @@ class ProjectObject(object):
         self.category = category
         self.symmetry = symmetry if symmetry is not None else ObjectSymmetry()
         self.score = score
+        self.evaluated = evaluated
 
         if project_type == "bounding_box":
             self.bounds = bounds
@@ -100,7 +107,7 @@ class ProjectObject(object):
 
     @classmethod
     def gen_bounding_box_object(cls, id, bounds=None, pose=None, category="unknown",
-    symmetry=None, score=-1):
+    symmetry=None, score=-1, evaluated=True):
         """
         Factory method for making a ProjectObject that holds a bounding_box.
 
@@ -111,11 +118,12 @@ class ProjectObject(object):
         new ProjectObject (project_type = "bounding_box")
         """
         return cls(id, "bounding_box", bounds=bounds, voxels=None, meshes=None,
-            pose=pose, category=category, symmetry=symmetry, score=score)
+            pose=pose, category=category, symmetry=symmetry, score=score,
+            evaluated=evaluated)
 
     @classmethod
     def gen_voxels_object(cls, id, bounds=None, voxels=None,
-          pose=None, category="unknown", symmetry=None, score=-1):
+          pose=None, category="unknown", symmetry=None, score=-1, evaluated=True):
         """
         Factory method for making a ProjectObject that holds a voxel grid.
 
@@ -126,11 +134,13 @@ class ProjectObject(object):
         new ProjectObject (project_type = "voxels")
         """
         return cls(id, "voxels", bounds=bounds, voxels=voxels, meshes=None,
-            pose=pose, category=category, symmetry=symmetry, score=score)
+            pose=pose, category=category, symmetry=symmetry, score=score,
+            evaluated=evaluated)
 
     @classmethod
     def gen_meshes_object(cls, id, bounds=None, meshes=None,
-          pose=None, category="unknown", symmetry=None, score=-1):
+          pose=None, category="unknown", symmetry=None, score=-1,
+          evaluated=True):
         """
         Factory method for making a ProjectObject that holds a mesh model.
 
@@ -141,7 +151,8 @@ class ProjectObject(object):
         new ProjectObject (project_type = "meshes")
         """
         return cls(id, "meshes", bounds=bounds, voxels=None, meshes=meshes,
-            pose=pose, category=category, symmetry=symmetry, score=score)
+            pose=pose, category=category, symmetry=symmetry, score=score,
+            evaluated=evaluated)
 
     # Restrict id to be read only.
     @property
@@ -166,6 +177,7 @@ class ProjectObject(object):
             and self.category == other.category
             and self.symmetry == other.symmetry
             and np.isclose(self.score, other.score)
+            and self.evaluated == other.evaluated
         )
 
     def transform_pose(self, nTo):
@@ -178,6 +190,7 @@ class ProjectObject(object):
         return ProjectObject(self.id, self.project_type,
             self.bounds, self.voxels, self.meshes,
             nTo.compose(self.pose), self.category, self.symmetry, self.score,
+            self.evaluated
         )
 
     def save(self, path=None):
@@ -234,23 +247,24 @@ class ProjectObject(object):
         ValueError - If project_type is not valid.
         IOError - if file cannot be read.
         """
-        (id, pose, category, bounds, symmetry, score) = cls._parse_xml(base_elem)
+        (id, pose, category, bounds, symmetry, score, evaluated) = \
+            cls._parse_xml(base_elem)
 
         # load file-based attributes and return the constructed object
         if project_type == "bounding_box":
             return ProjectObject.gen_bounding_box_object(
                 id=id, bounds=bounds, pose=pose, category=category,
-                symmetry=symmetry, score=score)
+                symmetry=symmetry, score=score, evaluated=evaluated)
         elif project_type == "voxels":
             voxels = VoxelGrid.from_file(os.path.join(path, id + ".h5"))
             return ProjectObject.gen_voxels_object(
                 id=id, bounds=bounds, voxels=voxels, pose=pose, category=category,
-                symmetry=symmetry, score=score)
+                symmetry=symmetry, score=score, evaluated=evaluated)
         elif project_type == "meshes":
             meshes = GltfModel.load_from_glb(os.path.join(path, id + ".glb"))
             return ProjectObject.gen_meshes_object(
                 id=id, bounds=bounds, meshes=meshes, pose=pose, category=category,
-                symmetry=symmetry, score=score)
+                symmetry=symmetry, score=score, evaluated=evaluated)
         else:
             raise ValueError("Invalid project_type: " + project_type)
 
@@ -261,7 +275,7 @@ class ProjectObject(object):
         pose = Pose3(t=Vector3(1, 2, 3))
         symmetry = ObjectSymmetry.example()
         return cls.gen_meshes_object(id=id, pose=pose, category="chair", meshes=meshes,
-            symmetry=symmetry, score=0.57)
+            symmetry=symmetry, score=0.57, evaluated=False)
 
 #-------------
 # End of public interface
@@ -299,6 +313,9 @@ class ProjectObject(object):
         score_elem = ET.SubElement(base_elem, "detectionScore")
         score_elem.text = str(self.score)
 
+        evaluated_elem = ET.SubElement(base_elem, "evaluated")
+        evaluated_elem.text = str(self.evaluated)
+
         return base_elem
 
     @staticmethod
@@ -311,7 +328,7 @@ class ProjectObject(object):
             sub-elements.
 
         Return:
-        tuple (id, pose, category, bounds, symmetry, score)
+        tuple (id, pose, category, bounds, symmetry, score, evaluated)
         ProjectObject attributes (see constructor for details).
 
         Exceptions:
@@ -327,6 +344,7 @@ class ProjectObject(object):
         pose = proxy.pose
         symmetry = proxy.symmetry
         score = proxy.score
+        evaluated = proxy.evaluated
 
         for elem in base_elem:
             if elem.tag == "id":
@@ -344,8 +362,10 @@ class ProjectObject(object):
                 symmetry = ObjectSymmetry.from_xml(elem)
             elif elem.tag == "detectionScore":
                 score = float(elem.text)
+            elif elem.tag == "evaluated":
+                evaluated = bool(elem.text)
 
         if id is None:
             raise ValueError("XML is missing required <id> tag.")
 
-        return (id, pose, category, bounds, symmetry, score)
+        return (id, pose, category, bounds, symmetry, score, evaluated)
