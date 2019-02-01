@@ -60,7 +60,7 @@ def remove_existing_files(zip_files, existing_zip_files):
 def read_config(args):
     """Reads the configuration file from the server, which contains the list of
     files to download."""
-    response = requests.get(args.server_name + CONFIG_FILE_PATH)
+    response = requests.get(args.server_name + "/" + CONFIG_FILE_PATH)
     if response.status_code != 200:
         raise RuntimeError(
             "Cannot read config file from the server. Check your connection "
@@ -68,7 +68,7 @@ def read_config(args):
         )
     config = response.json()
 
-    if config["version"] != "v1":
+    if config["version"] != "v2":
         raise RuntimeError(
             "A new version of config file is deployed. "
             "Please download the most recent script from "
@@ -77,14 +77,13 @@ def read_config(args):
     args.version = config["version"]
     args.training_input = config["training_input"]
     args.training_ground_truth = config["training_ground_truth"]
-    args.test_input = config["test_input"]
 
 
 def download_one(args, zip_filename):
     """Downloads one zip file in a single process."""
     try:
         logging.info("Downloading {}.".format(zip_filename))
-        server_url = "{}{}/{}".format(args.server_name, args.version, zip_filename)
+        server_url = "{}/training/{}/{}".format(args.server_name, args.version, zip_filename)
         response = requests.get(server_url, stream=True)
         if not response.ok:
             raise RuntimeError(
@@ -244,7 +243,7 @@ def unzip_files_in_parallel(args):
 def get_zip_file_count(args):
     """Returns a tuple of four lists: all zip files, already downloaded zip files,
     remaining zip files to be downloaded, and extracted zip files."""
-    all_zip_files = args.training_input + args.training_ground_truth + args.test_input
+    all_zip_files = args.training_input + args.training_ground_truth
     existing_zip_files = [
         os.path.basename(x)
         for x in glob.glob(os.path.join(args.destination_dir, "*.zip"))
@@ -288,7 +287,6 @@ def calculate_disk_space_needed(args):
         raise RuntimeError("Your destination folder needs to have at least \
             {:,}GB of free space.".format(required_space))
 
-
 def get_args():
     """Creates an ArgumentParser and returns the arguments namespace."""
     parser = argparse.ArgumentParser()
@@ -303,6 +301,7 @@ if __name__ == "__main__":
 
     try:
         args = get_args()
+        args.server_name = args.server_name.rstrip("/")  # remove any trailing slash 
         read_config(args)
         create_target_folder(args)
         calculate_disk_space_needed(args)
