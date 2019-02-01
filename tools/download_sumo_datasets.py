@@ -60,7 +60,7 @@ def remove_existing_files(zip_files, existing_zip_files):
 def read_config(args):
     """Reads the configuration file from the server, which contains the list of
     files to download."""
-    response = requests.get(args.server_name + CONFIG_FILE_PATH)
+    response = requests.get(args.server_name + "/" + CONFIG_FILE_PATH)
     if response.status_code != 200:
         raise RuntimeError(
             "Cannot read config file from the server. Check your connection "
@@ -83,7 +83,7 @@ def download_one(args, zip_filename):
     """Downloads one zip file in a single process."""
     try:
         logging.info("Downloading {}.".format(zip_filename))
-        server_url = "{}{}/{}".format(args.server_name, args.version, zip_filename)
+        server_url = "{}/training/{}/{}".format(args.server_name, args.version, zip_filename)
         response = requests.get(server_url, stream=True)
         if not response.ok:
             raise RuntimeError(
@@ -287,7 +287,6 @@ def calculate_disk_space_needed(args):
         raise RuntimeError("Your destination folder needs to have at least \
             {:,}GB of free space.".format(required_space))
 
-
 def get_args():
     """Creates an ArgumentParser and returns the arguments namespace."""
     parser = argparse.ArgumentParser()
@@ -302,6 +301,7 @@ if __name__ == "__main__":
 
     try:
         args = get_args()
+        args.server_name = args.server_name.rstrip("/")  # remove any trailing slash 
         read_config(args)
         create_target_folder(args)
         calculate_disk_space_needed(args)
