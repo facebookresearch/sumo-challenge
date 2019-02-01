@@ -62,6 +62,7 @@ class TestProjectObject(unittest.TestCase):
         self.assertEqual(po.id, "1")
         self.assertEqual(po.symmetry, ObjectSymmetry())
         self.assertAlmostEqual(po.score, -1)
+        self.assertEqual(po.evaluated, True)
 
     def test_almost_equal(self):
         object1 = ProjectObject.example(id="foobar")
@@ -84,6 +85,7 @@ class TestProjectObject(unittest.TestCase):
         self.assertEqual(po.category, "chair")
         self.assertEqual(po.id, "1")
         self.assertAlmostEqual(po.score, 0.57)
+        self.assertEqual(po.evaluated, False)
 
     def test_factory_methods(self):
         """Test the gen_<X> methods for the 3 project_types"""
@@ -113,6 +115,7 @@ class TestProjectObject(unittest.TestCase):
         po.category = "table"
         po.symmetry = ObjectSymmetry.example()
         po.score = 0.23
+        po.evaluated = True
 
         self.assertTrue(isinstance(po.pose, Pose3))
         self.assertAlmostEqual(po.pose, self.pose)
@@ -123,6 +126,7 @@ class TestProjectObject(unittest.TestCase):
         self.assertEqual(po.id, "-1")
         self.assertEqual(po.symmetry, ObjectSymmetry.example())
         self.assertAlmostEqual(po.score, 0.23)
+        self.assertEqual(po.evaluated, True)
 
     def test_xml(self):
         """Test converting to and from xml."""
@@ -132,13 +136,12 @@ class TestProjectObject(unittest.TestCase):
 <pose><translation>-131.596614 ,  -39.9279011,   92.1260558</translation>\
 <rotation><c1>1., 0., 0.</c1><c2>0., 1., 0.</c2><c3>0., 0., 1.</c3></rotation>\
 </pose><symmetry><x>twoFold</x><y>twoFold</y><z>fourFold</z></symmetry>\
-<detectionScore>0.23</detectionScore></element>"""
+<detectionScore>0.23</detectionScore><evaluated>True</evaluated></element>"""
         object_xml = ET.fromstring(s)
-        (id, pose, category, bounds, symmetry, score) = ProjectObject._parse_xml(
-            object_xml
-        )
+        (id, pose, category, bounds, symmetry, score, evaluated) = \
+            ProjectObject._parse_xml(object_xml)
         project_object = ProjectObject.gen_bounding_box_object(
-            id, bounds, pose, category, symmetry, score
+            id, bounds, pose, category, symmetry, score, evaluated
         )
         object_xml2 = project_object._to_xml()
         self.assertEqual(ET.tostring(object_xml2, encoding="unicode"), s)
@@ -167,7 +170,7 @@ class TestProjectObject(unittest.TestCase):
 <pose><translation>-131.596614 ,  -39.9279011,   92.1260558</translation>\
 <rotation><c1>1., 0., 0.</c1><c2>0., 1., 0.</c2><c3>0., 0., 1.</c3></rotation>\
 </pose><symmetry><x>twoFold</x><y>twoFold</y><z>fourFold</z></symmetry>\
-<detectionScore>0.23</detectionScore></element>"""
+<detectionScore>0.23</detectionScore><evaluated>True</evaluated></element>"""
         object_xml = ET.fromstring(s)
         project_object = ProjectObject.load("bounding_box", object_xml)
         object_xml2 = project_object.save("bounding_box")
