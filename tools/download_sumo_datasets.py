@@ -68,7 +68,7 @@ def read_config(args):
         )
     config = response.json()
 
-    if config["version"] != "v1":
+    if config["version"] != "v2":
         raise RuntimeError(
             "A new version of config file is deployed. "
             "Please download the most recent script from "
@@ -77,7 +77,6 @@ def read_config(args):
     args.version = config["version"]
     args.training_input = config["training_input"]
     args.training_ground_truth = config["training_ground_truth"]
-    args.test_input = config["test_input"]
 
 
 def download_one(args, zip_filename):
@@ -244,7 +243,7 @@ def unzip_files_in_parallel(args):
 def get_zip_file_count(args):
     """Returns a tuple of four lists: all zip files, already downloaded zip files,
     remaining zip files to be downloaded, and extracted zip files."""
-    all_zip_files = args.training_input + args.training_ground_truth + args.test_input
+    all_zip_files = args.training_input + args.training_ground_truth
     existing_zip_files = [
         os.path.basename(x)
         for x in glob.glob(os.path.join(args.destination_dir, "*.zip"))
