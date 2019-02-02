@@ -363,7 +363,7 @@ class ProjectObject(object):
             elif elem.tag == "detectionScore":
                 score = float(elem.text)
             elif elem.tag == "evaluated":
-                evaluated = bool(elem.text)
+                evaluated = elem.text in ["True", "true"]
 
         if id is None:
             raise ValueError("XML is missing required <id> tag.")
