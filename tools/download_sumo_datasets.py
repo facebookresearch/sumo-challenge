@@ -83,7 +83,7 @@ def download_one(args, zip_filename):
     """Downloads one zip file in a single process."""
     try:
         logging.info("Downloading {}.".format(zip_filename))
-        server_url = "{}/training/{}/{}".format(args.server_name, args.version, zip_filename)
+        server_url = "{}/training/{}".format(args.server_name, zip_filename)
         response = requests.get(server_url, stream=True)
         if not response.ok:
             raise RuntimeError(
