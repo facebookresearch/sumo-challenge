@@ -9,7 +9,7 @@ Build and Installation Script (see README.md) for usage
 """
 
 from setuptools import find_packages, setup
-from disttools.extension import Extension
+from setuptools.extension import Extension
 from Cython.Build import cythonize
 from Cython.Distutils import build_ext
 
