@@ -68,13 +68,6 @@ def read_config(args):
         )
     config = response.json()
 
-    if config["version"] != "v2":
-        raise RuntimeError(
-            "A new version of config file is deployed. "
-            "Please download the most recent script from "
-            "https://github.com/facebookresearch/sumo-challenge"
-        )
-    args.version = config["version"]
     args.training_input = config["training_input"]
     args.training_ground_truth = config["training_ground_truth"]
 
