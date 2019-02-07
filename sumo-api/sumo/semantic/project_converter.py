@@ -97,7 +97,8 @@ class ProjectConverter(object):
                 pose=deepcopy(element.pose),
                 category=element.category,
                 symmetry=element.symmetry,
-                score=element.score
+                score=element.score,
+                evaluated=element.evaluated
             )
 
         elif target_type == "voxels":
@@ -110,7 +111,8 @@ class ProjectConverter(object):
                 pose=deepcopy(element.pose),
                 category=element.category,
                 symmetry=element.symmetry,
-                score=element.score
+                score=element.score,
+                evaluated=element.evaluated
             )
 
         else:
