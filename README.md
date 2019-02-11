@@ -57,7 +57,7 @@ pip install -r requirements.txt
 ### Build Cython modules
 
 ```
-python setup.py build_ext --inplace
+pip install --verbose -e .
 ```
 
 ## Post-installation
