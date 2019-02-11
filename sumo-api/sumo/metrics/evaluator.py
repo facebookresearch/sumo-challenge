@@ -86,7 +86,140 @@ class Evaluator():
 
         thresholds = np.linspace(0.5, 0.95, 10)
         recall_samples = np.linspace(0, 1, 11)
-        categories = ["wall", "chair"]
+        categories = [
+            'air_conditioner',
+            'arch',
+            'armchair',
+            'ATM',
+            'baby_bed',
+            'basketball_hoop',
+            'bathtub',
+            'beer',
+            'bench_chair',
+            'book',
+            'books',
+            'bookshelf',
+            'bottle',
+            'bunker_bed',
+            'candle',
+            'car',
+            'cart',
+            'ceiling',
+            'ceiling_fan',
+            'chair',
+            'chair_set',
+            'chandelier',
+            'chessboard',
+            'clock',
+            'cloth',
+            'coffee_kettle',
+            'coffee_machine',
+            'coffee_table',
+            'column',
+            'computer',
+            'containers',
+            'cup',
+            'curtain',
+            'cutting_board',
+            'desk',
+            'dining_table',
+            'dishwasher',
+            'door',
+            'double_bed',
+            'dresser',
+            'dressing_table',
+            'dryer',
+            'fence',
+            'fireplace',
+            'fish_tank',
+            'fishbowl',
+            'floor',
+            'floor_lamp',
+            'food_processor',
+            'food_tray',
+            'fruit_bowl',
+            'game_table',
+            'garage_door',
+            'glass',
+            'goal_post',
+            'grill',
+            'gym_equipment',
+            'hanger',
+            'hanging_kitchen_cabinet',
+            'heater',
+            'household_appliance',
+            'iron',
+            'ironing_board',
+            'jug',
+            'kettle',
+            'kitchen_cabinet',
+            'kitchen_set',
+            'knife_rack',
+            'laptop',
+            'loudspeaker',
+            'magazines',
+            'microwave',
+            'mirror',
+            'motorcycle',
+            'office_chair',
+            'ottoman',
+            'outdoor_lamp',
+            'outdoor_seating',
+            'pan',
+            'partition',
+            'pedestal_fan',
+            'person',
+            'pet',
+            'piano',
+            'picture_frame',
+            'pillow',
+            'place_setting',
+            'plant',
+            'plates',
+            'playstation',
+            'pool',
+            'range_hood',
+            'range_oven',
+            'refrigerator',
+            'roof',
+            'rug',
+            'shelving',
+            'shoes_cabinet',
+            'shower',
+            'single_bed',
+            'sink',
+            'soap_dispenser',
+            'sofa',
+            'stairs',
+            'stand',
+            'stationary_container',
+            'stereo_set',
+            'switch',
+            'table_and_chair',
+            'table_lamp',
+            'telephone',
+            'television',
+            'toilet',
+            'towel_hanger',
+            'towel_rack',
+            'toy',
+            'trash_can',
+            'trinket',
+            'tv_stand',
+            'umbrella',
+            'utensil_holder',
+            'vacuum_cleaner',
+            'vase',
+            'wall',
+            'wall_lamp',
+            'wardrobe_cabinet',
+            'washer',
+            'water_dispenser',
+            'whiteboard',
+            'window',
+            'workplace',
+            'xbox',
+        ]
         density = 150  # gives 1 point about every 7.5 cm
         mesh_overlap_thresh = 0.15  # meters
         voxel_overlap_thresh = 0.15  # meters
@@ -165,14 +298,16 @@ class Evaluator():
                     det_matches.append(0)  # false positive
                 det_scores.append(element.score)
 
-            ap, precision, recall = utils.compute_ap(
-                det_matches=np.array(det_matches),
-                det_scores=np.array(det_scores),
-                n_gt=n_gt,
-                recall_samples=self._settings["recall_samples"],
-                interp=True)  # Equation 4
-
-            aps.append(ap)
+            if n_gt > 0: # only consider scenes with elements
+                # note: scenes with no gt elements should not happen in practice,
+                # but AP is not defined if the gt has no elements.
+                ap, precision, recall = utils.compute_ap(
+                    det_matches=np.array(det_matches),
+                    det_scores=np.array(det_scores),
+                    n_gt=n_gt,
+                    recall_samples=self._settings["recall_samples"],
+                    interp=True)  # Equation 4
+                aps.append(ap)
         return np.mean(aps)   # Equation 6
 
     def pose_error(self):
@@ -344,7 +479,7 @@ class Evaluator():
         n_gt = {}
         for cat in self._settings["categories"]:
             n_gt[cat] = 0
-        for element in self._submission.elements.values():
+        for element in self._ground_truth.elements.values():
             if element.category in self._settings["categories"]:
                 n_gt[element.category] += 1
 
