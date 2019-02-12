@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>SUMO 2019 Launched · SUMO360 - 3D Scene Understanding and Modeling</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="We are proud to launch the 2019 SUMO challenge today.  We are also announcing the associated 2019 SUMO Challenge Workshop, to be held at CVPR.  We encourage you to [participate in the challenge](https://sumochallenge.org) and join us at the workshop.  We also invite researchers to submit short technical papers, which will be presented at the workshop and published in IEEE and on the CVF web site.  Read on for the full call for participation."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="SUMO 2019 Launched · SUMO360 - 3D Scene Understanding and Modeling"/><meta property="og:type" content="website"/><meta property="og:url" content="https://facebookresearch.github.io/sumo-challenge/blog/2019/02/12/launch"/><meta property="og:description" content="We are proud to launch the 2019 SUMO challenge today.  We are also announcing the associated 2019 SUMO Challenge Workshop, to be held at CVPR.  We encourage you to [participate in the challenge](https://sumochallenge.org) and join us at the workshop.  We also invite researchers to submit short technical papers, which will be presented at the workshop and published in IEEE and on the CVF web site.  Read on for the full call for participation."/><meta property="og:image" content="https://facebookresearch.github.io/sumo-challenge/img/sumo-logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://facebookresearch.github.io/sumo-challenge/img/sumo-logo.png"/><link rel="shortcut icon" href="/sumo-challenge/img/sumo-logo.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://facebookresearch.github.io/sumo-challenge/blog/atom.xml" title="SUMO360 - 3D Scene Understanding and Modeling Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://facebookresearch.github.io/sumo-challenge/blog/feed.xml" title="SUMO360 - 3D Scene Understanding and Modeling Blog RSS Feed"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/sumo-challenge/css/main.css"/><script src="/sumo-challenge/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/sumo-challenge/"><img class="logo" src="/sumo-challenge/img/sumo-logo.png" alt="SUMO360 - 3D Scene Understanding and Modeling"/><h2 class="headerTitleWithLogo">SUMO360 - 3D Scene Understanding and Modeling</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/sumo-challenge/docs/installation" target="_self">Docs</a></li><li class=""><a href="https://github.com/facebookresearch/sumo-challenge" target="_self">Github</a></li><li class=""><a href="/sumo-challenge/help" target="_self">Help</a></li><li class="siteNavGroupActive"><a href="/sumo-challenge/blog/" target="_self">News</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Recent Posts</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Recent Posts</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/sumo-challenge/blog/2019/02/12/launch">SUMO 2019 Launched</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer postContainer blogContainer"><div class="wrapper"><div class="lonePost"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle"><a href="/sumo-challenge/blog/2019/02/12/launch">SUMO 2019 Launched</a></h1><p class="post-meta">February 12, 2019</p><div class="authorBlock"><p class="post-authorName"><a href="https://www.linkedin.com/in/daniel-huber-22b2631/" target="_blank" rel="noreferrer noopener">Daniel Huber</a></p><div class="authorPhoto"><a href="https://www.linkedin.com/in/daniel-huber-22b2631/" target="_blank" rel="noreferrer noopener"><img src="https://graph.facebook.com/1158791588/picture/?height=200&amp;width=200" alt="Daniel Huber"/></a></div></div></header><div><span><p>We are proud to launch the 2019 SUMO challenge today.  We are also announcing the associated 2019 SUMO Challenge Workshop, to be held at CVPR.  We encourage you to <a href="https://sumochallenge.org">participate in the challenge</a> and join us at the workshop.  We also invite researchers to submit short technical papers, which will be presented at the workshop and published in IEEE and on the CVF web site.  Read on for the full call for participation.</p>
+<!--truncate-->
+<h3><a class="anchor" aria-hidden="true" id="call-for-participation"></a><a href="#call-for-participation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Call for Participation</h3>
+<p><strong>The 2019 SUMO Challenge Workshop:</strong>
+<strong>360° Indoor Scene Understanding and Modeling</strong>
+<strong>(in association with CVPR 2019)</strong></p>
+<ul>
+<li>Web site | <a href="https://sumochallenge.org">https://sumochallenge.org</a></li>
+<li>Workshop Schedule | June 16 or 17, 2017 (exact date TBD)</li>
+<li>Location | Long Beach, CA, USA</li>
+</ul>
+<p>In computer vision, scene understanding and modeling encapsulate a diverse set of research problems, ranging from low-level geometric modeling (e.g., SLAM algorithms) to 3D room layout estimation. These tasks are often addressed separately, yielding only a constrained understanding and representation of the underlying scene. In parallel, the popularity of 360° cameras has encouraged the digitization of the real world into augmented and virtual realities, enabling new applications such as virtual social interactions and semantically leveraged augmented reality. This workshop aims to promote comprehensive 3D scene understanding and modeling algorithms that create integrated scene representations (with geometry, appearance, semantics, and perceptual qualities), while utilizing 360° imagery to encourage research on its unique challenges.</p>
+<p>The SUMO Challenge, in conjunction with the workshop, provides a dataset and an evaluation platform to assess and compare such scene understanding approaches that generate complete 3D representations with textured 3D models, pose, and semantics. The datasets created and released for this competition may serve as reference benchmarks for future research in 3D scene understanding.</p>
+<h4><a class="anchor" aria-hidden="true" id="call-for-papers"></a><a href="#call-for-papers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Call for Papers:</h4>
+<p>The workshop is soliciting papers covering various problems related to 3D and 360° scene understanding and modeling from RGB and RGB-D imagery. The topics mainly focus on indoor scene modeling and include, but are not limited to:</p>
+<ul>
+<li>360° data processing and scene understanding</li>
+<li>Object detection</li>
+<li>Object localization</li>
+<li>Layout estimation</li>
+<li>“Stuff” detection and modeling</li>
+<li>Instance segmentation</li>
+<li>Object completion and 3D reconstruction</li>
+<li>Object pose estimation</li>
+<li>Generative models</li>
+<li>Articulated object modeling</li>
+<li>Texture and appearance modeling</li>
+<li>Material property estimation</li>
+<li>Lighting recognition</li>
+</ul>
+<p>Submissions must be written in English and must be sent in PDF format. Each submitted paper must be no longer than four pages, excluding references. Please refer to the CVPR author submission guidelines for instructions regarding formatting, templates, and policies. The CVPR submission guidelines can be found at <a href="http://cvpr2019.thecvf.com/submission/main_conference/author_guidelines">http://cvpr2019.thecvf.com/submission/main_conference/author_guidelines</a>. The review process will be double blind, in that the authors will not know the names of the reviewers, and the reviewers will not know the names of the authors. Also, selected papers will be published in the IEEE CVPRW proceedings, visible in IEEE Xplore and on the CVF Website.</p>
+<h4><a class="anchor" aria-hidden="true" id="sumo-challenge-details"></a><a href="#sumo-challenge-details" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>SUMO Challenge Details:</h4>
+<p>The SUMO Challenge provides 360° indoor RGBD images to benchmark RGBD-to-3D semantic scene modeling approaches. Challenge participants are asked to derive a complete, instance-based 3D representation of a scene, based on the given the RGBD input. The complete representation should highlight geometric instances, appearance, and semantics. Live scores, submission and evaluation of the results, and the datasets will be maintained on the workshop website. The challengers will also be required to submit a short paper (up to 4 pages) detailing their methodology, which can be extended as a full paper for further publication. The challenge tracks are:</p>
+<ul>
+<li>3D Bounding Box Track</li>
+<li>3D Voxel Track</li>
+<li>3D Mesh Track</li>
+</ul>
+<p>The winner in each category will receive cash and equipment prizes in addition to being invited to the workshop to give an oral presentation. Runners up and accepted submissions will be invited for a poster presentation.</p>
+<h4><a class="anchor" aria-hidden="true" id="important-dates"></a><a href="#important-dates" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Important dates:</h4>
+<table>
+<thead>
+<tr><th>Date</th><th>Event</th></tr>
+</thead>
+<tbody>
+<tr><td>Feb 7, 2019</td><td>Challenge launch</td></tr>
+<tr><td>March 15, 2019</td><td>Paper submission deadline &amp; challenge checkpoint</td></tr>
+<tr><td>April 3, 2019</td><td>Notification to authors</td></tr>
+<tr><td>April 10, 2019</td><td>Camera-ready deadline</td></tr>
+<tr><td>April 10, 2019</td><td>Challenge deadline</td></tr>
+<tr><td>June 16 or 17, 2019</td><td>SUMO Workshop and Challenge</td></tr>
+</tbody>
+</table>
+<h4><a class="anchor" aria-hidden="true" id="organizing-committee"></a><a href="#organizing-committee" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Organizing Committee:</h4>
+<ul>
+<li>Daniel Huber, Facebook</li>
+<li>Lyne Tchapmi, Stanford University</li>
+<li>Frank Dellaert, Georgia Tech</li>
+<li>Ilke Demir, DeepScale</li>
+<li>Shuran Song, Princeton University</li>
+<li>Rachel Luo, Stanford University</li>
+</ul>
+<h4><a class="anchor" aria-hidden="true" id="contact"></a><a href="#contact" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Contact:</h4>
+<ul>
+<li>Daniel Huber - <a href="mailto:dhuber@fb.com">dhuber@fb.com</a></li>
+<li>Lyne Tchapmi - <a href="mailto:lynetcha@stanford.edu">lynetcha@stanford.edu</a></li>
+</ul>
+</span></div></div><div class="blogSocialSection"></div></div><div class="blog-recent"><a class="button" href="/sumo-challenge/blog">Recent Posts</a></div></div></div><nav class="onPageNav"></nav></div><footer class="nav-footer" id="footer"><a href="https://code.facebook.com/projects/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/sumo-challenge/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2019 Facebook, Inc.</section></footer></div></body></html>

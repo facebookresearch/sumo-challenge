@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>SUMO360 - 3D Scene Understanding and Modeling Blog</title>
+        <link>https://facebookresearch.github.io/sumo-challenge/blog</link>
+        <description>The best place to stay up-to-date with the latest SUMO360 - 3D Scene Understanding and Modeling news and events.</description>
+        <lastBuildDate>Tue, 12 Feb 2019 06:00:00 GMT</lastBuildDate>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <generator>Feed for Node.js</generator>
+        <image>
+            <title>SUMO360 - 3D Scene Understanding and Modeling Blog</title>
+            <url>https://facebookresearch.github.io/sumo-challenge/img/sumo-logo.png</url>
+            <link>https://facebookresearch.github.io/sumo-challenge/blog</link>
+        </image>
+        <copyright>Copyright © 2019 Facebook, Inc.</copyright>
+        <item>
+            <title><![CDATA[SUMO 2019 Launched]]></title>
+            <link>https://facebookresearch.github.io/sumo-challenge/blog/2019/02/12/launch.html</link>
+            <guid>https://facebookresearch.github.io/sumo-challenge/blog/2019/02/12/launch.html</guid>
+            <pubDate>Tue, 12 Feb 2019 06:00:00 GMT</pubDate>
+            <description><![CDATA[<p>We are proud to launch the 2019 SUMO challenge today.  We are also announcing the associated 2019 SUMO Challenge Workshop, to be held at CVPR.  We encourage you to <a href="https://sumochallenge.org">participate in the challenge</a> and join us at the workshop.  We also invite researchers to submit short technical papers, which will be presented at the workshop and published in IEEE and on the CVF web site.  Read on for the full call for participation.</p>
+]]></description>
+        </item>
+    </channel>
+</rss>
