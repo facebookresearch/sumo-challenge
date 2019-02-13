@@ -1,4 +1,3 @@
-# API for the SUMO challenge
 
 [The SUMO360 API](https://facebookresearch.github.io/sumo-challenge/) is a Python package that supports manipulation of SUMO challenge input and output data and evaluation of SUMO Challenge solutions.
 
