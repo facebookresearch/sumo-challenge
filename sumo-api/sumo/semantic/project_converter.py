@@ -14,7 +14,6 @@ from copy import deepcopy
 from sumo.semantic.project_object import ProjectObject
 from sumo.semantic.project_object_dict import ProjectObjectDict
 from sumo.semantic.project_scene import ProjectScene
-from sumo.threedee.box_3d import Box3d
 from sumo.threedee.compute_bbox import ComputeBbox
 from sumo.threedee.voxelizer import Voxelizer
 
@@ -27,15 +26,11 @@ class ProjectConverter(object):
     meshes -> voxels
     voxels -> bounding_box
     meshes -> bounding_box
-
-    Additionally, it is possible to convert bounding_box to meshes, but
-    the resulting objects will just be box-shaped objects.
     """
 
     allowed_conversions = [("meshes", "voxels"),
                            ("meshes", "bounding_box"),
-                           ("voxels", "bounding_box"),
-                           ("bounding_box", "meshes")]
+                           ("voxels", "bounding_box")]
 
     def __init__(self):
         pass
@@ -113,19 +108,6 @@ class ProjectConverter(object):
                 id=element.id,
                 bounds=voxels.bounds(),
                 voxels=voxels,
-                pose=deepcopy(element.pose),
-                category=element.category,
-                symmetry=element.symmetry,
-                score=element.score,
-                evaluated=element.evaluated
-            )
-
-        elif target_type == "meshes" and source_type == "bounding_box":
-            mesh = to_mesh(element.bounds)
-            new_element = ProjectObject.gen_meshes_object(
-                id=element.id,
-                bounds=element.bounds,
-                meshes=mesh,
                 pose=deepcopy(element.pose),
                 category=element.category,
                 symmetry=element.symmetry,

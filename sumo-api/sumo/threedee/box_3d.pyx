@@ -17,6 +17,7 @@ from sumo.threedee.textured_mesh import TexturedMesh
 class Box3d(object):
     """
     Axis-aligned box.
+    The anchor for the box is the front-bottom-left.
     Coordinate frame is (+x right, +y up, +z toward viewer)
 
     Public attributes:
