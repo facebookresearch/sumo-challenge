@@ -64,6 +64,13 @@ class TestProjectConverter(unittest.TestCase):
         for element in bbox_model.elements.values():
             self.assertTrue(hasattr(element, "bounds"))
 
+    def test_bbox_to_mesh(self):
+        """
+        Conversion from bbox to mesh.  Test number of elements and
+        project type.  Does not test contents for accuracy.
+
+        
+
     def test_invalid_conversions(self):
         """
         Make sure invalid conversions raise an error
@@ -72,7 +79,3 @@ class TestProjectConverter(unittest.TestCase):
         self.assertRaises(ValueError, ProjectConverter().run,
                           project=bbox_model,
                           target_type="voxels")
-
-        self.assertRaises(ValueError, ProjectConverter().run,
-                          project=bbox_model,
-                          target_type="meshes")
