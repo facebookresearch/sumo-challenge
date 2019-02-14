@@ -16,8 +16,8 @@ from sumo.semantic.project_object_dict import ProjectObjectDict
 from sumo.semantic.project_scene import ProjectScene
 from sumo.threedee.box_3d import Box3d
 from sumo.threedee.compute_bbox import ComputeBbox
+from sumo.threedee.gltf_model import GltfModel
 from sumo.threedee.voxelizer import Voxelizer
-
 
 class ProjectConverter(object):
     """
@@ -121,11 +121,12 @@ class ProjectConverter(object):
             )
 
         elif target_type == "meshes" and source_type == "bounding_box":
-            mesh = element.bounds.to_mesh()
+            mesh = element.bounds.to_textured_mesh()
+            gltf_model = GltfModel.from_textured_mesh(mesh)
             new_element = ProjectObject.gen_meshes_object(
                 id=element.id,
                 bounds=element.bounds,
-                meshes=mesh,
+                meshes=gltf_model,
                 pose=deepcopy(element.pose),
                 category=element.category,
                 symmetry=element.symmetry,
