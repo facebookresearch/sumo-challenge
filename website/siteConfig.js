@@ -49,7 +49,7 @@ const siteConfig = {
 
   /* path to images for header/footer */
   headerIcon: 'img/sumo-logo.png',
-  favicon: 'img/sumo-logo.png',
+  favicon: 'img/sumo-logo-blue.png',
 
   /* Colors for website */
   colors: {
