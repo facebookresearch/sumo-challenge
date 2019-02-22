@@ -179,3 +179,6 @@ class TestBBEvaluator(unittest.TestCase):
         self.assertAlmostEqual(semantic_score, expected, 3,
                                "Expected semantic score of %.3f, found %.3f.\n" %
                                (expected, semantic_score))
+
+if __name__ == "__main__":
+    unittest.main()

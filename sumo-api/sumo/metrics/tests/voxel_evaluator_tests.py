@@ -112,3 +112,6 @@ class TestVoxelEvaluator(unittest.TestCase):
         metrics = evaluator.evaluate_all()
         self.assertTrue(metrics["rms_points_error"] < 0.05)
         self.assertAlmostEqual(metrics["shape_score"], 1)
+
+if __name__ == "__main__":
+    unittest.main()

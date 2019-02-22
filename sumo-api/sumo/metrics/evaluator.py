@@ -282,7 +282,8 @@ class Evaluator():
         float - shape similarity score
         """
 
-        n_gt = len(self._ground_truth.elements)
+        # number of ground truth elements with evaluated == True
+        n_gt = sum(v.evaluated == True for v in self._ground_truth.elements.values())
 
         aps = []  # average precision list
         for t in self._settings["thresholds"]:
@@ -291,12 +292,19 @@ class Evaluator():
             # det_matches = 1 if correct detection, 0 if false positive
             det_matches = []
             det_scores = []
+            data_assoc = self._agnostic_data_assoc[t]
             for element in self._submission.elements.values():
-                if element.id in self._agnostic_data_assoc[t]:
-                    det_matches.append(1)  # correct detection
-                else:
+                if element.id in data_assoc:  # matched
+                    if data_assoc[element.id].evaluated == True:  # evaluated
+                        # Data association found a correspondence, and the ground
+                        # truth element is marked as "evaluated"
+                        det_matches.append(1)  # correct detection
+                        det_scores.append(element.score)
+                    # else (matched and not evaluated --> ignore)
+
+                else: # not matched
                     det_matches.append(0)  # false positive
-                det_scores.append(element.score)
+                    det_scores.append(element.score)
 
             if n_gt > 0: # only consider scenes with elements
                 # note: scenes with no gt elements should not happen in practice,
@@ -337,11 +345,13 @@ class Evaluator():
                 det_element = self._submission.elements[corr.det_id]
                 gt_element = self._ground_truth.elements[corr.gt_id]
 
-                #  Eq. 8
-                rot_errors1.append(self.rotation_error_1(det_element, gt_element))
-                # Eq. 10
-                trans_errors1.append(np.linalg.norm(
-                    gt_element.pose.t - det_element.pose.t))
+                # only record score if the correspondence is marked "evaluated"
+                if gt_element.evaluated == True:
+                    #  Eq. 8
+                    rot_errors1.append(self.rotation_error_1(det_element, gt_element))
+                    # Eq. 10
+                    trans_errors1.append(np.linalg.norm(
+                        gt_element.pose.t - det_element.pose.t))
 
             if len(rot_errors1) > 0:
                 rot_errors.append(np.mean(rot_errors1))
@@ -480,7 +490,8 @@ class Evaluator():
         for cat in self._settings["categories"]:
             n_gt[cat] = 0
         for element in self._ground_truth.elements.values():
-            if element.category in self._settings["categories"]:
+            if element.category in self._settings["categories"] and \
+                element.evaluated == True:
                 n_gt[element.category] += 1
 
         for t in self._settings["thresholds"]:
@@ -499,11 +510,17 @@ class Evaluator():
             for element in self._submission.elements.values():
                 cat = element.category
                 if cat in self._settings["categories"]:
-                    if element.id in self._category_data_assoc[cat][t]:
-                        det_matches[cat].append(1)  # correct detection
-                    else:
+                    data_assoc = self._category_data_assoc[cat][t]
+                    if element.id in data_assoc:  # matched
+                        if data_assoc[element.id].evaluated == True:  # evaluated
+                            # Data association found a correspondence, and the ground
+                            # truth element is marked as "evaluated"
+                            det_matches[cat].append(1)  # correct detection
+                            det_scores[cat].append(element.score)
+                        # else (matched and not evaluated --> ignore)
+                    else:  # not matched
                         det_matches[cat].append(0)  # false positive
-                    det_scores[cat].append(element.score)
+                        det_scores[cat].append(element.score)
 
             # compute PR curve per category
             for cat in self._settings["categories"]:
@@ -569,7 +586,8 @@ class Evaluator():
                 corr = Corr(det_id=det_id,
                             gt_id=gt_element.id,
                             similarity=self._shape_similarity(det_element, gt_element),
-                            det_score=det_score)
+                            det_score=det_score,
+                            evaluated=gt_element.evaluated)
                 sim_cache[det_id][gt_element.id] = corr
         return sim_cache
 
@@ -777,31 +795,7 @@ class Evaluator():
         missed_weight = params['missed_weight']
         extra_weight = params['extra_weight']
 
-        # Compute (and score) room scale, which is based on the combined area
-        # of "floor" objects
-        gt_floor_area = 0
-        sub_floor_area = 0
-
-        # ::: TODO: Should apply pose to objects before computing bounds.  Also, should
-        # consider other types of structural objects, such as walls and ceilings.
-        # ::: TODO: A better way to do this would be to pose all the structural objects
-        # and then take the bounding box of the union of all of them.
-        for element in self._ground_truth.elements.values():
-            if element.category == 'floor':
-                x_size = element.bounds.max_corner[0] - element.bounds.min_corner[0]
-                z_size = element.bounds.max_corner[2] - element.bounds.min_corner[2]
-                gt_floor_area += (x_size * z_size)
-
-        for element in self._submission.elements.values():
-            if element.category == 'floor':
-                x_size = element.bounds.max_corner[0] - element.bounds.min_corner[0]
-                z_size = element.bounds.max_corner[2] - element.bounds.min_corner[2]
-                sub_floor_area += (x_size * z_size)
-
-        if gt_floor_area > 0:
-            room_scale = sub_floor_area / gt_floor_area
-        else:
-            room_scale = 0
+        room_scale = self._room_scale()
 
         perceptual_score += g_room_scale(room_scale)
         max_score += params['room_scale']['weight']
@@ -809,6 +803,10 @@ class Evaluator():
         for corr in matched.values():
             gt_element = self._ground_truth.elements[corr.gt_id]
             det_element = self._submission.elements[corr.det_id]
+
+            # Evaluate this correspondence only if evaluated flag is True
+            if gt_element.evaluated == False:
+                continue
 
             # absolute and relative (to room size) scale perceptual score
             # scale
@@ -846,7 +844,8 @@ class Evaluator():
         # penalty for missed detections
         for gt_id in missed:
             gt_element = self._ground_truth.elements[gt_id]
-            perceptual_score -= missed_weight * gt_element.bounds.volume()
+            if gt_element.evaluated == True:
+                perceptual_score -= missed_weight * gt_element.bounds.volume()
 
         # penalty for false alarms
         for det_id in extra:
@@ -862,6 +861,51 @@ class Evaluator():
 
         return perceptual_score
 
+    def _room_scale(self):
+        """
+        Compute (and score) room scale, which is based on the combined area
+        of "floor" objects.
+
+        Room scale is defined as the ratio of submitted floor area to the ground truth
+        floor area.  Area is measured by bounding box size.
+
+        Return:
+        room_scale (float)
+        """
+
+        gt_floor_area = 0
+        sub_floor_area = 0
+
+        # ::: TODO: Should apply pose to objects before computing bounds.  Also, should
+        # consider other types of structural objects, such as walls and ceilings.
+        # ::: TODO: A better way to do this would be to pose all the structural objects
+        # and then take the bounding box of the union of all of them.
+        for element in self._ground_truth.elements.values():
+            if element.category == 'floor' and element.evaluated == True:
+                x_size = element.bounds.max_corner[0] - element.bounds.min_corner[0]
+                z_size = element.bounds.max_corner[2] - element.bounds.min_corner[2]
+                gt_floor_area += (x_size * z_size)
+
+        # ::: TODO: Figure out a good way to determine the submission room size.
+        # The current version does not restrict to the actual room data.  There
+        # is no obvious way to determine this.  Using the data association (as is
+        # done elsewhere in the metrics calculations) would not work because a
+        # small error in estimating the floor would result in a vastly incorrect
+        # room scale.  For now, we just use all the modeled floor as the room size
+        # and trust the submitter to restrict modeling to the (admittedly ill-defined)
+        # room bounds.
+        for element in self._submission.elements.values():
+            if element.category == 'floor':
+                x_size = element.bounds.max_corner[0] - element.bounds.min_corner[0]
+                z_size = element.bounds.max_corner[2] - element.bounds.min_corner[2]
+                sub_floor_area += (x_size * z_size)
+
+        if gt_floor_area > 0:
+            room_scale = sub_floor_area / gt_floor_area
+        else:
+            room_scale = 0
+
+        return room_scale
 
 #-----------------------------
 # Helper functions and classes
@@ -900,13 +944,14 @@ class Corr():
     """
     Helper class for storing a correspondence.
     """
-    __slots__ = 'det_id', 'gt_id', 'similarity', 'det_score'
+    __slots__ = 'det_id', 'gt_id', 'similarity', 'det_score', 'evaluated'
 
-    def __init__(self, det_id, gt_id, similarity, det_score):
+    def __init__(self, det_id, gt_id, similarity, det_score, evaluated):
         self.det_id = det_id
         self.gt_id = gt_id
         self.similarity = similarity
         self.det_score = det_score
+        self.evaluated = evaluated
 
 
 def sort_corrs_by_similarity(corrs):
