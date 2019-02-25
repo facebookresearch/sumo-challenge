@@ -283,7 +283,7 @@ class Evaluator():
         """
 
         # number of ground truth elements with evaluated == True
-        n_gt = sum(v.evaluated == True for v in self._ground_truth.elements.values())
+        n_gt = sum(v.evaluated for v in self._ground_truth.elements.values())
 
         aps = []  # average precision list
         for t in self._settings["thresholds"]:
@@ -295,7 +295,7 @@ class Evaluator():
             data_assoc = self._agnostic_data_assoc[t]
             for element in self._submission.elements.values():
                 if element.id in data_assoc:  # matched
-                    if data_assoc[element.id].evaluated == True:  # evaluated
+                    if data_assoc[element.id].evaluated:  # evaluated
                         # Data association found a correspondence, and the ground
                         # truth element is marked as "evaluated"
                         det_matches.append(1)  # correct detection
@@ -346,7 +346,7 @@ class Evaluator():
                 gt_element = self._ground_truth.elements[corr.gt_id]
 
                 # only record score if the correspondence is marked "evaluated"
-                if gt_element.evaluated == True:
+                if gt_element.evaluated:
                     #  Eq. 8
                     rot_errors1.append(self.rotation_error_1(det_element, gt_element))
                     # Eq. 10
@@ -491,7 +491,7 @@ class Evaluator():
             n_gt[cat] = 0
         for element in self._ground_truth.elements.values():
             if element.category in self._settings["categories"] and \
-                element.evaluated == True:
+                element.evaluated:
                 n_gt[element.category] += 1
 
         for t in self._settings["thresholds"]:
@@ -512,7 +512,7 @@ class Evaluator():
                 if cat in self._settings["categories"]:
                     data_assoc = self._category_data_assoc[cat][t]
                     if element.id in data_assoc:  # matched
-                        if data_assoc[element.id].evaluated == True:  # evaluated
+                        if data_assoc[element.id].evaluated:  # evaluated
                             # Data association found a correspondence, and the ground
                             # truth element is marked as "evaluated"
                             det_matches[cat].append(1)  # correct detection
@@ -844,7 +844,7 @@ class Evaluator():
         # penalty for missed detections
         for gt_id in missed:
             gt_element = self._ground_truth.elements[gt_id]
-            if gt_element.evaluated == True:
+            if gt_element.evaluated:
                 perceptual_score -= missed_weight * gt_element.bounds.volume()
 
         # penalty for false alarms
@@ -881,7 +881,7 @@ class Evaluator():
         # ::: TODO: A better way to do this would be to pose all the structural objects
         # and then take the bounding box of the union of all of them.
         for element in self._ground_truth.elements.values():
-            if element.category == 'floor' and element.evaluated == True:
+            if element.category == 'floor' and element.evaluated:
                 x_size = element.bounds.max_corner[0] - element.bounds.min_corner[0]
                 z_size = element.bounds.max_corner[2] - element.bounds.min_corner[2]
                 gt_floor_area += (x_size * z_size)
