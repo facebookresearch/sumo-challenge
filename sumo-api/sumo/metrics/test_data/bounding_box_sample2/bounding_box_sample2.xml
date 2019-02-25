@@ -28,6 +28,7 @@
         <z>none</z>
       </symmetry>
       <detectionScore>0.6</detectionScore>
+      <evaluated>True</evaluated>
     </element>
   </elements>
 </scene>

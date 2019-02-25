@@ -28,6 +28,7 @@
         <z>none</z>
       </symmetry>
       <detectionScore>-1.0</detectionScore>
+      <evaluated>True</evaluated>
     </element>
     <element>
       <id>53</id>
@@ -50,6 +51,7 @@
         <z>none</z>
       </symmetry>
       <detectionScore>-1.0</detectionScore>
+      <evaluated>True</evaluated>
     </element>
     <element>
       <id>47</id>
@@ -72,6 +74,7 @@
         <z>none</z>
       </symmetry>
       <detectionScore>-1.0</detectionScore>
+      <evaluated>True</evaluated>
     </element>
     <element>
       <id>57</id>
@@ -94,6 +97,7 @@
         <z>none</z>
       </symmetry>
       <detectionScore>-1.0</detectionScore>
+      <evaluated>True</evaluated>
     </element>
     <element>
       <id>49</id>
@@ -116,6 +120,7 @@
         <z>none</z>
       </symmetry>
       <detectionScore>-1.0</detectionScore>
+      <evaluated>True</evaluated>
     </element>
     <element>
       <id>43</id>
@@ -138,6 +143,7 @@
         <z>twoFold</z>
       </symmetry>
       <detectionScore>-1.0</detectionScore>
+      <evaluated>True</evaluated>
     </element>
     <element>
       <id>45</id>
@@ -160,6 +166,7 @@
         <z>twoFold</z>
       </symmetry>
       <detectionScore>-1.0</detectionScore>
+      <evaluated>True</evaluated>
     </element>
     <element>
       <id>1065</id>
@@ -182,6 +189,7 @@
         <z>none</z>
       </symmetry>
       <detectionScore>-1.0</detectionScore>
+      <evaluated>True</evaluated>
     </element>
     <element>
       <id>1067</id>
@@ -204,6 +212,7 @@
         <z>none</z>
       </symmetry>
       <detectionScore>-1.0</detectionScore>
+      <evaluated>True</evaluated>
     </element>
     <element>
       <id>1066</id>
@@ -226,6 +235,7 @@
         <z>none</z>
       </symmetry>
       <detectionScore>-1.0</detectionScore>
+      <evaluated>True</evaluated>
     </element>
     <element>
       <id>1069</id>
@@ -248,6 +258,53 @@
         <z>none</z>
       </symmetry>
       <detectionScore>-1.0</detectionScore>
+      <evaluated>True</evaluated>
+    </element>
+    <element>
+      <id>1070</id>
+      <category>sofa</category>
+      <bounds>
+        <corner1>-0.45500001, -0.38110003, -0.44      </corner1>
+        <corner2> 0.45500001,  0.3811    ,  0.44      </corner2>
+      </bounds>
+      <pose>
+        <translation>5.14279954, -1.0689    ,  5.60190244</translation>
+        <rotation>
+          <c1> 1.,  0.,  0.</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3> 0.,  0.,  1.</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>none</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>-1.0</detectionScore>
+      <evaluated>False</evaluated>
+    </element>
+    <element>
+      <id>1071</id>
+      <category>coffee_table</category>
+      <bounds>
+        <corner1>-0.34999999, -0.22495887, -0.34999999</corner1>
+        <corner2> 0.34999999,  0.22495885,  0.34999999</corner2>
+      </bounds>
+      <pose>
+        <translation>-6.74280183, -1.22495879,  6.01189847</translation>
+        <rotation>
+          <c1> 1.,  0.,  0.</c1>
+          <c2> 0.,  1.,  0.</c2>
+          <c3> 0.,  0.,  1.</c3>
+        </rotation>
+      </pose>
+      <symmetry>
+        <x>none</x>
+        <y>twoFold</y>
+        <z>none</z>
+      </symmetry>
+      <detectionScore>-1.0</detectionScore>
+      <evaluated>False</evaluated>
     </element>
   </elements>
 </scene>

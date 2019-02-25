@@ -487,9 +487,14 @@ def points_rmsssd(evaluator, submission, ground_truth, voxels=False):
     rmsssd1 = []  # list of rmsssd per correspondence
     for t in settings["thresholds"]:
         for det_id in data_assoc[t]:
+            # skip if not evaluated
+            if data_assoc[t][det_id].evaluated == False:
+                continue
+
             if det_id not in rmsssd_cache:
                 rmsssd_cache[det_id] = {}
             gt_id = data_assoc[t][det_id].gt_id
+
             if gt_id in rmsssd_cache[det_id]:
                 # get from cache
                 rmsssd1.append(rmsssd_cache[det_id][gt_id])
@@ -546,6 +551,10 @@ def color_rmsssd(evaluator, submission, ground_truth, voxels=False):
     rmssscd1 = []  # list of rmssscd per correspondence
     for t in settings["thresholds"]:
         for det_id in data_assoc[t]:
+            # skip if not evaluated
+            if data_assoc[t][det_id].evaluated == False:
+                continue
+
             if det_id not in rmssscd_cache:
                 rmssscd_cache[det_id] = {}
             gt_id = data_assoc[t][det_id].gt_id
