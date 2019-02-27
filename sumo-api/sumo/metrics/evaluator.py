@@ -84,7 +84,7 @@ class Evaluator():
         Create and return an dict containing default settings.
         """
 
-        thresholds = np.linspace(0.5, 0.95, 10)
+        thresholds = np.linspace(0.25, 0.75, 11)
         recall_samples = np.linspace(0, 1, 11)
         categories = [
             'air_conditioner',
