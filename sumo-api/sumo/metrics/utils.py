@@ -322,7 +322,7 @@ def compute_auc_ap(det_matches, det_scores, n_gt):
       the corresponding matches.  Higher is better.
     n_gt (int) - The number of ground truth entities in the task.
     Return:
-        average_precision(float) - area under the PR curve
+        average_precision (float) - area under the PR curve
         precision (numpy vector of float) - precision values at corresponding
           <recall> points
         recall (numpy vector of float) - recall values.
