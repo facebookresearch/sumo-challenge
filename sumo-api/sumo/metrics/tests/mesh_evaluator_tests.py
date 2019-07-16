@@ -66,17 +66,17 @@ class TestMeshEvaluator(unittest.TestCase):
         self.assertAlmostEqual(sim, 1, places=1)
 
         # verify small offset gives sim between 0 and 1
-        points_orig = obj2.points
-        obj2.points = obj2.points + np.array([0.2, 0, 0, 0, 0, 0])
+        points_orig = obj2.posed_points
+        obj2.posed_points = obj2.posed_points + np.array([0.2, 0, 0, 0, 0, 0])
         sim = evaluator._shape_similarity(obj1, obj2)
         self.assertTrue(sim < 1 and sim > 0)
 
         # verify large offset gives sim = 0
-        obj2.points = obj2.points + np.array([1, 0, 0, 0, 0, 0])
+        obj2.posed_points = obj2.posed_points + np.array([1, 0, 0, 0, 0, 0])
         sim = evaluator._shape_similarity(obj1, obj2)
         self.assertAlmostEqual(sim, 0)
 
-        obj2.points = points_orig
+        obj2.posed_points = points_orig
 
         shape_score = evaluator.shape_score()
         self.assertAlmostEqual(shape_score, 1, places=1)
@@ -90,7 +90,7 @@ class TestMeshEvaluator(unittest.TestCase):
     def test_rms_points_error_empty_point_cloud(self):
 
         evaluator = MeshEvaluator(self.submission, self.ground_truth, self.settings)
-        self.submission.elements["57"].points = np.zeros((0, 0), dtype=np.int64)
+        self.submission.elements["57"].posed_points = np.zeros((0, 0), dtype=np.int64)
 
         rms_points_error = evaluator.rms_points_error()
         self.assertTrue(rms_points_error < 0.07)
@@ -123,3 +123,6 @@ class TestMeshEvaluator(unittest.TestCase):
         metrics = evaluator.evaluate_all()
         self.assertTrue(metrics["rms_points_error"] < 0.07)
         self.assertAlmostEqual(metrics["shape_score"], 1, places=1)
+
+if __name__ == "__main__":
+    unittest.main()

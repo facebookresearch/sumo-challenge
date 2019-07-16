@@ -42,14 +42,10 @@ class TestBBEvaluator(unittest.TestCase):
         Verify that the shape similarity measure is producing sane outputs.
         """
 
-        # make a dummy scene
-        scene = ProjectScene("bounding_box")
-        evaluator = BBEvaluator(scene, scene, self.settings)
+        evaluator = BBEvaluator(self.submission, self.ground_truth, self.settings)
 
-        obj1 = next(iter(self.submission.elements.values()))
-
-        # ::: Temp only, use copy of obj1 if deep copy can be made to work
-        obj2 = next(iter(self.ground_truth.elements.values()))
+        obj1 = self.submission.elements["51"]
+        obj2 = self.ground_truth.elements["51"]
 
         # verify no offset gives sim = 1
         sim = evaluator._shape_similarity(obj1, obj2)
@@ -158,16 +154,16 @@ class TestBBEvaluator(unittest.TestCase):
                          (expected, semantic_score))
 
         # move the coffee table by a bit to get IoU ~ 0.72.  Should
-        # get 0.5 since the average precision in 5 of the 10
+        # get 0.4545 since the average precision in 5 of the 11
         # thresholds is 1 and in the other cases it is 0.
         table = self.submission.elements["1069"]
         settings = self.settings
         settings["categories"] = ["coffee_table"]
         pose_orig = table.pose
-        table.pose = Pose3(t=pose_orig.t + [0.1, 0, 0], R=pose_orig.R)
+        table.pose = Pose3(t=pose_orig.t + [0.2, 0, 0], R=pose_orig.R)
         evaluator2 = BBEvaluator(self.submission, self.ground_truth, settings)
         semantic_score = evaluator2.semantics_score()
-        expected = 0.5
+        expected = 0.4545
         self.assertAlmostEqual(semantic_score, expected, 3,
                                "Expected semantic score of %.3f, found %.3f.\n" %
                                (expected, semantic_score))
@@ -183,3 +179,6 @@ class TestBBEvaluator(unittest.TestCase):
         self.assertAlmostEqual(semantic_score, expected, 3,
                                "Expected semantic score of %.3f, found %.3f.\n" %
                                (expected, semantic_score))
+
+if __name__ == "__main__":
+    unittest.main()
