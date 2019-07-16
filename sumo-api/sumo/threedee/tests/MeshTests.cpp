@@ -26,9 +26,9 @@ class MeshTest : public ::testing::Test {
 
   MeshTest() {}
 
-  ~MeshTest() {}
+  ~MeshTest() override {}
 
-  virtual void SetUp() override {
+  void SetUp() override {
     cubeMesh_ = Mesh::Example(kSideLength, true);
   }
 };

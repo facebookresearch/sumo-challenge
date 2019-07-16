@@ -42,10 +42,14 @@ class TestBBEvaluator(unittest.TestCase):
         Verify that the shape similarity measure is producing sane outputs.
         """
 
-        evaluator = BBEvaluator(self.submission, self.ground_truth, self.settings)
+        # make a dummy scene
+        scene = ProjectScene("bounding_box")
+        evaluator = BBEvaluator(scene, scene, self.settings)
 
-        obj1 = self.submission.elements["51"]
-        obj2 = self.ground_truth.elements["51"]
+        obj1 = next(iter(self.submission.elements.values()))
+
+        # ::: Temp only, use copy of obj1 if deep copy can be made to work
+        obj2 = next(iter(self.ground_truth.elements.values()))
 
         # verify no offset gives sim = 1
         sim = evaluator._shape_similarity(obj1, obj2)
@@ -179,6 +183,3 @@ class TestBBEvaluator(unittest.TestCase):
         self.assertAlmostEqual(semantic_score, expected, 3,
                                "Expected semantic score of %.3f, found %.3f.\n" %
                                (expected, semantic_score))
-
-if __name__ == "__main__":
-    unittest.main()

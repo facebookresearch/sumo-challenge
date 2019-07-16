@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
-    Metrics helper functions
+Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
+This source code is licensed under the MIT license found in the
+LICENSE file in the root directory of this source tree.
+
+Metrics helper functions
 """
 
 from functools import wraps
@@ -229,7 +234,8 @@ def compute_ap(det_matches, det_scores, n_gt, recall_samples=None,
     Return:
         (ap, precision, recall) where
           ap (float) - average precision
-          precision (numpy vector of float) - precision values at corresponding <recall> points
+          precision (numpy vector of float) - precision values at corresponding
+            <recall> points
           recall (numpy vector of float) - recall values.
     """
     if area_under_curve:
@@ -322,7 +328,7 @@ def compute_auc_ap(det_matches, det_scores, n_gt):
       the corresponding matches.  Higher is better.
     n_gt (int) - The number of ground truth entities in the task.
     Return:
-        average_precision (float) - area under the PR curve
+        average_precision(float) - area under the PR curve
         precision (numpy vector of float) - precision values at corresponding
           <recall> points
         recall (numpy vector of float) - recall values.
@@ -487,14 +493,9 @@ def points_rmsssd(evaluator, submission, ground_truth, voxels=False):
     rmsssd1 = []  # list of rmsssd per correspondence
     for t in settings["thresholds"]:
         for det_id in data_assoc[t]:
-            # skip if not evaluated
-            if data_assoc[t][det_id].evaluated == False:
-                continue
-
             if det_id not in rmsssd_cache:
                 rmsssd_cache[det_id] = {}
             gt_id = data_assoc[t][det_id].gt_id
-
             if gt_id in rmsssd_cache[det_id]:
                 # get from cache
                 rmsssd1.append(rmsssd_cache[det_id][gt_id])
@@ -551,10 +552,6 @@ def color_rmsssd(evaluator, submission, ground_truth, voxels=False):
     rmssscd1 = []  # list of rmssscd per correspondence
     for t in settings["thresholds"]:
         for det_id in data_assoc[t]:
-            # skip if not evaluated
-            if data_assoc[t][det_id].evaluated == False:
-                continue
-
             if det_id not in rmssscd_cache:
                 rmssscd_cache[det_id] = {}
             gt_id = data_assoc[t][det_id].gt_id

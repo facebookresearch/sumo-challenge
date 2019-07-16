@@ -105,6 +105,3 @@ class TestUtils(unittest.TestCase):
             det_matches, det_scores, n_gt, recall_samples, True)
         ap = np.mean(precision)
         self.assertAlmostEqual(ap, 0.23809, 4)
-
-if __name__ == "__main__":
-    unittest.main()

@@ -1,5 +1,11 @@
-# Copyright 2004-present Facebook. All Rights Reserved.
-"""Cython header for interfacing with PointCloud C++."""
+"""
+Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
+This source code is licensed under the MIT license found in the
+LICENSE file in the root directory of this source tree.
+
+Cython header for interfacing with PointCloud C++.
+"""
 
 cimport numpy as np
 from sumo.base.vector cimport CVector3

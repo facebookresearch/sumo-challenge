@@ -7,6 +7,7 @@ LICENSE file in the root directory of this source tree.
 
 // Without this flag, GTSAM Expressions currently fail within fbcode.
 // We need EIGEN_MAKE_ALIGNED_OPERATOR_NEW in GTSAM to really fix this
+
 #define EIGEN_DONT_ALIGN_STATICALLY
 
 #include <boost/filesystem.hpp>
